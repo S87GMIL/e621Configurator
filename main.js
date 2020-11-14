@@ -14,7 +14,6 @@
 // @require      https://raw.githubusercontent.com/S87GMIL/e621Configurator/restructuring/classes/Profile.js
 // @require      https://raw.githubusercontent.com/S87GMIL/e621Configurator/restructuring/classes/SetsViewConfiguration.js
 // @require      https://raw.githubusercontent.com/S87GMIL/e621Configurator/restructuring/classes/SetsViewParser.js
-// @require      https://raw.githubusercontent.com/S87GMIL/e621Configurator/restructuring/classes/ViewConfigurator.js
 // @require      https://raw.githubusercontent.com/S87GMIL/e621Configurator/restructuring/utils/ProfileStorage.js
 // @require      https://raw.githubusercontent.com/S87GMIL/e621Configurator/restructuring/e621Configurator.js
 // @grant        GM_setValue
