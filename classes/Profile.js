@@ -121,7 +121,9 @@ class Profile {
 
     #createViewConfigurator(sId, sPath, bIncludeSubPaths, sSearchParameters) {
         bIncludeSubPaths = bIncludeSubPaths === undefined ? true : bIncludeSubPaths;
-        if (sPath.includes("/posts")) {
+        if (sPath.includes("/explore/posts/popular")) {
+            return new ViewConfiguration(sId, sPath, bIncludeSubPaths, sSearchParameters, "popular");
+        } else if (sPath.includes("/posts")) {
             return new PostViewConfiguration(sId, sPath, bIncludeSubPaths, sSearchParameters);
         } else if (sPath.includes("/post_sets")) {
             return new SetsViewConfiguration(sId, sPath, bIncludeSubPaths, sSearchParameters);
@@ -145,6 +147,8 @@ class Profile {
             return new ViewConfiguration(sId, sPath, bIncludeSubPaths, sSearchParameters, "wiki");
         } else if (sPath.includes("/forum_topics")) {
             return new ViewConfiguration(sId, sPath, bIncludeSubPaths, sSearchParameters, "forum");
+        } else if (sPath.includes("/users")) {
+            return new ViewConfiguration(sId, sPath, bIncludeSubPaths, sSearchParameters, "users");
         } else if (sPath === "/" || sPath === "/*") {
             return new ViewConfiguration(sId, sPath, bIncludeSubPaths, sSearchParameters, rootViewId);
         } else {

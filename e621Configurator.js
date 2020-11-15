@@ -1992,11 +1992,14 @@ class E621Configurator {
     }
 
     addButtonToMainToolbar() {
-        var oMainToolbar = HTMLFunctions.convertHtmlCollectionToArray(document.getElementById("nav").childNodes).filter(oElement => { return oElement.tagName === "MENU" })[0];
-        var oSettingsButton = HTMLFunctions.createElementFromHTML(`<li id="viewConfig" style="float: right;"><a id="viewConfigButton" style="cursor: pointer" >Configure View</a></li>`);
+        var oNavBar = document.getElementById("nav");
+        if (oNavBar) {
+            var oMainToolbar = HTMLFunctions.convertHtmlCollectionToArray(oNavBar.childNodes).filter(oElement => { return oElement.tagName === "MENU" })[0];
+            var oSettingsButton = HTMLFunctions.createElementFromHTML(`<li id="viewConfig" style="float: right;"><a id="viewConfigButton" style="cursor: pointer" >Configure View</a></li>`);
 
-        HTMLFunctions.addElementToContainer(oSettingsButton, oMainToolbar);
-        HTMLFunctions.getElement("viewConfigButton").onclick = this.configButtonPressed.bind(this);
+            HTMLFunctions.addElementToContainer(oSettingsButton, oMainToolbar);
+            HTMLFunctions.getElement("viewConfigButton").onclick = this.configButtonPressed.bind(this);
+        }
     }
 
     createDefaultProfiles() {
