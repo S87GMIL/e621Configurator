@@ -207,28 +207,38 @@ class E621Configurator {
     }
 
     createHiddenElementSection(oViewConfiguration) {
+
+        var sSectionName = "Hidden Elements";
         var aHiddenElements = oViewConfiguration.getHiddenElements();
-        var iHiddenElementCount = aHiddenElements.length;
+        var oHiddenElementSection = new ConfigurationSection(sSectionName, aHiddenElements.length, ["Element ID", ""]);
 
-        var sHiddenElementsTitle = `Hidden Elements(${iHiddenElementCount})`;
-        var oShowHiddenElementsContainer = HTMLFunctions.createElementFromHTML(`<div class="notice notice-parent"><label id="showHiddenElementsTitle">${sHiddenElementsTitle}</label></div>`);
-        var oShowButton = HTMLFunctions.createElementFromHTML(`<a id="hiddenElements-showButton" style="margin-left: 5px; cursor: pointer" >show »</a>`);
-        HTMLFunctions.addElementToContainer(oShowButton, oShowHiddenElementsContainer);
+        var fCreateTableRow = function (sId) {
+            return {
+                elementId: { index: 0, content: sId },
+                removeButton: {
+                    index: 1,
+                    content: HTMLFunctions.createButton(undefined, "Remove", function (oEvent) {
+                        oViewConfiguration.removeHiddenElement(oEvent.srcElement.dataset.element_id);
+                        HTMLFunctions.removeTableRow(oHiddenElementSection.table, { column: "Element ID", value: sId });
 
-        var oHideHiddenElementsContainer = HTMLFunctions.createElementFromHTML(`<div class="notice notice-parent" style="display: none"><label id="hideHiddenElementsTitle">${sHiddenElementsTitle}</label></div>`);
-        var oHideButton = HTMLFunctions.createElementFromHTML(`<a id="hiddenElements-hideSectionButton" style="margin-left: 5px; cursor: pointer">« hide</a>`);
-        HTMLFunctions.addElementToContainer(oHideButton, oHideHiddenElementsContainer);
+                        var sHiddenElementsTitle = `${sSectionName}(${oViewConfiguration.getHiddenElements().length})`;
+                        oHiddenElementSection.setTitle(sHiddenElementsTitle);
+                    }, { element_id: sId })
+                }
+            };
+        };
 
-        var oHideElementButtonSection = HTMLFunctions.createElementFromHTML(`
-                <div style="margin-top: 10px; margin-left: 10px; margin-bottom: 10px;">
-                <div>
-            `);
+        var oHiddenElementRows = {};
+        aHiddenElements.forEach(sHiddenElementId => {
+            oHiddenElementRows[sHiddenElementId] = fCreateTableRow(sHiddenElementId);
+        });
 
+        oHiddenElementSection.addTableRows(oHiddenElementRows);
+
+        var oInputSection = HTMLFunctions.createElementFromHTML("<div></div>");
         var oElementInput = this.ElementSelection.crateHtmlElementSelectionInput("e.g. image-resize-selector", undefined, true);
-        HTMLFunctions.addElementToContainer(oElementInput.container, oHideElementButtonSection);
 
-
-        var oHideElementButton = HTMLFunctions.createButton("hiddenElements-hideButton", "Hide Element", function () {
+        var oHideElementButton = HTMLFunctions.createButton(undefined, "Hide Element", function () {
             var oInput = oElementInput.input;
 
             var fSelectorInputHandler = function (oEvent) {
@@ -254,83 +264,25 @@ class E621Configurator {
                 }
 
 
-                var sHiddenElementsTitle = `Hidden Elements(${oViewConfiguration.getHiddenElements().length})`;
-                HTMLFunctions.getElement("showHiddenElementsTitle").innerText = sHiddenElementsTitle;
-                HTMLFunctions.getElement("hideHiddenElementsTitle").innerText = sHiddenElementsTitle;
+                var sHiddenElementsTitle = `${sSectionName}(${oViewConfiguration.getHiddenElements().length})`;
+                oHiddenElementSection.setTitle(sHiddenElementsTitle);
 
                 oInput.value = "";
-                HTMLFunctions.createTableRows(oHiddenElementsTable, {
-                    sId: {
-                        elementId: { index: 0, content: sId },
-                        removeButton: {
-                            index: 1,
-                            content: HTMLFunctions.createButton(undefined, "Remove", function (oEvent) {
-                                oViewConfiguration.removeHiddenElement(oEvent.srcElement.dataset.element_id);
-                                HTMLFunctions.removeTableRow(oHiddenElementsTable, { column: "Element ID", value: sId });
-
-                                var sHiddenElementsTitle = `Hidden Elements(${oViewConfiguration.getHiddenElements().length})`;
-                                HTMLFunctions.getElement("showHiddenElementsTitle").innerText = sHiddenElementsTitle;
-                                HTMLFunctions.getElement("hideHiddenElementsTitle").innerText = sHiddenElementsTitle;
-                            }, { element_id: sId })
-                        }
-                    }
-                });
+                var oCreatedElementRow = {};
+                oCreatedElementRow[sId] = fCreateTableRow(sId);
+                oHiddenElementSection.addTableRows(oCreatedElementRow);
             } else {
                 HTMLFunctions.setInputErrorState(oElementInput.input, true, "Element ID can't be empty");
             }
         });
-        HTMLFunctions.addElementStyles(oHideElementButton, { padding: "0.25rem 0rem" });
 
-        HTMLFunctions.addElementStyles(oHideElementButton, { "margin-top": "20px" });
-        HTMLFunctions.addElementStyles(oHideElementButtonSection, { "margin-top": "10px", "margin-bottom": "10px" });
-        HTMLFunctions.addElementToContainer(oHideElementButton, oHideElementButtonSection, 6);
-        HTMLFunctions.addElementToContainer(oHideElementButtonSection, oHideHiddenElementsContainer);
+        HTMLFunctions.addElementStyles(oHideElementButton, { "padding": "0.25rem 0rem", "margin-top": "15px" });
+        HTMLFunctions.addElementToContainer(oElementInput.container, oInputSection);
+        HTMLFunctions.addElementToContainer(oHideElementButton, oInputSection);
 
-        var oHiddenElementsTable = HTMLFunctions.createTable("hiddenElementsTable", ["table", "striped"]);
-        HTMLFunctions.createTableColumns(oHiddenElementsTable, ["Element ID", ""]);
+        oHiddenElementSection.addInputs(oInputSection);
 
-        var oHiddenElementRows = {};
-        aHiddenElements.forEach(sHiddenElementId => {
-            oHiddenElementRows[sHiddenElementId] = {
-                elementId: {
-                    index: 0,
-                    content: sHiddenElementId
-                },
-                removeButton: {
-                    index: 1,
-                    content: HTMLFunctions.createButton(undefined, "Remove", function (oEvent) {
-                        var sElementId = oEvent.srcElement.dataset.element_id;
-                        oViewConfiguration.removeHiddenElement(sElementId);
-
-                        HTMLFunctions.removeTableRow(oHiddenElementsTable, { column: "Element ID", value: sElementId });
-
-                        var sHiddenElementsTitle = `Hidden Elements(${oViewConfiguration.getHiddenElements().length})`;
-                        HTMLFunctions.getElement("showHiddenElementsTitle").innerText = sHiddenElementsTitle;
-                        HTMLFunctions.getElement("hideHiddenElementsTitle").innerText = sHiddenElementsTitle;
-                    }, { element_id: sHiddenElementId })
-                }
-            }
-        });
-
-        var oHiddenElementsSection = HTMLFunctions.createElementFromHTML(`<div class="box-section" style="margin-top: 20px; margin-bottom: 10px"></div>`);
-        HTMLFunctions.createTableRows(oHiddenElementsTable, oHiddenElementRows);
-        HTMLFunctions.addElementToContainer(oHiddenElementsTable, oHiddenElementsSection);
-        HTMLFunctions.addElementToContainer(oHiddenElementsTable, oHideHiddenElementsContainer);
-
-        HTMLFunctions.addElementToContainer(oShowHiddenElementsContainer, oHiddenElementsSection);
-        HTMLFunctions.addElementToContainer(oHideHiddenElementsContainer, oHiddenElementsSection);
-
-        oShowButton.addEventListener("click", function () {
-            HTMLFunctions.addStyleToElement(oHideHiddenElementsContainer, "display", "block");
-            HTMLFunctions.addStyleToElement(oShowHiddenElementsContainer, "display", "none");
-        });
-
-        oHideButton.addEventListener("click", function () {
-            HTMLFunctions.addStyleToElement(oHideHiddenElementsContainer, "display", "none");
-            HTMLFunctions.addStyleToElement(oShowHiddenElementsContainer, "display", "block");
-        });
-
-        return oHiddenElementsSection;
+        return oHiddenElementSection.container;
     }
 
     createModifiedElementSection(oViewConfiguration) {
@@ -652,7 +604,7 @@ class E621Configurator {
         HTMLFunctions.addElementToContainer(oShowButton, oShowMovedElementsContainer);
 
         var oHideMovedElementsContainer = HTMLFunctions.createElementFromHTML(`<div class="notice notice-parent" style="display: none"><label id="hideMovedElementsTitle">${sMovedElementsTitle}</label></div>`);
-        var oHideButton = HTMLFunctions.createElementFromHTML(`<a id="moveElements-hideSectionButton" style="margin-left: 5px; cursor: pointer">« hide</a>`);
+        var oHideButton = HTMLFunctions.createElementFromHTML(`<a id="moveElements-hideSectionTitleButton" style="margin-left: 5px; cursor: pointer">« hide</a>`);
         HTMLFunctions.addElementToContainer(oHideButton, oHideMovedElementsContainer);
 
         var sLabelStyles = "margin-top: 10px; display: block";
@@ -858,7 +810,7 @@ class E621Configurator {
         HTMLFunctions.addElementToContainer(oShowButton, oShowChangedLinksContainer);
 
         var oHideChangedLinksContainer = HTMLFunctions.createElementFromHTML(`<div class="notice notice-parent" style="display: none"><label id="hideChangedLinksTitle">${sChangedLinkTitle}</label></div>`);
-        var oHideButton = HTMLFunctions.createElementFromHTML(`<a id="changeLink-hideSectionButton" style="margin-left: 5px; cursor: pointer">« hide</a>`);
+        var oHideButton = HTMLFunctions.createElementFromHTML(`<a id="changeLink-hideSectionTitleButton" style="margin-left: 5px; cursor: pointer">« hide</a>`);
         HTMLFunctions.addElementToContainer(oHideButton, oHideChangedLinksContainer);
 
         var sLabelStyles = "margin-top: 10px; display: block";
@@ -1019,7 +971,7 @@ class E621Configurator {
         HTMLFunctions.addElementToContainer(oShowButton, oShowCreatedElementsContainer);
 
         var oHideChangedLinksContainer = HTMLFunctions.createElementFromHTML(`<div class="notice notice-parent" style="display: none"><label id="hideCreatedElementsTitle">${sCreatedElementsTitle}</label></div>`);
-        var oHideButton = HTMLFunctions.createElementFromHTML(`<a id="createElement-hideSectionButton" style="margin-left: 5px; cursor: pointer" >« hide</a>`);
+        var oHideButton = HTMLFunctions.createElementFromHTML(`<a id="createElement-hideSectionTitleButton" style="margin-left: 5px; cursor: pointer" >« hide</a>`);
         HTMLFunctions.addElementToContainer(oHideButton, oHideChangedLinksContainer);
 
         var sLabelStyles = "margin-top: 10px; display: block";
@@ -1254,7 +1206,7 @@ class E621Configurator {
         HTMLFunctions.addElementToContainer(oShowButton, oShowCustomGroupContainer);
 
         var oHideCustomGroupContainer = HTMLFunctions.createElementFromHTML(`<div class="notice notice-parent" style="display: none"><label id="hideSetSelectionGroupsTitle">${sCustomGroupsTitle}</label></div>`);
-        var oHideButton = HTMLFunctions.createElementFromHTML(`<a id="customSetGroups-hideSectionButton" style="margin-left: 5px; cursor: pointer" >« hide</a>`);
+        var oHideButton = HTMLFunctions.createElementFromHTML(`<a id="customSetGroups-hideSectionTitleButton" style="margin-left: 5px; cursor: pointer" >« hide</a>`);
         HTMLFunctions.addElementToContainer(oHideButton, oHideCustomGroupContainer);
 
         var sLabelStyles = "margin-top: 10px; display: block";
@@ -1493,7 +1445,7 @@ class E621Configurator {
         HTMLFunctions.addElementToContainer(oShowButton, oShowCustomSetTablesContainer);
 
         var oHideCustomSetTablesContainer = HTMLFunctions.createElementFromHTML(`<div class="notice notice-parent" style="display: none"><label id="hideCustomSetTableTitle">${sCustomSetTablesTitle}</label></div>`);
-        var oHideButton = HTMLFunctions.createElementFromHTML(`<a id="customSetTables-hideSectionButton" style="margin-left: 5px; cursor: pointer" >« hide</a>`);
+        var oHideButton = HTMLFunctions.createElementFromHTML(`<a id="customSetTables-hideSectionTitleButton" style="margin-left: 5px; cursor: pointer" >« hide</a>`);
         HTMLFunctions.addElementToContainer(oHideButton, oHideCustomSetTablesContainer);
 
         var sLabelStyles = "margin-top: 10px; display: block";
