@@ -43,57 +43,48 @@ class E621Configurator {
         var sLabelStyle = `float: left; width:60%; margin-bottom: 10px`;
         var sInputStyle = `float: left; width:39%; margin-bottom: 10px`;
 
-        if (bCreationMode) {
-            aBasicInfoElents.push(HTMLFunctions.createElementFromHTML(`<label style="${sLabelStyle}">ID:<label style="color: red">*</label></label>`));
-            aBasicInfoElents.push(HTMLFunctions.createElementFromHTML(`<input id="profileIdInput" style="${sInputStyle}" type="text" value="${oProfile.id || ''}"><br><br>`));
+        aBasicInfoElents.push(HTMLFunctions.createElementFromHTML(`<label style="${sLabelStyle}">ID:<label style="color: red">*</label></label>`));
+        var oIdInput = HTMLFunctions.createElementFromHTML(`<input id="profileIdInput" style="${sInputStyle}" type="text" value="${oProfile.id || ''}"><br><br>`);
+        aBasicInfoElents.push(oIdInput);
+        oIdInput.disabled = !bCreationMode;
 
-            aBasicInfoElents.push(HTMLFunctions.createElementFromHTML(`<label style="${sLabelStyle}">Name:<label style="color: red">*</label></label><br>`));
-            aBasicInfoElents.push(HTMLFunctions.createElementFromHTML(`<input id="profileNameInput" style="${sInputStyle}" type="text" value="${oProfile.name || ''}"><br><br>`));
+        aBasicInfoElents.push(HTMLFunctions.createElementFromHTML(`<label style="${sLabelStyle}">Name:<label style="color: red">*</label></label><br>`));
+        aBasicInfoElents.push(HTMLFunctions.createElementFromHTML(`<input id="profileNameInput" style="${sInputStyle}" type="text" value="${oProfile.name || ''}"><br><br>`));
 
-            aBasicInfoElents.push(HTMLFunctions.createElementFromHTML(`<label style="${sLabelStyle}">Description:</label><br>`));
-            aBasicInfoElents.push(HTMLFunctions.createElementFromHTML(`<input id="profileDescriptionInput" style="${sInputStyle}" type="text" value="${oProfile.description || ''}"><br><br>`));
-        } else {
-            aBasicInfoElents.push(HTMLFunctions.createElementFromHTML(`<label style="${sLabelStyle}">ID:</label>`));
-            aBasicInfoElents.push(HTMLFunctions.createElementFromHTML(`<div style="${sInputStyle}">${oProfile.id}</div><br><br>`));
+        aBasicInfoElents.push(HTMLFunctions.createElementFromHTML(`<label style="${sLabelStyle}">Description:</label><br>`));
+        aBasicInfoElents.push(HTMLFunctions.createElementFromHTML(`<input id="profileDescriptionInput" style="${sInputStyle}" type="text" value="${oProfile.description || ''}"><br><br>`));
 
-            aBasicInfoElents.push(HTMLFunctions.createElementFromHTML(`<label style="${sLabelStyle}">Name:<label style="color: red">*</label></label><br>`));
-            aBasicInfoElents.push(HTMLFunctions.createElementFromHTML(`<input id="profileNameInput" style="${sInputStyle}" value="${oProfile.name}" type="text"><br><br>`));
+        if (!bCreationMode && oProfile.isDeletable()) {
+            var oDeleteButton = HTMLFunctions.createButton(
+                undefined, "Delete", function (oEvent) {
 
-            aBasicInfoElents.push(HTMLFunctions.createElementFromHTML(`<label style="${sLabelStyle}">Description:</label><br>`));
-            aBasicInfoElents.push(HTMLFunctions.createElementFromHTML(`<input id="profileDescriptionInput" style="${sInputStyle}" value="${oProfile.description}" type="text"><br><br>`));
+                    var sText = `Confirm the deletion of the profile '${oEvent.srcElement.dataset.profile_name}'`;
+                    var sProfielId = oEvent.srcElement.dataset.profile_id;
+                    this.displayConfirmationDialog("Confirm Profile Deletion", sText, function () {
+                        ProfileStorage.deleteProfile(sProfielId);
+                        this.displayProfileSelection();
+                    }.bind(this));
 
-            if (oProfile.isDeletable()) {
-                var oDeleteButton = HTMLFunctions.createButton(
-                    undefined, "Delete", function (oEvent) {
+                }.bind(this), { profile_id: oProfile.getId(), profile_name: oProfile.getName() }
+            );
 
-                        var sText = `Confirm the deletion of the profile '${oEvent.srcElement.dataset.profile_name}'`;
-                        var sProfielId = oEvent.srcElement.dataset.profile_id;
-                        this.displayConfirmationDialog("Confirm Profile Deletion", sText, function () {
-                            ProfileStorage.deleteProfile(sProfielId);
-                            this.displayProfileSelection();
-                        }.bind(this));
+            HTMLFunctions.addElementStyles(oDeleteButton, { "padding-top": "10px", "padding-left": "0px" });
+            aBasicInfoElents.push(oDeleteButton);
+        }
 
-                    }.bind(this), { profile_id: oProfile.getId(), profile_name: oProfile.getName() }
-                );
+        if (!bCreationMode && oProfile.isEditable()) {
+            var oExportButton = HTMLFunctions.createButton(undefined, "Export", function () {
+                var dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(oProfile.generateJsonConfiguration()));
+                var oDownloadAnchor = HTMLFunctions.createElementFromHTML('<a></a>');
+                var sFileName = oProfile.getName();
 
-                HTMLFunctions.addElementStyles(oDeleteButton, { "padding-top": "10px", "padding-left": "0px" });
-                aBasicInfoElents.push(oDeleteButton);
-            }
+                oDownloadAnchor.setAttribute("href", dataStr);
+                oDownloadAnchor.setAttribute("download", `${sFileName}.json`);
+                oDownloadAnchor.click();
+            });
+            HTMLFunctions.addElementStyles(oExportButton, { "padding-top": "10px", "padding-left": "0px", "display": "block" });
 
-            if (oProfile.isEditable()) {
-                var oExportButton = HTMLFunctions.createButton(undefined, "Export", function () {
-                    var dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(oProfile.generateJsonConfiguration()));
-                    var oDownloadAnchor = HTMLFunctions.createElementFromHTML('<a></a>');
-                    var sFileName = oProfile.getName();
-
-                    oDownloadAnchor.setAttribute("href", dataStr);
-                    oDownloadAnchor.setAttribute("download", `${sFileName}.json`);
-                    oDownloadAnchor.click();
-                });
-                HTMLFunctions.addElementStyles(oExportButton, { "padding-top": "10px", "padding-left": "0px", "display": "block" });
-
-                aBasicInfoElents.push(oExportButton);
-            }
+            aBasicInfoElents.push(oExportButton);
         }
 
         aBasicInfoElents.forEach(oElement => {
