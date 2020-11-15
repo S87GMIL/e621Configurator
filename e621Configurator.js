@@ -1894,7 +1894,7 @@ class E621Configurator {
         oFileUploader.addEventListener("change", function (oEvent) {
             var oUploadedProfile = oEvent.srcElement.files[0];
             this.loadFile(oUploadedProfile, oProgressBar).then(sImportedProfile => {
-                var oImportButton = HTMLFunctions.createButton(undefined, "Import", function () { this.importProfile(sImportedProfile) }.bind(this));
+                var oImportButton = HTMLFunctions.createButton(undefined, "Import", function () { this.importProfile(sImportedProfile, oImportDialog.dialog) }.bind(this));
 
                 HTMLFunctions.addElementStyles(oImportButton, { float: "right" });
                 HTMLFunctions.addElementToContainer(oImportButton, oImportDialog.footer);
@@ -1906,13 +1906,13 @@ class E621Configurator {
         HTMLFunctions.addElementToContainer(oCancelExportButton, oImportDialog.footer);
     }
 
-    importProfile(sProfileJson) {
+    importProfile(sProfileJson, oDialog) {
         var oProfileConfig = JSON.parse(sProfileJson);
         var oImportedProfile = new Profile(oProfileConfig.id).parseProfile(oProfileConfig);
         ProfileStorage.saveProfile(oImportedProfile);
         this.reloadProfiles();
         this.displayProfileSelection();
-        HTMLFunctions.hideElement("importDialog");
+        HTMLFunctions.hideElement(oDialog);
     }
 
     loadFile(oUploadedProfile, oProgressBar) {
