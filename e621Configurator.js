@@ -98,22 +98,14 @@ class E621Configurator {
 
     createViewConfigurationTable(bCreationMode, oProfile) {
         var oTableContainer = HTMLFunctions.createContainerWithTitle("viewConfig-container", "View Configurations", "h3", { "margin-top": "5px", "margin-bottom": "20px" });
+        var oCreateSection = HTMLFunctions.createElementFromHTML(`<div style="padding-left: .25rem; margin-top: 10px; margin-bottom: 10px"></div>`);
+        var oPathInput = HTMLFunctions.createElementFromHTML(`<input id="configCreationPathInput" type="text" style="width: 110px" placeholder="e.g. /posts">`);
 
-        var oCreateSection = HTMLFunctions.createElementFromHTML(`
-            <div style="padding-left: .25rem">
-            </div>
-        `);
-        var oPathInput = HTMLFunctions.createElementFromHTML(`
-            <input id="configCreationPathInput" type="text" style="width: 110px" placeholder="e.g. /posts">
-        `);
-
-        oPathInput.addEventListener("input", function (oEvent) {
-            HTMLFunctions.setInputErrorState(oEvent.srcElement, false);
+        oPathInput.addEventListener("input", function () {
+            HTMLFunctions.setInputErrorState(oPathInput, false);
         });
 
-        var oUseCurrentPathButton = HTMLFunctions.createElementFromHTML(`
-            <a style="cursor: pointer; margin-left: 10px">User Current Path</a>
-        `);
+        var oUseCurrentPathButton = HTMLFunctions.createElementFromHTML(`<a style="cursor: pointer; margin-left: 10px">User Current Path</a>`);
         oUseCurrentPathButton.addEventListener("click", function () {
             oPathInput.value = window.location.pathname;
         });
@@ -123,7 +115,6 @@ class E621Configurator {
             oProfile.setName(HTMLFunctions.getElement("profileNameInput").value);
             oProfile.setDescription(HTMLFunctions.getElement("profileDescriptionInput").value);
 
-            var oPathInput = HTMLFunctions.getElement("configCreationPathInput");
             var sPath = oPathInput.value;
             if (sPath) {
                 HTMLFunctions.setInputErrorState(oPathInput, false);
@@ -134,7 +125,6 @@ class E621Configurator {
         }.bind(this));
         var oCreateButtonCotnainer = HTMLFunctions.createElementFromHTML(`<div style="display: block"></div>`);
 
-        HTMLFunctions.addElementStyles(oCreateSection, { "margin-top": "10px", "margin-bottom": "10px" });
         HTMLFunctions.addElementStyles(oCreateConfigButton, { "padding-left": "0px", "margin-top": "10px" });
 
         HTMLFunctions.addElementToContainer(oPathInput, oCreateSection);
@@ -144,7 +134,6 @@ class E621Configurator {
         HTMLFunctions.addElementToContainer(oCreateSection, oTableContainer);
 
         var oViewConfigTable = HTMLFunctions.createTable("viewConfigTable", ["table", "striped"]);
-
         HTMLFunctions.addElementToContainer(oViewConfigTable, oTableContainer);
         HTMLFunctions.createTableColumns(oViewConfigTable, ["View", "Path", "Parameters", "", ""]);
 
@@ -160,10 +149,6 @@ class E621Configurator {
             return (a.path.length + a.searchParameters.length) - (b.path.length + b.searchParameters.length);
         });
 
-        var oCellStyles = {
-            "padding-left": "20px"
-        }
-
         aSortedConfigs.forEach(oViewConfig => {
             oTableRows[oViewConfig.getId()] = {
                 view: {
@@ -172,13 +157,11 @@ class E621Configurator {
                 },
                 path: {
                     index: 1,
-                    content: oViewConfig.getPath(),
-                    styles: oCellStyles
+                    content: oViewConfig.getPath()
                 },
                 parameters: {
                     index: 2,
-                    content: oViewConfig.getSearchParameters() || "",
-                    styles: oCellStyles
+                    content: oViewConfig.getSearchParameters() || ""
                 },
                 editButton: {
                     index: 3,
@@ -224,8 +207,6 @@ class E621Configurator {
     }
 
     createHiddenElementSection(oViewConfiguration) {
-        var oHiddenElementsSection = HTMLFunctions.createElementFromHTML(`<div class="box-section" style="margin-top: 20px; margin-bottom: 10px"></div>`);
-
         var aHiddenElements = oViewConfiguration.getHiddenElements();
         var iHiddenElementCount = aHiddenElements.length;
 
@@ -331,6 +312,7 @@ class E621Configurator {
             }
         });
 
+        var oHiddenElementsSection = HTMLFunctions.createElementFromHTML(`<div class="box-section" style="margin-top: 20px; margin-bottom: 10px"></div>`);
         HTMLFunctions.createTableRows(oHiddenElementsTable, oHiddenElementRows);
         HTMLFunctions.addElementToContainer(oHiddenElementsTable, oHiddenElementsSection);
         HTMLFunctions.addElementToContainer(oHiddenElementsTable, oHideHiddenElementsContainer);

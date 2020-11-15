@@ -88,7 +88,6 @@ class HTMLFunctions {
             aColumns.forEach((sColumn, iIndex) => {
                 var oCell = oHeaderRow.insertCell();
                 oCell.innerHTML = sColumn;
-                if (iIndex > 0) this.addStyleToElement(oCell, "padding-left", "20px");
             });
         }
     }
