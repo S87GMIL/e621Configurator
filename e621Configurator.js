@@ -141,13 +141,15 @@ class E621Configurator {
                 HTMLFunctions.setInputErrorState(oPathInput, true, "Enter a path");
             }
         }.bind(this));
+        var oCreateButtonCotnainer = HTMLFunctions.createElementFromHTML(`<div style="display: block"></div>`);
 
         HTMLFunctions.addElementStyles(oCreateSection, { "margin-top": "10px", "margin-bottom": "10px" });
-        HTMLFunctions.addElementStyles(oCreateConfigButton, { "display": "block", "padding-left": "0px" });
+        HTMLFunctions.addElementStyles(oCreateConfigButton, { "padding-left": "0px", "margin-top": "10px" });
 
         HTMLFunctions.addElementToContainer(oPathInput, oCreateSection);
         HTMLFunctions.addElementToContainer(oUseCurrentPathButton, oCreateSection);
-        HTMLFunctions.addElementToContainer(oCreateConfigButton, oCreateSection);
+        HTMLFunctions.addElementToContainer(oCreateConfigButton, oCreateButtonCotnainer);
+        HTMLFunctions.addElementToContainer(oCreateButtonCotnainer, oCreateSection);
         HTMLFunctions.addElementToContainer(oCreateSection, oTableContainer);
 
         var oViewConfigTable = HTMLFunctions.createTable("viewConfigTable", ["table", "striped"]);
@@ -854,10 +856,14 @@ class E621Configurator {
         aBasicInfoElents.push(oViewPathParameterInput);
 
         aBasicInfoElents.push(HTMLFunctions.createElementFromHTML(`<label style="${sLabelStyle}"></label>`));
-        var oUseCurrentParamsButton = HTMLFunctions.createButton(undefined, "Use Current Parameters", function () { oViewPathParameterInput.value = unescape(window.location.search) });
-        HTMLFunctions.addElementStyles(oUseCurrentParamsButton, { float: "left", width: "39%", "margin-botom": "10px", padding: "0px" });
-        aBasicInfoElents.push(oUseCurrentParamsButton);
+        var oUseCurrentParamsButton = HTMLFunctions.createElementFromHTML(`
+            <a style="cursor: pointer; float: left; width: 39%; margin-botom: 10px">Use Current Parameters</a>
+        `);
+        oUseCurrentParamsButton.addEventListener("click", function () {
+            oViewPathParameterInput.value = unescape(window.location.search);
+        });
 
+        aBasicInfoElents.push(oUseCurrentParamsButton);
         aBasicInfoElents.forEach(oElement => {
             HTMLFunctions.addElementToContainer(oElement, viewConfigPathForm);
         });
