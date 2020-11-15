@@ -108,11 +108,23 @@ class E621Configurator {
     createViewConfigurationTable(bCreationMode, oProfile) {
         var oTableContainer = HTMLFunctions.createContainerWithTitle("viewConfig-container", "View Configurations", "h3", { "margin-top": "5px", "margin-bottom": "20px" });
 
-        var oCreateSection = HTMLFunctions.createElementFromHTML(`<div></div>`);
-        var oPathInput = HTMLFunctions.createElementFromHTML(`<lable>Path:</label><input id="configCreationPathInput" type="text" style="margin-left: 5px; width: 100px" placeholder="e.g. /posts">`);
+        var oCreateSection = HTMLFunctions.createElementFromHTML(`
+            <div style="padding-left: .25rem">
+            </div>
+        `);
+        var oPathInput = HTMLFunctions.createElementFromHTML(`
+            <input id="configCreationPathInput" type="text" style="width: 110px" placeholder="e.g. /posts">
+        `);
 
         oPathInput.addEventListener("input", function (oEvent) {
             HTMLFunctions.setInputErrorState(oEvent.srcElement, false);
+        });
+
+        var oUseCurrentPathButton = HTMLFunctions.createElementFromHTML(`
+            <a style="cursor: pointer; margin-left: 10px">User Current Path</a>
+        `);
+        oUseCurrentPathButton.addEventListener("click", function () {
+            oPathInput.value = window.location.pathname;
         });
 
         var oCreateConfigButton = HTMLFunctions.createButton("viewConfig-creationButton", "Create", function () {
@@ -131,7 +143,10 @@ class E621Configurator {
         }.bind(this));
 
         HTMLFunctions.addElementStyles(oCreateSection, { "margin-top": "10px", "margin-bottom": "10px" });
+        HTMLFunctions.addElementStyles(oCreateConfigButton, { "display": "block", "padding-left": "0px" });
+
         HTMLFunctions.addElementToContainer(oPathInput, oCreateSection);
+        HTMLFunctions.addElementToContainer(oUseCurrentPathButton, oCreateSection);
         HTMLFunctions.addElementToContainer(oCreateConfigButton, oCreateSection);
         HTMLFunctions.addElementToContainer(oCreateSection, oTableContainer);
 
