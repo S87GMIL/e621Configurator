@@ -338,24 +338,30 @@ class HTMLFunctions {
         }
     }
 
-    static createDialog(sId, sTitle, bHasFooter) {
+    static createDialog(sNamespace, sTitle, bHasFooter, bHasCloseButton) {
+        if (!sNamespace) sNamespace = sTitle.toLowerCase().replace(/ /g, "");
+
         if (bHasFooter === undefined) bHasFooter = true;
         var sStyles = `position: absolute; height: auto; width: auto`;
-        var sClasses = `ui-dialog ui-corner-all ui-widget ui-widget-content ui-front ui-draggable ui-resizable`;
+        var sClasses = `ui-dialog ui-corner-all ui-widget ui-widget-content ui-front ui-front`;
 
-        if (!sId) sId = sTitle.toLowerCase().replace(/ /g, "");
+        var sCloseButton = bHasCloseButton ?
+            `<button id="${sNamespace}-closeButton" type="button" class="ui-button ui-corner-all ui-widget ui-button-icon-only ui-dialog-titlebar-close" title="Close">
+             <span class="ui-button-icon ui-icon ui-icon-closethick"></span>
+             <span class="ui-button-icon-space"></span>Close</button>` : "";
 
-        var oDialog = this.getElement(`${sId}-dialog`);
+        var oDialog = this.getElement(`${sNamespace}-dialog`);
         if (oDialog) oDialog.parentNode.removeChild(oDialog);
 
-        var oDialogContent = this.createElementFromHTML(`<div id="${sId}-content" class="ui-dialog-content ui-widget-content"></div>`);
+        var oDialogContent = this.createElementFromHTML(`<div id="${sNamespace}-content" class="ui-dialog-content ui-widget-content"></div>`);
 
         oDialog = this.createElementFromHTML(`
-        <div id="${sId}" tabindex="-1" role="dialog" class="${sClasses}" style="${sStyles}">
-            <div class="ui-dialog-titlebar ui-corner-all ui-widget-header ui-helper-clearfix ui-draggable-handle">
+        <div id="${sNamespace}-dialog" tabindex="-1" role="dialog" class="${sClasses}" style="${sStyles}" role="dialog">
+            <div class="ui-dialog-titlebar ui-corner-all ui-widget-header ui-helper-clearfix">
                 <span class="ui-dialog-title">
                     ${sTitle}
                 </span>
+                ${sCloseButton}
             </div>
         </div>`);
 
@@ -372,7 +378,6 @@ class HTMLFunctions {
         this.recenterElement(oDialog);
 
         return {
-            id: sId,
             dialog: oDialog,
             content: oDialogContent,
             footer: oFooter

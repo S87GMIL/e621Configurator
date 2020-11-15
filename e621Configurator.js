@@ -18,12 +18,12 @@ class E621Configurator {
         HTMLFunctions.addElementToContainer(oTextSection, oDialog.content)
 
         var oCancelButton = HTMLFunctions.createButton(undefined, "Cancel", function () {
-            HTMLFunctions.hideElement("confirmationDialog");
+            HTMLFunctions.hideElement(oDialog.dialog);
             if (fCancelHandler) fCancelHandler();
         });
 
         var oConfirmButton = HTMLFunctions.createButton("profileCreation-creationButton", "Confirm", function () {
-            HTMLFunctions.hideElement("confirmationDialog");
+            HTMLFunctions.hideElement(oDialog.dialog);
             if (fConfirmHandler) fConfirmHandler()
         });
 
@@ -1965,28 +1965,7 @@ class E621Configurator {
     }
 
     createConfigurationForm() {
-        var sStyles = `position: absolute; height: auto; width: auto`;
-        var sClasses = `ui-dialog ui-corner-all ui-widget ui-widget-content ui-front ui-draggable ui-resizable`;
-
-        var sCloseButton = `
-                <button id="viewConfig-closeButton" type="button" class="ui-button ui-corner-all ui-widget ui-button-icon-only ui-dialog-titlebar-close" title="Close">
-                <span class="ui-button-icon ui-icon ui-icon-closethick"></span>
-                <span class="ui-button-icon-space"></span>Close</button>`;
-
-        var oConfigurationDialog = `
-            <div id="viewConfig-dialog" tabindex="-1" role="dialog" class="${sClasses}" style="${sStyles}">
-                <div class="ui-dialog-titlebar ui-corner-all ui-widget-header ui-helper-clearfix ui-draggable-handle">
-                    <span class="ui-dialog-title">
-                        Profile Configuration
-                    </span>
-                    ${sCloseButton}
-                </div>
-                    <div id="viewConfig-content" class="ui-dialog-content ui-widget-content">
-                    </div>
-                </div>
-            </div>`
-
-        var oConfigDialog = HTMLFunctions.createElementFromHTML(oConfigurationDialog);
+        var oConfigDialog = HTMLFunctions.createDialog("viewConfig", "Profile Configuration", false, true).dialog;
         HTMLFunctions.addElementToContainer(oConfigDialog, document.body);
 
         HTMLFunctions.getElement("viewConfig-closeButton").addEventListener("click", this.closeProfileConfiguration);
