@@ -1,6 +1,4 @@
 class Profile {
-    postViewId = "posts";
-    setViewId = "sets";
     rootViewId = "root";
 
     constructor(sId, sName, sDescription, bIsActive, oViewConfigrations, bDeletable, bEditable) {

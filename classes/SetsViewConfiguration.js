@@ -1,7 +1,13 @@
+const setViewId = "sets";
+
 class SetsViewConfiguration extends ViewConfiguration {
     constructor(sId, sPath, bIncludeSubPaths, sSearchParameters) {
         super(sId, sPath, bIncludeSubPaths, sSearchParameters, setViewId);
         this.customSetTables = {};
+    }
+
+    static get setViewId() {
+        return setViewId;
     }
 
     parseViewConfig(oViewConfig) {

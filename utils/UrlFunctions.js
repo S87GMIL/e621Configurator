@@ -1,17 +1,9 @@
 
-(function () {
-    'use strict';
+class URLFunctions {
 
-    function createRegexFromWildcardString(sSearchString) {
-        if (sSearchString && sSearchString.includes("*")) {
-            var sEscapedString = sSearchString.replace(/[.+?^${}()|[\]\\]/g, '\\$&');
-            return new RegExp('^' + sEscapedString.replace(/\*/g, '.*') + '$');
-        }
-    }
-
-    function doesCurrentUrlMatch(sSearchString, sSearchParameters) {
+    static doesCurrentUrlMatch(sSearchString, sSearchParameters) {
         var bMatches = false;
-        var oPathRegex = createRegexFromWildcardString(sSearchString);
+        var oPathRegex = HTMLFunctions.createRegexFromWildcardString(sSearchString);
 
         if (sSearchString) {
             if (oPathRegex && oPathRegex.test(window.location.pathname)) bMatches = true;
@@ -22,11 +14,11 @@
 
             if (bMatches && sSearchParameters.length > 0) {
                 bMatches = false;
-                var oSearchgParameterRegex = createRegexFromWildcardString(sSearchParameters);
+                var oSearchgParameterRegex = HTMLFunctions.createRegexFromWildcardString(sSearchParameters);
                 if (sSearchParameters === unescape(window.location.search)) bMatches = true;
                 if (oSearchgParameterRegex && oSearchgParameterRegex.test(unescape(window.location.search))) bMatches = true;
             }
         }
         return bMatches;
     }
-});
+}

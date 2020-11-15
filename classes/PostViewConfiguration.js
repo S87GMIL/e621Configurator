@@ -1,9 +1,15 @@
+const postViewId = "posts";
+
 class PostViewConfiguration extends ViewConfiguration {
     constructor(sId, sPath, bIncludeSubPaths, sSearchParameters) {
         super(sId, sPath, bIncludeSubPaths, sSearchParameters, postViewId);
 
         this.customSetGroups = {};
         this.setSelectionDialogElements = new Set();
+    }
+
+    static get postViewId() {
+        return postViewId;
     }
 
     parseViewConfig(oViewConfig) {

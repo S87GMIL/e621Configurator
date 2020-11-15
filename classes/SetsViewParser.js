@@ -5,14 +5,22 @@ class SetsViewParser extends ViewConfigParser {
         this.bTablesAdded = false;
     }
 
+    performUiChanges(oViewConfig) {
+        oViewConfig.executionOrder.forEach(sFunctionName => {
+            var oConfig = oViewConfig[sFunctionName];
+
+            if (oConfig) this[sFunctionName](oConfig);
+        });
+    }
+
     createCustomSetTables(oConfig) {
         if (!this.bTablesAdded) {
             for (var sKey in oConfig) {
                 var oTableConfig = oConfig[sKey];
 
-                var oNewTableSection = this.createTableWithTitle(oTableConfig.id, oTableConfig.title);
-                this.moveSetsToTable("set-index", oNewTableSection.table, oTableConfig.setSelector, oTableConfig.setNames);
-                this.addElementToContainer(oNewTableSection.container, "set-index", oTableConfig.position);
+                var oNewTableSection = HTMLFunctions.createTableWithTitle(oTableConfig.id, oTableConfig.title);
+                HTMLFunctions.moveSetsToTable("set-index", oNewTableSection.table, oTableConfig.setSelector, oTableConfig.setNames);
+                HTMLFunctions.addElementToContainer(oNewTableSection.container, "set-index", oTableConfig.position);
             }
             this.bTablesAdded = true;
         }

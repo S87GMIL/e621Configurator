@@ -1,6 +1,6 @@
-class ProfileStorage {
-    createdProfilesStorageKey = "createdProfiles";
+const createdProfilesStorageKey = "createdProfiles";
 
+class ProfileStorage {
     static deleteStoredProfiles(sKey) {
         GM_deleteValue(sKey);
         console.log("Deleted stored data: " + sKey);

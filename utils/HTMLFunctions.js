@@ -1,5 +1,5 @@
-class HtmlFunctions {
-    getElement(vElement) {
+class HTMLFunctions {
+    static getElement(vElement) {
         if (typeof vElement === "object") {
             return vElement;
         } else {
@@ -11,27 +11,27 @@ class HtmlFunctions {
         }
     }
 
-    getElementsByClass(sClass) {
+    static getElementsByClass(sClass) {
         var sClasses = "." + sClass.split(" ").join(".");
         return this.convertHtmlCollectionToArray($(`${sClasses}`));
     }
 
-    getElementsByTag(sTag) {
+    static getElementsByTag(sTag) {
         return this.convertHtmlCollectionToArray($(`${sTag}`));
     }
 
-    createElementFromHTML(sHtml) {
+    static createElementFromHTML(sHtml) {
         var div = document.createElement('div');
         div.innerHTML = sHtml.trim();
 
         return div.firstChild;
     }
 
-    hideElement(vElement) {
+    static hideElement(vElement) {
         this.addStyleToElement(this.getElement(vElement), "display", "none");
     }
 
-    recenterElement(vElement) {
+    static recenterElement(vElement) {
         var oElement = this.getElement(vElement);
         if (!oElement) return;
 
@@ -50,7 +50,7 @@ class HtmlFunctions {
         });
     }
 
-    setInputErrorState(vInput, bErrorState, sErrorMessage) {
+    static setInputErrorState(vInput, bErrorState, sErrorMessage) {
         var oInput = this.getElement(vInput);
         if (oInput) {
             if (bErrorState) {
@@ -64,21 +64,7 @@ class HtmlFunctions {
         }
     }
 
-    createStyleClass(sClassName, oStyles) {
-        var oStyleClass = document.createElement('style');
-        oStyleClass.type = 'text/css';
-        var sStyles = "";
-
-        for (var sKey in oStyles) {
-            sStyles += sKey + ": " + oStyles[sKey] + ";";
-        }
-
-        sStyles = sStyles.substring(0, sStyles.length - 1);
-        oStyleClass.innerHTML = "." + sClassName + " {" + sStyles + "}";
-        document.getElementsByTagName('head')[0].appendChild(oStyleClass);
-    }
-
-    createTable(sId, aClasses) {
+    static createTable(sId, aClasses) {
         var sClasses;
         var sIdTag = sId ? `id="${sId}"` : "";
         if (aClasses) {
@@ -93,7 +79,7 @@ class HtmlFunctions {
         return this.createElementFromHTML(sTable);
     }
 
-    createTableColumns(vTable, aColumns) {
+    static createTableColumns(vTable, aColumns) {
         var oTable = this.getElement(vTable);
         var aHeaders = oTable.headers ? this.convertHtmlCollectionToArray(oTable.headers) : [];
         if (aHeaders.length === 0) {
@@ -107,7 +93,7 @@ class HtmlFunctions {
         }
     }
 
-    createTableRows(vTable, oTableRows) {
+    static createTableRows(vTable, oTableRows) {
         var oTable = this.getElement(vTable);
 
         for (var sKey in oTableRows) {
@@ -130,7 +116,7 @@ class HtmlFunctions {
         }
     }
 
-    removeTableRow(vTable, oRowInfo) {
+    static removeTableRow(vTable, oRowInfo) {
         var oTable = this.getElement(vTable);
         var aHeaders = this.convertHtmlCollectionToArray(oTable.tHead.rows[0].cells);
         var iColumnIndex;
@@ -173,7 +159,7 @@ class HtmlFunctions {
         }
     }
 
-    createContainerWithTitle(sId, sTitle, sTitleLevel, oStyles, aClasses) {
+    static createContainerWithTitle(sId, sTitle, sTitleLevel, oStyles, aClasses) {
         var sClasses = aClasses ? aClasses.join(" ") : "";
         var sTitleLevel = sTitleLevel || "h2";
         var sTable = `<div id="${sId}" class="${sClasses}"><${sTitleLevel} style="margin-bottom: 5px">${sTitle}</${sTitleLevel}></div>`;
@@ -184,11 +170,11 @@ class HtmlFunctions {
         return oContainer;
     }
 
-    convertHtmlCollectionToArray(oHtmlCollection) {
+    static convertHtmlCollectionToArray(oHtmlCollection) {
         return Array.prototype.slice.call(oHtmlCollection);
     }
 
-    addStyleToElement(vElement, sPropertyKey, sPropertyValue) {
+    static addStyleToElement(vElement, sPropertyKey, sPropertyValue) {
         var oElement = this.getElement(vElement);
         if (oElement) {
             if (!oElement.style) oElement.style = {};
@@ -196,21 +182,21 @@ class HtmlFunctions {
         }
     }
 
-    addStyleClassToElement(oElement, aStyleClasses) {
+    static addStyleClassToElement(oElement, aStyleClasses) {
         if (oElement) oElement.classList.add(aStyleClasses);
     }
 
-    addElementStyles(oElement, oStyleProperties) {
+    static addElementStyles(oElement, oStyleProperties) {
         for (var sProperty in oStyleProperties) {
             this.addStyleToElement(oElement, sProperty, oStyleProperties[sProperty]);
         }
     }
 
-    setLinkHref(oLink, sHref) {
+    static setLinkHref(oLink, sHref) {
         if (oLink && oLink.href) oLink.href = sHref;
     }
 
-    addElementToContainer(oElement, vContainer, iposition) {
+    static addElementToContainer(oElement, vContainer, iposition) {
         var oContainer = this.getElement(vContainer);
         if (oElement && oContainer) if (iposition) {
             oContainer.insertBefore(oElement, oContainer.childNodes[iposition]);
@@ -219,7 +205,7 @@ class HtmlFunctions {
         }
     }
 
-    createButton(sId, sText, fClickHandler, oButtonData) {
+    static createButton(sId, sText, fClickHandler, oButtonData) {
         var sButtonData = "";
 
         for (var sKey in oButtonData) {
@@ -233,7 +219,7 @@ class HtmlFunctions {
         return oButton;
     }
 
-    addButtonToContainer(oContainer, sButtonText, sButtonDestination, aClasses, sBackgroundColor, bOpneNewTab) {
+    static addButtonToContainer(oContainer, sButtonText, sButtonDestination, aClasses, sBackgroundColor, bOpneNewTab) {
         if (oContainer) {
             var sClasses = aClasses ? aClasses.join(" ") : "button";
             sBackgroundColor = sBackgroundColor || "";
@@ -247,11 +233,11 @@ class HtmlFunctions {
         }
     }
 
-    doesGroupExist(sGroupId) {
+    static doesGroupExist(sGroupId) {
         return !!this.getElement(sGroupId);
     }
 
-    createOptionGroup(sGroupId, sGroupTitle) {
+    static createOptionGroup(sGroupId, sGroupTitle) {
         if (!sGroupId) {
             sGroupId = sGroupTitle.replace(/ /g, "");
         }
@@ -262,23 +248,23 @@ class HtmlFunctions {
         }
     }
 
-    addGroupToSelect(vSelect, oGroup, iPosition) {
+    static addGroupToSelect(vSelect, oGroup, iPosition) {
         var oSelect = this.getElement(vSelect);
         this.addElementToContainer(oGroup, oSelect, iPosition);
     }
 
-    hideGroupByName(sGroupName) {
+    static hideGroupByName(sGroupName) {
         $("optgroup").each(function (iIndex, oOptGroup) {
             if (oOptGroup.label === sGroupName) this.hideElement(oOptGroup);
         });
     }
 
-    moveOptionToGroup(oOption, oSourceGroup, oTargetGroup) {
+    static moveOptionToGroup(oOption, oSourceGroup, oTargetGroup) {
         if (oSourceGroup) oSourceGroup.removeChild(oOption)
         oTargetGroup.appendChild(oOption);
     }
 
-    getOptionsByName(vSelect, sSetSelector, aNames) {
+    static getOptionsByName(vSelect, sSetSelector, aNames) {
         var oSelect = this.getElement(vSelect)
 
         if (!oSelect) return [];
@@ -288,7 +274,7 @@ class HtmlFunctions {
         });
     }
 
-    #doesSetMatchSetSelectors(sSetName, sSetSelector, aSetNames) {
+    static #doesSetMatchSetSelectors(sSetName, sSetSelector, aSetNames) {
         var bMacthed = false;
         var aLowerCaseNames = aSetNames.map ? aSetNames.map(sName => { return sName.toLowerCase() }) : [];
         if (aSetNames && aSetNames.length > 0) {
@@ -303,7 +289,7 @@ class HtmlFunctions {
         return bMacthed;
     }
 
-    moveOptionsByName(vSelect, oTargetGroup, sSetSelector, aNames) {
+    static moveOptionsByName(vSelect, oTargetGroup, sSetSelector, aNames) {
         var oSelect = this.getElement(vSelect);
         var oSourceGroup;
         this.getOptionsByName(oSelect, sSetSelector, aNames).forEach(oOption => {
@@ -312,21 +298,21 @@ class HtmlFunctions {
         });
     }
 
-    createRegexFromWildcardString(sSearchString) {
+    static createRegexFromWildcardString(sSearchString) {
         if (sSearchString && sSearchString.includes("*")) {
-            if (sSearchString.startsWith("?")) sSearchString = sSearchString.substring(1);
-            return new RegExp('^' + sSearchString.replace(/\*/g, '.*') + '$');
+            var sEscapedString = sSearchString.replace(/[.+?^${}()|[\]\\]/g, '\\$&');
+            return new RegExp('^' + sEscapedString.replace(/\*/g, '.*') + '$');
         }
     }
 
-    createTableWithTitle(sId, sTitle, aClasses) {
+    static createTableWithTitle(sId, sTitle, aClasses) {
         var oTable = this.createTable(sId, aClasses);
         var oTableContainer = this.createElementFromHTML(`<div><h2 style="padding-top: 20px">${sTitle}</h2></div>`);
         this.addElementToContainer(oTable, oTableContainer);
         return { table: oTable, container: oTableContainer };
     }
 
-    moveSetsToTable(vSourceTable, vTarget, sSetSelector, aSetNames) {
+    static moveSetsToTable(vSourceTable, vTarget, sSetSelector, aSetNames) {
         var oSourceTable = this.getElement(vSourceTable);
         var oTarget = this.getElement(vTarget);
         if (oSourceTable) {
@@ -352,7 +338,7 @@ class HtmlFunctions {
         }
     }
 
-    createDialog(sId, sTitle, bHasFooter) {
+    static createDialog(sId, sTitle, bHasFooter) {
         if (bHasFooter === undefined) bHasFooter = true;
         var sStyles = `position: absolute; height: auto; width: auto`;
         var sClasses = `ui-dialog ui-corner-all ui-widget ui-widget-content ui-front ui-draggable ui-resizable`;
@@ -393,14 +379,14 @@ class HtmlFunctions {
         };
     }
 
-    generateUUID() {
+    static generateUUID() {
         return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
             var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
             return v.toString(16);
         });
     }
 
-    getElementTreeXPath = function (element) {
+    static getElementTreeXPath = function (element) {
         var paths = [];
         for (; element && element.nodeType == Node.ELEMENT_NODE;
             element = element.parentNode) {
@@ -432,97 +418,14 @@ class HtmlFunctions {
         return paths.length ? "/" + paths.join("/") : null;
     };
 
-    getElementXPath = function (element) {
+    static getElementXPath = function (element) {
         if (element && element.id)
             return '//*[@id="' + element.id + '"]';
         else
             return this.getElementTreeXPath(element);
     };
 
-    getElementByXpath(path) {
+    static getElementByXpath(path) {
         return document.evaluate(path, document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;
-    }
-
-    deactivateElementSelectionMode() {
-        this.elementSelectioNModeActive = false;
-        this.oBodyClone.parentNode.replaceChild(this.oOriginalBody, this.oBodyClone);
-        this.addElementStyles("viewConfig-dialog", { "display": "block" });
-    }
-
-    activateElementSelectionMode(fElementSelectedCallback, oInput, bReturnElementClass) {
-        if (!this.oOriginalBody) this.oOriginalBody = document.getElementsByTagName("body")[0];
-
-        this.oBodyClone = this.oOriginalBody.cloneNode(true);
-        this.oOriginalBody.parentNode.replaceChild(this.oBodyClone, this.oOriginalBody); //Replace body with a clone to disconnect all event listeners
-
-        this.hideElement("viewConfig-dialog");
-
-        $("a").each(function (iIndex, oAnchor) {
-            oAnchor.onclick = function () { return false; };
-        });
-
-        this.elementSelectioNModeActive = true;
-        var oDocument = $(document);
-
-        oDocument.mouseover(function (oEvent) {
-            if (!this.elementSelectioNModeActive) return;
-            oEvent.target.style.border = "dotted 1px #ff0000e0";
-
-            oEvent.target.addEventListener("mouseout", function (oEvent) {
-                oEvent.target.style.border = "";
-            });
-        }.bind(this));
-
-        var fClickEventListener = function (oEvent) {
-            if (!this.elementSelectioNModeActive) return;
-
-            if (oEvent.target && oEvent.target.id !== "viewConfigButton" && !oEvent.target.dataset.is_element_select_button) {
-                if (oEvent.target && fElementSelectedCallback) {
-                    var sElementIdentifier;
-                    if (bReturnElementClass) {
-                        sElementIdentifier = oEvent.target.className;
-                    } else {
-                        if (oEvent.target.id) {
-                            sElementIdentifier = oEvent.target.id;
-                        } else {
-                            sElementIdentifier = this.getElementXPath(oEvent.target);
-                        }
-                    }
-
-                    document.removeEventListener("click", fClickEventListener);
-                    fElementSelectedCallback(sElementIdentifier, oInput);
-                }
-            }
-        }.bind(this);
-
-        document.addEventListener("click", fClickEventListener);
-    }
-
-    crateHtmlElementSelectionInput(sPlaceholder, sLabelText, bRequired, bReturnElementClass) {
-        if (!sLabelText) sLabelText = "Element ID / XPath:";
-
-        var sRequiredLabel = bRequired ? `<label style="color: red">*</label>` : "";
-        var oLabel = this.createElementFromHTML(`<div style="display: block">${sLabelText}${sRequiredLabel}</div>`)
-        var oInput = this.createElementFromHTML(`<Input placeholder="${sPlaceholder}" type="text" style="width: 200px">`);
-        var fSelectElementCallback = function (sElementSelector, oParentInput) {
-            this.deactivateElementSelectionMode();
-            oParentInput.value = sElementSelector;
-        }.bind(this);
-
-        var oSelectButton = this.createButton(undefined, "Select", function () {
-            this.activateElementSelectionMode(fSelectElementCallback, oInput, bReturnElementClass);
-        }.bind(this), { is_element_select_button: true });
-
-        var oInputContainer = this.createElementFromHTML(`<div></div>`);
-
-        this.addElementToContainer(oLabel, oInputContainer);
-        this.addElementToContainer(oInput, oInputContainer);
-        this.addElementToContainer(oSelectButton, oInputContainer);
-
-        return {
-            input: oInput,
-            selectButton: oSelectButton,
-            container: oInputContainer
-        }
     }
 }

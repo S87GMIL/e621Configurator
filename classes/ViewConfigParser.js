@@ -1,6 +1,5 @@
-class ViewConfigParser extends HtmlFunctions {
+class ViewConfigParser {
     constructor(sPath, sSearchParameters) {
-        super();
         this.path = sPath;
         this.searchParameters = sSearchParameters;
     }
@@ -10,19 +9,19 @@ class ViewConfigParser extends HtmlFunctions {
             var oConfig = oViewConfig[sFunctionName];
 
             if (oConfig) this[sFunctionName](oConfig);
-        })
+        });
     }
 
     hideElements(aElementIds) {
         aElementIds.forEach(sElementId => {
-            this.hideElement(sElementId);
+            HTMLFunctions.hideElement(sElementId);
         });
     }
 
     changeLinkDestination(oNewLinkConfigs) {
         for (var sLinkId in oNewLinkConfigs) {
             var oLinkConfig = oNewLinkConfigs[sLinkId];
-            this.setLinkHref(this.getElement(oLinkConfig.id), oLinkConfig.destination);
+            HTMLFunctions.setLinkHref(HTMLFunctions.getElement(oLinkConfig.id), oLinkConfig.destination);
         }
     }
 
@@ -30,8 +29,8 @@ class ViewConfigParser extends HtmlFunctions {
         for (var sButtonId in oButtonConfigs) {
             var oButtonConfig = oButtonConfigs[sButtonId];
 
-            this.addButtonToContainer(
-                this.getElement(oButtonConfig.targetContainer),
+            HTMLFunctions.addButtonToContainer(
+                HTMLFunctions.getElement(oButtonConfig.targetContainer),
                 oButtonConfig.text,
                 oButtonConfig.destination,
                 oButtonConfig.classes,
@@ -49,11 +48,11 @@ class ViewConfigParser extends HtmlFunctions {
             var sTarget = oLinkConfig.openInNewTab ? "_blank" : "_self";
             var sBackground = oLinkConfig.backgroundColor ? "background: " + oLinkConfig.backgroundColor : "";
 
-            var oTargetContainer = this.getElement(oLinkConfig.targetContainer);
+            var oTargetContainer = HTMLFunctions.getElement(oLinkConfig.targetContainer);
 
             if (oTargetContainer) {
                 var sLink = `<a id="${oLinkConfig.id}" class="${sType}" style="${sBackground}" href="${oLinkConfig.destination}" target="${sTarget}">${oLinkConfig.text}</a>`;
-                this.addElementToContainer(this.createElementFromHTML(sLink), oTargetContainer);
+                HTMLFunctions.addElementToContainer(HTMLFunctions.createElementFromHTML(sLink), oTargetContainer);
             }
         }
     }
@@ -62,9 +61,9 @@ class ViewConfigParser extends HtmlFunctions {
         for (var sElementId in oMoveConfigs) {
             var oMoveConfig = oMoveConfigs[sElementId];
 
-            this.addElementToContainer(
-                this.getElement(oMoveConfig.id),
-                this.getElement(oMoveConfig.targetContainer),
+            HTMLFunctions.addElementToContainer(
+                HTMLFunctions.getElement(oMoveConfig.id),
+                HTMLFunctions.getElement(oMoveConfig.targetContainer),
                 oMoveConfig.position
             );
         }
@@ -75,15 +74,15 @@ class ViewConfigParser extends HtmlFunctions {
             var oStyleConfig = oModifyStyleConfigs[sElementId];
 
             if (oStyleConfig.class) {
-                this.getElementsByClass(oStyleConfig.class).forEach(oElement => {
-                    this.addElementStyles(
+                HTMLFunctions.getElementsByClass(oStyleConfig.class).forEach(oElement => {
+                    HTMLFunctions.addElementStyles(
                         oElement,
                         oStyleConfig.styles
                     );
                 });
             } else {
-                this.addElementStyles(
-                    this.getElement(oStyleConfig.id),
+                HTMLFunctions.addElementStyles(
+                    HTMLFunctions.getElement(oStyleConfig.id),
                     oStyleConfig.styles
                 );
             }
@@ -93,8 +92,8 @@ class ViewConfigParser extends HtmlFunctions {
     modifyTagStyles(oModifyStyleConfigs) {
         for (var sTag in oModifyStyleConfigs) {
             var oStyleConfig = oModifyStyleConfigs[sTag];
-            this.getElementsByTag(oStyleConfig.tag).forEach(oElement => {
-                this.addElementStyles(
+            HTMLFunctions.getElementsByTag(oStyleConfig.tag).forEach(oElement => {
+                HTMLFunctions.addElementStyles(
                     oElement,
                     oStyleConfig.styles
                 );
@@ -107,15 +106,15 @@ class ViewConfigParser extends HtmlFunctions {
             var oClassConfig = oModifyElementClassConfigs[sElementId];
 
             if (oClassConfig.class) {
-                this.getElementsByClass(oClassConfig.class).forEach(oElement => {
-                    this.addElementStyles(
+                HTMLFunctions.getElementsByClass(oClassConfig.class).forEach(oElement => {
+                    HTMLFunctions.addElementStyles(
                         oElement,
                         oClassConfig.styles
                     );
                 });
             } else {
-                this.addStyleClassToElement(
-                    this.getElement(oClassConfig.id),
+                HTMLFunctions.addStyleClassToElement(
+                    HTMLFunctions.getElement(oClassConfig.id),
                     oClassConfig.classes
                 );
             }
