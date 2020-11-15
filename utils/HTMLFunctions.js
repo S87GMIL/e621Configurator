@@ -92,12 +92,13 @@ class HTMLFunctions {
         }
     }
 
-    static createTableRows(vTable, oTableRows) {
+    static createTableRows(vTable, oTableRows, bCreateHeaders) {
         var oTable = this.getElement(vTable);
+        var aColumnNames = new Set();
 
         for (var sKey in oTableRows) {
             var oRowConfig = oTableRows[sKey];
-
+            aColumnNames.add(oRowConfig.columnTitle);
             var oNewRow = oTable.tBodies[0].insertRow();
 
             for (var sColumn in oRowConfig) {
@@ -113,6 +114,8 @@ class HTMLFunctions {
                 if (oCellConfig.styles) this.addElementStyles(oCell, oCellConfig.styles);
             }
         }
+
+        if (bCreateHeaders) this.createTableColumns(oTable, Array.from(aColumnNames));
     }
 
     static removeTableRow(vTable, oRowInfo) {
@@ -431,5 +434,47 @@ class HTMLFunctions {
 
     static getElementByXpath(path) {
         return document.evaluate(path, document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;
+    }
+
+    static createElementConfigurationSection(oElementConfigurations, sSectionName, oInputFields, oTableRows) {
+        var iElementCount = Array.isArray(oElementConfigurations) ? oElementConfigurations.length : Object.keys(oElementConfigurations).length;
+        var sSectionTitle = `${sSectionName}(${iElementCount})`;
+
+        var oShowSectionContainer = HTMLFunctions.createElementFromHTML(`<div class="notice notice-parent"><label>${sSectionTitle}</label></div>`);
+        var oShowButton = HTMLFunctions.createElementFromHTML(`<a style="margin-left: 5px; cursor: pointer" >show »</a>`);
+        HTMLFunctions.addElementToContainer(oShowButton, oShowSectionContainer);
+
+        var oHideSectionContainer = HTMLFunctions.createElementFromHTML(`<div class="notice notice-parent" style="display: none"><label>${sSectionTitle}</label></div>`);
+        var oHideButton = HTMLFunctions.createElementFromHTML(`<a style="margin-left: 5px; cursor: pointer">« hide</a>`);
+        HTMLFunctions.addElementToContainer(oHideButton, oHideSectionContainer);
+
+        oShowButton.addEventListener("click", function () {
+            HTMLFunctions.addStyleToElement(oHideSectionContainer, "display", "block");
+            this.hideElement(oShowSectionContainer);
+        });
+
+        oHideButton.addEventListener("click", function () {
+            HTMLFunctions.addStyleToElement(oShowSectionContainer, "display", "block");
+            this.hideElement(oHideSectionContainer);
+        });
+
+        var oInputSection = HTMLFunctions.createElementFromHTML(`<div style="margin-top: 10px; margin-left: 10px; margin-bottom: 10px"><div>`);
+        HTMLFunctions.addElementToContainer(oInputSection, oHideSectionContainer);
+        HTMLFunctions.addElementToContainer(oInputFields, oInputSection);
+
+        var oConfiguredElementsTable = HTMLFunctions.createTable();
+        HTMLFunctions.createTableRows(oConfiguredElementsTable, oTableRows, true);
+
+        HTMLFunctions.addElementToContainer(oConfiguredElementsTable, oInputSection);
+        HTMLFunctions.addElementToContainer(oConfiguredElementsTable, oHideSectionContainer);
+
+        HTMLFunctions.addElementToContainer(oShowSectionContainer, oInputSection);
+        HTMLFunctions.addElementToContainer(oHideSectionContainer, oInputSection);
+
+        var oSection = HTMLFunctions.createElementFromHTML(`<div class="box-section" style="margin-top: 20px; margin-bottom: 10px"></div>`);
+        HTMLFunctions.addElementToContainer(oInputSection, oSection);
+        HTMLFunctions.addElementToContainer(oConfiguredElementsTable, oSection);
+
+        return oSection;
     }
 }
