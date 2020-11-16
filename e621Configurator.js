@@ -661,8 +661,13 @@ class E621Configurator {
             var iPosition = Number(oPositionInput.value);
 
             if (sElementId && sTargetId) {
+                if (sElementId === sTargetId) {
+                    HTMLFunctions.setInputErrorState(oTargetElementSection.input, true, "The target can't be equal to the moved element");
+                    return;
+                }
                 iMovedElementCount += 1;
                 var oMovedElement = oViewConfiguration.moveElement(sElementId, sTargetId, iPosition, bUpdate);
+
                 if (bUpdate) {
                     iMovedElementCount -= 1;
                     HTMLFunctions.removeTableRow(oModifiedElementSection.table, { column: "Element ID", value: sElementId });
