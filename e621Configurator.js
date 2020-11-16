@@ -286,36 +286,27 @@ class E621Configurator {
     }
 
     createModifiedElementSection(oViewConfiguration) {
-        var oModifiedElementSelection = HTMLFunctions.createElementFromHTML(`<div class="box-section" style="margin-bottom: 10px"></div>`);
 
+        var sSectionName = "Modified Elements";
         var oModifiedElements = {
             ...oViewConfiguration.getStyleModifiedElements(), ...oViewConfiguration.getClassModifiedElements()
         };
         var iModifiedElementCount = Object.keys(oModifiedElements).length;
 
-        var sModifiedElementsTitle = `Modified Elements(${iModifiedElementCount})`;
-        var oShowModifiedElementsContainer = HTMLFunctions.createElementFromHTML(`<div class="notice notice-parent"><label id="showModifiedElementsTitle">${sModifiedElementsTitle}</label></div>`);
-        var oShowButton = HTMLFunctions.createElementFromHTML(`<a id="modifyElements-showButton" style="margin-left: 5px; cursor: pointer" >show »</a>`);
-        HTMLFunctions.addElementToContainer(oShowButton, oShowModifiedElementsContainer);
-
-        var oHideModifiedElementsContainer = HTMLFunctions.createElementFromHTML(`<div class="notice notice-parent" style="display: none"><label id="hideModifiedElementsTitle">${sModifiedElementsTitle}</label></div>`);
-        var oHideButton = HTMLFunctions.createElementFromHTML(`<a id="modifyElements-hideButton" style="margin-left: 5px; cursor: pointer">« hide</a>`);
-        HTMLFunctions.addElementToContainer(oHideButton, oHideModifiedElementsContainer);
+        var oModifiedElementSection = new ConfigurationSection(sSectionName, iModifiedElementCount, ["Element ID", "Element Class", "Operation", "Values", "", ""]);
 
         var oModifyElementInputSection = HTMLFunctions.createElementFromHTML(`
-            <div style="margin-top: 15px; margin-left: 10px">
-                <div>Select by class</div> 
-    
+            <div>
+                Select by class
+                <br>
                 <br>
                 <div style="display: block">Operation:</div>
                 <br>
                 <br>
-    
                 <div id="modifyElements-styleSection">
                     <div id="modifyElements-stylesLabel" style="display: block">Styles:</div>
                     <input id="modifyElements-stylesInput" type="text" style="width: 600px; margin-top: 5px" placeholder='e.g. "font-size":"20px", "color":"red", ...'>
                 </div>
-    
                 <div id="modifyElements-classSection" style="display: none">
                     <div id="modifyElements-classesLabel" style="display: block">Classes:</div>
                     <input id="modifyElements-classesInput" type="text" style="width: 400px; margin-top: 5px" placeholder="e.g. search-tag, wiki-link, ...">
@@ -323,8 +314,8 @@ class E621Configurator {
             <div>`
         );
 
-        var oClassSelectorCheckbox = HTMLFunctions.createElementFromHTML('<input id="modifyElements-classSlectorCheckbox" type="checkbox">');
-        HTMLFunctions.addElementToContainer(oClassSelectorCheckbox, oModifyElementInputSection, 2);
+        var oClassSelectorCheckbox = HTMLFunctions.createElementFromHTML('<input id="modifyElements-classSlectorCheckbox" type="checkbox" style="margin-left: 10px">');
+        HTMLFunctions.addElementToContainer(oClassSelectorCheckbox, oModifyElementInputSection, 1);
 
         var oIdSelectorSection = this.ElementSelection.crateHtmlElementSelectionInput("e.g. add-to-set-id", undefined, true);
         HTMLFunctions.addElementToContainer(oIdSelectorSection.container, oModifyElementInputSection, 3);
@@ -339,7 +330,7 @@ class E621Configurator {
                     <option value="${oViewConfiguration.MODIFY_CLASS_OPERATION}">Add Class</option>
                 </select><br><br>`
         );
-        HTMLFunctions.addElementToContainer(oOperationSelection, oModifyElementInputSection, 10);
+        HTMLFunctions.addElementToContainer(oOperationSelection, oModifyElementInputSection, 9);
 
         var fSelectorInputHandler = function (oEvent) {
             var oSrcElement = oEvent.srcElement;
@@ -354,8 +345,7 @@ class E621Configurator {
         oIdSelectorSection.input.addEventListener("input", fSelectorInputHandler);
         oClassInput.input.addEventListener("input", fSelectorInputHandler);
 
-        HTMLFunctions.addElementToContainer(HTMLFunctions.createElementFromHTML("<br>"), oModifyElementInputSection, 3);
-        HTMLFunctions.addElementToContainer(HTMLFunctions.createElementFromHTML("<br>"), oModifyElementInputSection, 3);
+        HTMLFunctions.addElementToContainer(HTMLFunctions.createElementFromHTML("<br>"), oModifyElementInputSection, 2);
 
         var fClassSelectorCheckedHandler = function () {
             if (oClassSelectorCheckbox.checked) {
@@ -381,21 +371,24 @@ class E621Configurator {
 
         oOperationSelection.addEventListener("change", fOperationChangedHandler);
 
-        HTMLFunctions.addElementToContainer(oModifyElementInputSection, oHideModifiedElementsContainer);
-
-        var oModifiedElementsTable = HTMLFunctions.createTable("modifiedElementsTable", ["table", "striped"]);
-        HTMLFunctions.createTableColumns(oModifiedElementsTable, ["Element ID", "Element Class", "Operation", "Values", "", ""]);
-
         var fClearInputFields = function () {
+            var oStylesInput = HTMLFunctions.getElement("modifyElements-stylesInput");
+            var oClassesInput = HTMLFunctions.getElement("modifyElements-classesInput");
+
             oIdSelectorSection.input.value = "";
             oClassInput.input.value = "";
-            HTMLFunctions.getElement("modifyElements-stylesInput").value = "";
-            HTMLFunctions.getElement("modifyElements-classesInput").value = "";
+            oStylesInput.value = "";
+            oClassesInput.value = "";
+
+            HTMLFunctions.setInputErrorState(oIdSelectorSection.input, false);
+            HTMLFunctions.setInputErrorState(oClassInput.input, false);
+            HTMLFunctions.setInputErrorState(oStylesInput, false);
+            HTMLFunctions.setInputErrorState(oClassesInput, false);
 
             oIdSelectorSection.input.disabled = false;
             oClassInput.input.disabled = false;
             oOperationSelection.disabled = false;
-            HTMLFunctions.getElement("modifyElements-classSlectorCheckbox").disabled = false;
+            oClassSelectorCheckbox.disabled = false;
         }
 
         var fEditElementModification = function (sElementId, sOperation) {
@@ -411,7 +404,6 @@ class E621Configurator {
                 }
             }
 
-            var oClassSelectorCheckbox = HTMLFunctions.getElement("modifyElements-classSlectorCheckbox");
             oClassSelectorCheckbox.checked = oElement.class || false;
             oClassSelectorCheckbox.disabled = true;
             fClassSelectorCheckedHandler();
@@ -434,7 +426,7 @@ class E621Configurator {
             oModifyButton.dataset.update = true;
         };
 
-        var fCreateModifyTableEntry = function (oTable, oModifiedElement) {
+        var fCreateModifyTableEntry = function (oModifiedElement) {
             var sContent = "";
             if (oModifiedElement.operation === oViewConfiguration.MODIFY_STYLE_OPERATION && oModifiedElement.styles) {
                 sContent = JSON.stringify(oModifiedElement.styles).replace(/[{}]/g, "");
@@ -442,7 +434,7 @@ class E621Configurator {
                 sContent = oModifiedElement.classes.join(", ");
             }
 
-            HTMLFunctions.createTableRows(oTable, {
+            oModifiedElementSection.addTableRows({
                 sId: {
                     elementId: { index: 0, content: oModifiedElement.id || "" },
                     elementClass: { index: 1, content: oModifiedElement.class || "" },
@@ -461,7 +453,7 @@ class E621Configurator {
                                 oViewConfiguration.removeElementClassModification(sElementId, sElementClass);
                             }
 
-                            HTMLFunctions.removeTableRow(oTable, { columns: [{ column: bUseClassSelector ? "Element Class" : "Element ID", value: bUseClassSelector ? sElementClass : sElementId }] });
+                            HTMLFunctions.removeTableRow(oModifiedElementSection.table, { columns: [{ column: bUseClassSelector ? "Element Class" : "Element ID", value: bUseClassSelector ? sElementClass : sElementId }] });
 
                             var iModifiedElements = Object.keys(oViewConfiguration.getStyleModifiedElements()).length + Object.keys(oViewConfiguration.getClassModifiedElements()).length;
                             var sHiddenElementsTitle = `Modified Elements(${iModifiedElements})`;
@@ -482,13 +474,10 @@ class E621Configurator {
         var fModifyElement = function () {
             var oModifyButton = HTMLFunctions.getElement("modifyElements-modifyButton");
             var bUpdate = oModifyButton.dataset.update === "true";
-            var bUseClassSelector = HTMLFunctions.getElement("modifyElements-classSlectorCheckbox").checked;
+            var bUseClassSelector = oClassSelectorCheckbox.checked;
 
             var sIdSelector = oIdSelectorSection.input.value;
             var sClassSelector = oClassInput.input.value;
-
-            var oOperationSelection = HTMLFunctions.getElement("modifyElements-operationSelection");
-
             var sOperation = oOperationSelection.value;
 
             var sRawStyles = HTMLFunctions.getElement("modifyElements-stylesInput").value;
@@ -510,35 +499,46 @@ class E621Configurator {
                 }
             }
 
-            var oModifyEntry;
+            var oModification;
+            var sModifyFunction;
             if (sOperation === oViewConfiguration.MODIFY_STYLE_OPERATION) {
+                sModifyFunction = "modifyElementStyle";
                 try {
                     if (!sRawStyles) {
                         HTMLFunctions.setInputErrorState("modifyElements-stylesInput", true, "No styles defined");
                         return;
                     }
-
-                    oModifyEntry = oViewConfiguration.modifyElementStyle(sIdSelector, sClassSelector, JSON.parse(`{ ${sRawStyles} }`), bUpdate);
-                    if (bUpdate) HTMLFunctions.removeTableRow(oModifiedElementsTable, { columns: [{ column: oModifyEntry.class ? "Element Class" : "Element ID", value: oModifyEntry.class ? oModifyEntry.class : oModifyEntry.id }, { column: "Operation", value: sOperation }] });
-                    oModifyButton.innerText = "Modify Element";
-                    oModifyButton.dataset.update = false;
-
+                    oModification = JSON.parse(`{ ${sRawStyles} }`);
                 } catch (oError) {
                     HTMLFunctions.setInputErrorState("modifyElements-stylesInput", true, "Invalid style entry");
                     return;
                 }
             } else {
+                sModifyFunction = "modifyElementClass";
                 if (!sRawClassInput) {
                     HTMLFunctions.setInputErrorState("modifyElements-classesInput", true, "No classes defined");
                     return;
                 }
-
-                oModifyEntry = oViewConfiguration.modifyElementClass(sIdSelector, sClassSelector, sRawClassInput.replace(/ /g, "").split(","), bUpdate);
-                if (bUpdate) HTMLFunctions.removeTableRow(oTable, { column: oModifyEntry.class ? "Element Class" : "Element ID", value: oModifyEntry.class ? oModifyEntry.class : oModifyEntry.id });
-                oModifyButton.innerText = "Modify Element";
-                oModifyButton.dataset.update = false;
-
+                oModification = sRawClassInput.replace(/ /g, "").split(",");
             }
+
+            var oModifyEntry = oViewConfiguration[sModifyFunction](sIdSelector, sClassSelector, oModification, bUpdate);
+
+            if (bUpdate) HTMLFunctions.removeTableRow(
+                oModifiedElementSection.table,
+                {
+                    columns: [
+                        {
+                            column: oModifyEntry.class ? "Element Class" : "Element ID",
+                            value: oModifyEntry.class ? oModifyEntry.class : oModifyEntry.id
+                        },
+                        {
+                            column: "Operation", value: sOperation
+                        }
+                    ]
+                });
+            oModifyButton.innerText = "Modify Element";
+            oModifyButton.dataset.update = false;
 
             if (!oModifyEntry) {
                 var sMessage = "Element has already been modified";
@@ -547,49 +547,29 @@ class E621Configurator {
                 return;
             }
 
-            var iModifiedElements = Object.keys(oViewConfiguration.getStyleModifiedElements()).length + Object.keys(oViewConfiguration.getClassModifiedElements()).length;
-            var sHiddenElementsTitle = `Modified Elements(${iModifiedElements})`;
-            HTMLFunctions.getElement("showModifiedElementsTitle").innerText = sHiddenElementsTitle;
-            HTMLFunctions.getElement("hideModifiedElementsTitle").innerText = sHiddenElementsTitle;
+            iModifiedElementCount += 1;
+            oModifiedElementSection.setTitle(`Modified Elements(${iModifiedElementCount})`);
 
-            fCreateModifyTableEntry(oModifiedElementsTable, oModifyEntry);
+            fCreateModifyTableEntry(oModifyEntry);
             fClearInputFields();
         };
 
         var oModifyElementButton = HTMLFunctions.createButton("modifyElements-modifyButton", "Modify Element", fModifyElement);
-        HTMLFunctions.addElementStyles(oModifyElementButton, { padding: "0.25rem 0rem" });
-
-        HTMLFunctions.addElementStyles(oModifyElementButton, { "margin-top": "20px" })
-
-        HTMLFunctions.addElementStyles(oModifyElementInputSection, { "margin-top": "10px", "margin-bottom": "10px" });
+        HTMLFunctions.addElementStyles(oModifyElementButton, { "padding": "0.25rem 0rem", "margin-top": "20px" });
         HTMLFunctions.addElementToContainer(oModifyElementButton, oModifyElementInputSection);
-        HTMLFunctions.addElementToContainer(oModifyElementInputSection, oHideModifiedElementsContainer);
+
+        oModifiedElementSection.addInputs(oModifyElementInputSection);
 
         var oModifiedElementRows = {};
         for (var sKey in oModifiedElements) {
             var oModifiedElement = oModifiedElements[sKey];
 
-            fCreateModifyTableEntry(oModifiedElementsTable, oModifiedElement);
-        }
+            fCreateModifyTableEntry(oModifiedElement);
+        };
 
-        HTMLFunctions.createTableRows(oModifiedElementsTable, oModifiedElementRows);
-        HTMLFunctions.addElementToContainer(oModifiedElementsTable, oModifiedElementSelection);
-        HTMLFunctions.addElementToContainer(oModifiedElementsTable, oHideModifiedElementsContainer);
+        oModifiedElementSection.addTableRows(oModifiedElementRows);
 
-        HTMLFunctions.addElementToContainer(oShowModifiedElementsContainer, oModifiedElementSelection);
-        HTMLFunctions.addElementToContainer(oHideModifiedElementsContainer, oModifiedElementSelection);
-
-        oShowButton.addEventListener("click", function () {
-            HTMLFunctions.addStyleToElement(oHideModifiedElementsContainer, "display", "block");
-            HTMLFunctions.addStyleToElement(oShowModifiedElementsContainer, "display", "none");
-        });
-
-        oHideButton.addEventListener("click", function () {
-            HTMLFunctions.addStyleToElement(oHideModifiedElementsContainer, "display", "none");
-            HTMLFunctions.addStyleToElement(oShowModifiedElementsContainer, "display", "block");
-        });
-
-        return oModifiedElementSelection;
+        return oModifiedElementSection.container;
     }
 
     createMovedElementSection(oViewConfiguration) {
