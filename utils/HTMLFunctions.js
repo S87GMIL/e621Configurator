@@ -5,7 +5,11 @@ class HTMLFunctions {
         } else {
             var oElement = document.getElementById(vElement);
             if (!oElement) {
-                oElement = this.getElementByXpath(vElement);
+                try {
+                    oElement = this.getElementByXpath(vElement);
+                } catch (err) {
+                    oElement = undefined;
+                };
             }
             return oElement;
         }

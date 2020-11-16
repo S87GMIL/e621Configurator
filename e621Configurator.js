@@ -453,12 +453,11 @@ class E621Configurator {
                                 oViewConfiguration.removeElementClassModification(sElementId, sElementClass);
                             }
 
+                            iModifiedElementCount -= 1;
                             HTMLFunctions.removeTableRow(oModifiedElementSection.table, { columns: [{ column: bUseClassSelector ? "Element Class" : "Element ID", value: bUseClassSelector ? sElementClass : sElementId }] });
 
-                            var iModifiedElements = Object.keys(oViewConfiguration.getStyleModifiedElements()).length + Object.keys(oViewConfiguration.getClassModifiedElements()).length;
-                            var sHiddenElementsTitle = `Modified Elements(${iModifiedElements})`;
-                            HTMLFunctions.getElement("showModifiedElementsTitle").innerText = sHiddenElementsTitle;
-                            HTMLFunctions.getElement("hideModifiedElementsTitle").innerText = sHiddenElementsTitle;
+                            var sHiddenElementsTitle = `Modified Elements(${iModifiedElementCount})`;
+                            oModifiedElementSection.setTitle(sHiddenElementsTitle);
                         }, { element_id: oModifiedElement.id || "", element_class: oModifiedElement.class || "", operation: oModifiedElement.operation || "" })
                     },
                     editButton: {
@@ -523,20 +522,25 @@ class E621Configurator {
             }
 
             var oModifyEntry = oViewConfiguration[sModifyFunction](sIdSelector, sClassSelector, oModification, bUpdate);
+            iModifiedElementCount += 1;
 
-            if (bUpdate) HTMLFunctions.removeTableRow(
-                oModifiedElementSection.table,
-                {
-                    columns: [
-                        {
-                            column: oModifyEntry.class ? "Element Class" : "Element ID",
-                            value: oModifyEntry.class ? oModifyEntry.class : oModifyEntry.id
-                        },
-                        {
-                            column: "Operation", value: sOperation
-                        }
-                    ]
-                });
+            if (bUpdate) {
+                iModifiedElementCount -= 1;
+
+                HTMLFunctions.removeTableRow(
+                    oModifiedElementSection.table,
+                    {
+                        columns: [
+                            {
+                                column: oModifyEntry.class ? "Element Class" : "Element ID",
+                                value: oModifyEntry.class ? oModifyEntry.class : oModifyEntry.id
+                            },
+                            {
+                                column: "Operation", value: sOperation
+                            }
+                        ]
+                    });
+            }
             oModifyButton.innerText = "Modify Element";
             oModifyButton.dataset.update = false;
 
@@ -547,7 +551,6 @@ class E621Configurator {
                 return;
             }
 
-            iModifiedElementCount += 1;
             oModifiedElementSection.setTitle(`Modified Elements(${iModifiedElementCount})`);
 
             fCreateModifyTableEntry(oModifyEntry);
@@ -573,29 +576,22 @@ class E621Configurator {
     }
 
     createMovedElementSection(oViewConfiguration) {
-        var oMovedElementsSection = HTMLFunctions.createElementFromHTML(`<div class="box-section" style="margin-bottom: 10px"></div>`);
 
+        var sSectionName = "Moved Elements";
         var oMovedElements = oViewConfiguration.getMovedElements();
         var iMovedElementCount = Object.keys(oMovedElements).length;
 
-        var sMovedElementsTitle = `Moved Elements(${iMovedElementCount})`;
-        var oShowMovedElementsContainer = HTMLFunctions.createElementFromHTML(`<div class="notice notice-parent"><label id="showMovedElementsTitle">${sMovedElementsTitle}</label></div>`);
-        var oShowButton = HTMLFunctions.createElementFromHTML(`<a id="moveElements-showButton" style="margin-left: 5px; cursor: pointer">show »</a>`);
-        HTMLFunctions.addElementToContainer(oShowButton, oShowMovedElementsContainer);
-
-        var oHideMovedElementsContainer = HTMLFunctions.createElementFromHTML(`<div class="notice notice-parent" style="display: none"><label id="hideMovedElementsTitle">${sMovedElementsTitle}</label></div>`);
-        var oHideButton = HTMLFunctions.createElementFromHTML(`<a id="moveElements-hideSectionTitleButton" style="margin-left: 5px; cursor: pointer">« hide</a>`);
-        HTMLFunctions.addElementToContainer(oHideButton, oHideMovedElementsContainer);
-
-        var sLabelStyles = "margin-top: 10px; display: block";
-        var oMoveElementButtonSection = HTMLFunctions.createElementFromHTML(`
-                <div style="margin-top: 10px; margin-left: 10px; margin-bottom: 10px;">
-                    <div style="${sLabelStyles}">Position:</div>
-                    <input id="moveElements-positionInput" type="number" min="0" style="width: 60px; margin-top: 5px; display: block" placeholder="e.g. 0">
-                <div>
-            `);
+        var oModifiedElementSection = new ConfigurationSection(sSectionName, iMovedElementCount, ["Element ID", "Target ID", "Position", "", ""]);
 
         var elementInputSection = this.ElementSelection.crateHtmlElementSelectionInput("e.g. add-to-set", undefined, true);
+
+        var oMoveElementButtonSection = HTMLFunctions.createElementFromHTML(`
+            <div>
+                <div style="margin-top: 10px; display: block">Position:</div>
+                <input id="moveElements-positionInput" type="number" min="0" style="width: 60px; margin-top: 5px; display: block" placeholder="e.g. 0">
+            <div>
+        `);
+
         HTMLFunctions.addElementToContainer(elementInputSection.container, oMoveElementButtonSection, 1);
         HTMLFunctions.addElementStyles(elementInputSection.container, { "margin-top": "10px" });
 
@@ -608,7 +604,7 @@ class E621Configurator {
 
             elementInputSection.input.value = oMovedElement.id;
             elementInputSection.input.disabled = true;
-            oTargetElementSection.input.value = oMovedElement.targetContainer
+            oTargetElementSection.input.value = oMovedElement.targetContainer;
 
             HTMLFunctions.getElement("moveElements-positionInput").value = oMovedElement.position;
 
@@ -626,11 +622,10 @@ class E621Configurator {
                     content: HTMLFunctions.createButton(undefined, "Remove", function (oEvent) {
                         var sId = oEvent.srcElement.dataset.element_id;
                         oViewConfiguration.removeElementMove(sId);
-                        HTMLFunctions.removeTableRow(oMovedElementsTable, { column: "Element ID", value: sId });
+                        HTMLFunctions.removeTableRow(oModifiedElementSection.table, { column: "Element ID", value: sId });
 
-                        var sMovedElementsTitle = `Moved Elements(${Object.keys(oViewConfiguration.getMovedElements()).length})`;
-                        HTMLFunctions.getElement("showMovedElementsTitle").innerText = sMovedElementsTitle;
-                        HTMLFunctions.getElement("hideMovedElementsTitle").innerText = sMovedElementsTitle;
+                        iMovedElementCount -= 1;
+                        oModifiedElementSection.setTitle(`Moved Elements(${iMovedElementCount})`);
                     }, { element_id: sElementId })
                 },
                 editButton: {
@@ -666,8 +661,12 @@ class E621Configurator {
             var iPosition = Number(oPositionInput.value);
 
             if (sElementId && sTargetId) {
+                iMovedElementCount += 1;
                 var oMovedElement = oViewConfiguration.moveElement(sElementId, sTargetId, iPosition, bUpdate);
-                if (bUpdate) HTMLFunctions.removeTableRow(oMovedElementsTable, { column: "Element ID", value: sElementId });
+                if (bUpdate) {
+                    iMovedElementCount -= 1;
+                    HTMLFunctions.removeTableRow(oModifiedElementSection.table, { column: "Element ID", value: sElementId });
+                }
                 oEvent.srcElement.dataset.update = false;
 
                 if (!oMovedElement) {
@@ -675,16 +674,14 @@ class E621Configurator {
                     return;
                 }
 
-                var sMovedElementsTitle = `Moved Elements(${Object.keys(oViewConfiguration.getMovedElements()).length})`;
-                HTMLFunctions.getElement("showMovedElementsTitle").innerText = sMovedElementsTitle;
-                HTMLFunctions.getElement("hideMovedElementsTitle").innerText = sMovedElementsTitle;
+                oModifiedElementSection.setTitle(`Moved Elements(${iMovedElementCount})`);
 
                 oElementIdInput.value = "";
                 oTargetIdInput.value = "";
                 HTMLFunctions.getElement("moveElements-positionInput").value = "";
                 elementInputSection.input.disabled = false;
 
-                HTMLFunctions.createTableRows(oMovedElementsTable, { sElementId: fCreatedMovedElementTableRow(sElementId, sTargetId, iPosition) });
+                HTMLFunctions.createTableRows(oModifiedElementSection.table, { sElementId: fCreatedMovedElementTableRow(sElementId, sTargetId, iPosition) });
 
             } else {
                 if (!sElementId) HTMLFunctions.setInputErrorState(elementInputSection.input, true, "Element ID can't be empty");
@@ -693,41 +690,23 @@ class E621Configurator {
         };
 
         var oMoveElementButton = HTMLFunctions.createButton(undefined, "Move Element", fMoveElement);
-        HTMLFunctions.addElementStyles(oMoveElementButton, { padding: "0.25rem 0rem" });
 
+        HTMLFunctions.addElementStyles(oMoveElementButton, { padding: "0.25rem 0rem" });
         HTMLFunctions.addElementStyles(oMoveElementButton, { "margin-top": "20px" });
         HTMLFunctions.addElementStyles(oMoveElementButtonSection, { "margin-top": "10px", "margin-bottom": "10px" });
         HTMLFunctions.addElementToContainer(oMoveElementButton, oMoveElementButtonSection, 6);
-        HTMLFunctions.addElementToContainer(oMoveElementButtonSection, oHideMovedElementsContainer);
 
-        var oMovedElementsTable = HTMLFunctions.createTable(undefined, ["table", "striped"]);
-        HTMLFunctions.createTableColumns(oMovedElementsTable, ["Element ID", "Target ID", "Position", "", ""]);
+        oModifiedElementSection.addInputs(oMoveElementButtonSection);
 
         var oMovedElementRows = {};
-
         for (var sKey in oMovedElements) {
             var oMovedElement = oMovedElements[sKey];
             oMovedElementRows[sKey] = fCreatedMovedElementTableRow(oMovedElement.id, oMovedElement.targetContainer, oMovedElement.position);
         }
 
-        HTMLFunctions.createTableRows(oMovedElementsTable, oMovedElementRows);
-        HTMLFunctions.addElementToContainer(oMovedElementsTable, oMovedElementsSection);
-        HTMLFunctions.addElementToContainer(oMovedElementsTable, oHideMovedElementsContainer);
+        oModifiedElementSection.addTableRows(oMovedElementRows);
 
-        HTMLFunctions.addElementToContainer(oShowMovedElementsContainer, oMovedElementsSection);
-        HTMLFunctions.addElementToContainer(oHideMovedElementsContainer, oMovedElementsSection);
-
-        oShowButton.addEventListener("click", function () {
-            HTMLFunctions.addStyleToElement(oHideMovedElementsContainer, "display", "block");
-            HTMLFunctions.addStyleToElement(oShowMovedElementsContainer, "display", "none");
-        });
-
-        oHideButton.addEventListener("click", function () {
-            HTMLFunctions.addStyleToElement(oHideMovedElementsContainer, "display", "none");
-            HTMLFunctions.addStyleToElement(oShowMovedElementsContainer, "display", "block");
-        });
-
-        return oMovedElementsSection;
+        return oModifiedElementSection.container;
     }
 
     createBasicViewConfigSection(oViewConfiguration) {
