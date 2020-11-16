@@ -62,6 +62,7 @@ class ElementSelection {
         var oInput = HTMLFunctions.createElementFromHTML(`<Input placeholder="${sPlaceholder}" type="text" style="width: 200px">`);
         var fSelectElementCallback = function (sElementSelector, oParentInput) {
             this.deactivateElementSelectionMode();
+            if (sElementSelector) HTMLFunctions.setInputErrorState(oParentInput, false);
             oParentInput.value = sElementSelector;
         }.bind(this);
 
