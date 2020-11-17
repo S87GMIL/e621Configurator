@@ -26,5 +26,5 @@
 
 (function () {
     'use strict';
-    new E621Configurator(new ElementSelection()).initializeE621Configurator();
+    new E621Configurator().initializeE621Configurator();
 })();

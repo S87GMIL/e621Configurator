@@ -1,6 +1,6 @@
 class E621Configurator {
     constructor(oElementSelection) {
-        this.ElementSelection = oElementSelection;
+        this.ElementSelection = new ElementSelection();
     }
 
     createNewProfile(sId, sName, sDescription, oIsActive, oViewConfigs, bDeletable, bEditable) {
