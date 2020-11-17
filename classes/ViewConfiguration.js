@@ -1,5 +1,7 @@
 class ViewConfiguration {
-    constructor(sId, sPath, bIncludeSubPaths, sSearchParameters, viewId) {
+    constructor(sId, sPath, bIncludeSubPaths, sSearchParameters, viewId, oProfile) {
+        this.parentProfile = oProfile;
+
         this.view = viewId;
         this.id = sId;
         this.path = sPath;
@@ -128,6 +130,7 @@ class ViewConfiguration {
 
 
     removeHiddenElement(sElementId) {
+        this.parentProfile.hasUnsavedChanges = true;
         this.hiddenElements.delete(sElementId);
     }
 
@@ -135,6 +138,9 @@ class ViewConfiguration {
         var oChangedLink = this.changedLinkDestinations[sElementId];
 
         if (!bUpdate && oChangedLink) return false;
+
+        this.parentProfile.hasUnsavedChanges = true;
+
         oChangedLink = {
             id: sElementId,
             destination: sNewDestination
@@ -145,6 +151,7 @@ class ViewConfiguration {
     }
 
     removeChangeLinkDestination(sElementId) {
+        this.parentProfile.hasUnsavedChanges = true;
         delete this.changedLinkDestinations[sElementId];
     }
 
@@ -153,6 +160,7 @@ class ViewConfiguration {
     }
 
     createButton(sContainerId, sButtonId, sText, sDestination, aClasses, sBackgroundColor, bOpneNewTab) {
+        this.parentProfile.hasUnsavedChanges = true;
         this.createdButtons[sButtonId] = {
             id: sButtonId,
             targetContainer: sContainerId,
@@ -165,12 +173,14 @@ class ViewConfiguration {
     }
 
     removeCreatedButton(sButtonId) {
+        this.parentProfile.hasUnsavedChanges = true;
         delete this.createdButtons[sButtonId];
     }
 
     createLink(sContainerId, sLinkId, sText, sDestination, sType, sBackgroundColor, bOpneNewTab, bUpdate) {
         var oCreatedLink = this.createdLinks[sLinkId];
         if (!bUpdate && oCreatedLink) return false;
+        this.parentProfile.hasUnsavedChanges = true;
         if (sBackgroundColor === "#000000") sBackgroundColor = "transparent";
         oCreatedLink = {
             id: sLinkId,
@@ -190,11 +200,13 @@ class ViewConfiguration {
     }
 
     removeCreatedLink(sLinkId) {
+        this.parentProfile.hasUnsavedChanges = true;
         delete this.createdLinks[sLinkId];
     }
 
     moveElement(sElementId, sTargetContainer, iPosition, bUpdate) {
         if (!bUpdate && this.movedElements[sElementId]) return false;
+        this.parentProfile.hasUnsavedChanges = true;
 
         var oMovedElement = {
             id: sElementId,
@@ -210,6 +222,7 @@ class ViewConfiguration {
     }
 
     removeElementMove(sElementId) {
+        this.parentProfile.hasUnsavedChanges = true;
         delete this.movedElements[sElementId];
     }
 
@@ -217,6 +230,8 @@ class ViewConfiguration {
         var sModificationId = this.MODIFY_STYLE_OPERATION + "_" + (sElementId ? "idSelector_" : "classSelector_") + (sElementId || sElementClass);
 
         if (!bUpdate && this.elementStyleModifications[sModificationId]) return false;
+        this.parentProfile.hasUnsavedChanges = true;
+
         var oModifiedElement = {
             id: sElementId,
             class: sElementClass,
@@ -229,12 +244,15 @@ class ViewConfiguration {
 
     removeElementStyleModification(sElementId, sElementClass) {
         var sModificationId = this.MODIFY_STYLE_OPERATION + "_" + (sElementId ? "idSelector_" : "classSelector_") + (sElementId || sElementClass);
+        this.parentProfile.hasUnsavedChanges = true;
         delete this.elementStyleModifications[sModificationId];
     }
 
     modifyElementClass(sElementId, sElementClass, aClasses, bUpdate) {
         var sModificationId = this.MODIFY_CLASS_OPERATION + "_" + (sElementId ? "idSelector_" : "classSelector_") + (sElementId || sElementClass);
         if (!bUpdate && this.elementClassModifications[sModificationId]) return false;
+        this.parentProfile.hasUnsavedChanges = true;
+
         var oModifiedElement = {
             id: sElementId,
             class: sElementClass,
@@ -247,6 +265,8 @@ class ViewConfiguration {
     }
 
     modifyTagStyle(sTag, oStyles) {
+        this.parentProfile.hasUnsavedChanges = true;
+
         this.tagStyleModifications[sTag] = {
             id: this.MODIFY_STYLE_OPERATION + "-" + sTag,
             tag: sTag,
@@ -256,6 +276,7 @@ class ViewConfiguration {
 
     removeElementClassModification(sElementId, sElementClass) {
         var sModificationId = this.MODIFY_CLASS_OPERATION + "_" + (sElementId ? "idSelector_" : "classSelector_") + (sElementId || sElementClass);
+        this.parentProfile.hasUnsavedChanges = true;
         delete this.elementClassModifications[sModificationId];
     }
 }

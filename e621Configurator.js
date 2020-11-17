@@ -1569,7 +1569,13 @@ class E621Configurator {
 
         var oFooter = HTMLFunctions.createElementFromHTML(`<div></div>`);
         HTMLFunctions.addElementStyles(oFooter, { "margin-top": "20px", "margin-bottom": "5px", "border-top": "1px solid #1f3c67" });
-        var oBackButton = HTMLFunctions.createButton(undefined, "Cancel", this.displayProfileSelection.bind(this));
+        var oBackButton = HTMLFunctions.createButton(undefined, "Cancel", function () {
+            if (oProfile.hasUnsavedChanges) {
+                this.displayConfirmationDialog("Unsaved Changes!", "The profile contains unsaved changes, do you really want to revert all changes?", this.displayProfileSelection.bind(this));
+            } else {
+                this.displayProfileSelection();
+            }
+        }.bind(this));
 
         var sCreateButtonText = bCreationMode ? oProfile.isActive() ? "Create (Reload)" : "Create Profile" : oProfile.isActive() ? "Save (Reload)" : "Save";
         var oCreateProfileButton = HTMLFunctions.createButton(undefined, sCreateButtonText, function () { this.onSaveProfile(bCreationMode, oProfile) }.bind(this));

@@ -1,8 +1,8 @@
 const setViewId = "sets";
 
 class SetsViewConfiguration extends ViewConfiguration {
-    constructor(sId, sPath, bIncludeSubPaths, sSearchParameters) {
-        super(sId, sPath, bIncludeSubPaths, sSearchParameters, setViewId);
+    constructor(sId, sPath, bIncludeSubPaths, sSearchParameters, oProfile) {
+        super(sId, sPath, bIncludeSubPaths, sSearchParameters, setViewId, oProfile);
         this.customSetTables = {};
     }
 
@@ -34,6 +34,7 @@ class SetsViewConfiguration extends ViewConfiguration {
 
         var oCustomTable = this.customSetTables[sTableId];
         if (!bUpdate && oCustomTable) return false;
+        this.parentProfile.hasUnsavedChanges = true;
 
         oCustomTable = {
             id: sTableId,
@@ -52,6 +53,7 @@ class SetsViewConfiguration extends ViewConfiguration {
     }
 
     remvoeCustomSetTable(sTableId) {
+        this.parentProfile.hasUnsavedChanges = true;
         delete this.customSetTables[sTableId];
     }
 }

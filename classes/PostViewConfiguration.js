@@ -1,8 +1,8 @@
 const postViewId = "posts";
 
 class PostViewConfiguration extends ViewConfiguration {
-    constructor(sId, sPath, bIncludeSubPaths, sSearchParameters) {
-        super(sId, sPath, bIncludeSubPaths, sSearchParameters, postViewId);
+    constructor(sId, sPath, bIncludeSubPaths, sSearchParameters, oProfile) {
+        super(sId, sPath, bIncludeSubPaths, sSearchParameters, postViewId, oProfile);
 
         this.customSetGroups = {};
         this.setSelectionDialogElements = new Set();
@@ -36,6 +36,7 @@ class PostViewConfiguration extends ViewConfiguration {
     }
 
     addElementToSetSelectionDialog(sElementId, iPosition) {
+        this.parentProfile.hasUnsavedChanges = true;
         this.setSelectionDialogElements[sElementId] = {
             id: sElementId,
             position: iPosition
@@ -43,6 +44,7 @@ class PostViewConfiguration extends ViewConfiguration {
     }
 
     removeAddedSetSelectionDialogElements(sElementId) {
+        this.parentProfile.hasUnsavedChanges = true;
         this.setSelectionDialogElements.delete(sElementId);
     }
 
@@ -62,9 +64,8 @@ class PostViewConfiguration extends ViewConfiguration {
         var sId = sTitle.replace(/ /g, "");
 
         var oCustomGroup = this.customSetGroups[sId];
-        if (!bUpdateGroup && oCustomGroup) {
-            return false;
-        }
+        if (!bUpdateGroup && oCustomGroup) return false;
+        this.parentProfile.hasUnsavedChanges = true;
 
         oCustomGroup = {
             id: sId,
@@ -79,6 +80,7 @@ class PostViewConfiguration extends ViewConfiguration {
     }
 
     removeSetSelectionGroup(sGroupId) {
+        this.parentProfile.hasUnsavedChanges = true;
         delete this.customSetGroups[sGroupId];
     }
 }

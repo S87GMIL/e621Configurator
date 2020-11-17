@@ -5,6 +5,8 @@ class Profile {
         this.deletable = bDeletable === undefined ? true : bDeletable;
         this.editable = bEditable === undefined ? true : bEditable;
 
+        this.isDirty = false;
+
         this.id = sId;
         this.name = sName;
         this.description = sDescription;
@@ -16,10 +18,18 @@ class Profile {
         }
     }
 
+    get hasUnsavedChanges() {
+        return this.isDirty;
+    }
+
+    set hasUnsavedChanges(bHasChanges) {
+        this.isDirty = bHasChanges;
+    }
+
     parseProfile(oProfile) {
-        this.setName(oProfile.name);
-        this.setDescription(oProfile.description);
-        this.setActive(oProfile.active);
+        this.name = oProfile.name;
+        this.description = oProfile.description;
+        this.active = oProfile.active;
         this.editable = oProfile.editable;
         this.deletable = oProfile.deletable;
 
@@ -45,6 +55,7 @@ class Profile {
     setActive(bIsActive) {
         if (bIsActive === undefined) bIsActive = false;
         this.active = bIsActive;
+        this.isDirty = true;
     }
 
     isActive() {
@@ -56,7 +67,10 @@ class Profile {
     }
 
     setId(sId) {
-        this.id = sId;
+        if (this.id !== sId) {
+            this.isDirty = true;
+            this.id = sId;
+        }
     }
 
     getId() {
@@ -64,7 +78,10 @@ class Profile {
     }
 
     setName(sName) {
-        this.name = sName;
+        if (this.name !== sName) {
+            this.name = sName;
+            this.isDirty = true;
+        }
     }
 
     getName() {
@@ -72,7 +89,10 @@ class Profile {
     }
 
     setDescription(sDescription) {
-        this.description = sDescription;
+        if (this.description !== sDescription) {
+            this.description = sDescription;
+            this.isDirty = true;
+        }
     }
 
     getDescription() {
@@ -124,43 +144,45 @@ class Profile {
 
         switch (true) {
             case sPath.includes("/explore/posts/popular"):
-                return new ViewConfiguration(sId, sPath, bIncludeSubPaths, sSearchParameters, "popular");
+                return new ViewConfiguration(sId, sPath, bIncludeSubPaths, sSearchParameters, "popular", this);
             case sPath.includes("/posts"):
-                return new PostViewConfiguration(sId, sPath, bIncludeSubPaths, sSearchParameters);
+                return new PostViewConfiguration(sId, sPath, bIncludeSubPaths, sSearchParameters, this);
             case sPath.includes("/post_sets"):
-                return new SetsViewConfiguration(sId, sPath, bIncludeSubPaths, sSearchParameters);
+                return new SetsViewConfiguration(sId, sPath, bIncludeSubPaths, sSearchParameters, this);
             case sPath.includes("/uploads"):
-                return new ViewConfiguration(sId, sPath, bIncludeSubPaths, sSearchParameters, "uploads");
+                return new ViewConfiguration(sId, sPath, bIncludeSubPaths, sSearchParameters, "uploads", this);
             case sPath.includes("/favorites"):
-                return new ViewConfiguration(sId, sPath, bIncludeSubPaths, sSearchParameters, "favorites");
+                return new ViewConfiguration(sId, sPath, bIncludeSubPaths, sSearchParameters, "favorites", this);
             case sPath.includes("/post_versions"):
-                return new ViewConfiguration(sId, sPath, bIncludeSubPaths, sSearchParameters, "postVersions");
+                return new ViewConfiguration(sId, sPath, bIncludeSubPaths, sSearchParameters, "postVersions", this);
             case sPath.includes("/comments"):
-                return new ViewConfiguration(sId, sPath, bIncludeSubPaths, sSearchParameters, "comments");
+                return new ViewConfiguration(sId, sPath, bIncludeSubPaths, sSearchParameters, "comments", this);
             case sPath.includes("/artists"):
-                return new ViewConfiguration(sId, sPath, bIncludeSubPaths, sSearchParameters, "artists");
+                return new ViewConfiguration(sId, sPath, bIncludeSubPaths, sSearchParameters, "artists", this);
             case sPath.includes("/tag"):
-                return new ViewConfiguration(sId, sPath, bIncludeSubPaths, sSearchParameters, "tags");
+                return new ViewConfiguration(sId, sPath, bIncludeSubPaths, sSearchParameters, "tags", this);
             case sPath.includes("/blips"):
-                return new ViewConfiguration(sId, sPath, bIncludeSubPaths, sSearchParameters, "blips");
+                return new ViewConfiguration(sId, sPath, bIncludeSubPaths, sSearchParameters, "blips", this);
             case sPath.includes("/pools"):
-                return new ViewConfiguration(sId, sPath, bIncludeSubPaths, sSearchParameters, "pools");
+                return new ViewConfiguration(sId, sPath, bIncludeSubPaths, sSearchParameters, "pools", this);
             case sPath.includes("/wiki_pages"):
-                return new ViewConfiguration(sId, sPath, bIncludeSubPaths, sSearchParameters, "wiki");
+                return new ViewConfiguration(sId, sPath, bIncludeSubPaths, sSearchParameters, "wiki", this);
             case sPath.includes("/forum_topics"):
-                return new ViewConfiguration(sId, sPath, bIncludeSubPaths, sSearchParameters, "forum");
+                return new ViewConfiguration(sId, sPath, bIncludeSubPaths, sSearchParameters, "forum", this);
             case sPath.includes("/users"):
-                return new ViewConfiguration(sId, sPath, bIncludeSubPaths, sSearchParameters, "users");
+                return new ViewConfiguration(sId, sPath, bIncludeSubPaths, sSearchParameters, "users", this);
             case sPath === "/" || sPath === "/*":
-                return new ViewConfiguration(sId, sPath, bIncludeSubPaths, sSearchParameters, rootViewId);
+                return new ViewConfiguration(sId, sPath, bIncludeSubPaths, sSearchParameters, rootViewId, this);
             default:
-                return new ViewConfiguration(sId, sPath, bIncludeSubPaths, sSearchParameters, "unknown");
+                return new ViewConfiguration(sId, sPath, bIncludeSubPaths, sSearchParameters, "unknown", this);
         }
     }
 
     createViewConfiguration(sId, sPath, bIncludeSubPaths, sSearchParameters) {
-        var oConfigurator = this.#createViewConfigurator(sId, sPath, bIncludeSubPaths, sSearchParameters);
+        var oConfigurator = this.#createViewConfigurator(sId, sPath, bIncludeSubPaths, sSearchParameters, this);
         this.viewConfigurations[sId] = oConfigurator;
+        this.isDirty = true;
+
         return oConfigurator;
     }
 
@@ -169,6 +191,7 @@ class Profile {
     }
 
     deleteViewConfiguration(sId) {
+        this.isDirty = true;
         delete this.viewConfigurations[sId];
     }
 }
