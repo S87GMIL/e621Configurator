@@ -895,23 +895,14 @@ class E621Configurator {
     }
 
     createCreatedLinkSection(oViewConfiguration) {
-        var oCreatedElementSection = HTMLFunctions.createElementFromHTML(`<div class="box-section" style="margin-bottom: 10px"></div>`);
-
         var oCreatedElements = oViewConfiguration.getCreatedLinks();
         var iCreatedElementCount = Object.keys(oCreatedElements).length;
 
-        var sCreatedElementsTitle = `Created Links(${iCreatedElementCount})`;
-        var oShowCreatedElementsContainer = HTMLFunctions.createElementFromHTML(`<div class="notice notice-parent"><label id="showCreatedElementsTitle">${sCreatedElementsTitle}</label></div>`);
-        var oShowButton = HTMLFunctions.createElementFromHTML(`<a id="createElement-showButton" style="margin-left: 5px; cursor: pointer" >show »</a>`);
-        HTMLFunctions.addElementToContainer(oShowButton, oShowCreatedElementsContainer);
-
-        var oHideChangedLinksContainer = HTMLFunctions.createElementFromHTML(`<div class="notice notice-parent" style="display: none"><label id="hideCreatedElementsTitle">${sCreatedElementsTitle}</label></div>`);
-        var oHideButton = HTMLFunctions.createElementFromHTML(`<a id="createElement-hideSectionTitleButton" style="margin-left: 5px; cursor: pointer" >« hide</a>`);
-        HTMLFunctions.addElementToContainer(oHideButton, oHideChangedLinksContainer);
+        var oModifiedElementSection = new ConfigurationSection("Created Links", iCreatedElementCount, ["Element ID", "Target ID", "Destination", "Type", "", ""]);
 
         var sLabelStyles = "margin-top: 10px; display: block";
         var ocreateElementButtonSection = HTMLFunctions.createElementFromHTML(`
-                <div style="margin-top: 10px; margin-left: 10px; margin-bottom: 10px;">
+                <div>
                     <div>ID:<label style="color: red">*</label></div>
                     <input id="createElement-elementIdInput" type="text" style="width: 200px; margin-top: 5px; display: block" placeholder="e.g. my-button">
     
@@ -955,6 +946,31 @@ class E621Configurator {
             }
         };
         oElementTypeSelection.addEventListener("change", fTypeSelectionHandler);
+
+        var fResetInputs = function () {
+            var oElementIdInput = HTMLFunctions.getElement("createElement-elementIdInput");
+            var oDestinationInput = HTMLFunctions.getElement("createElement-destination");
+            var oColorPicker = HTMLFunctions.getElement("createElement-colorPicker");
+            var oTypeSelector = oElementTypeSelection;
+            var oOpenNewTabCheckbox = HTMLFunctions.getElement("createElement-openInNewTabCheckbox");
+            var oTextInput = HTMLFunctions.getElement("createElement-linkTextInput");
+
+            oElementIdInput.value = "";
+            oElementIdInput.disabled = false;
+            oTargetInput.input.value = "";
+            oColorPicker.value = "#1f3c67";
+            oDestinationInput.value = "";
+            oTextInput.value = "";
+            oOpenNewTabCheckbox.checked = false;
+            oTypeSelector.value = oViewConfiguration.LINK_ELEMENT;
+
+            HTMLFunctions.setInputErrorState(oElementIdInput, false);
+            HTMLFunctions.setInputErrorState(oTargetInput.input, false);
+            HTMLFunctions.setInputErrorState(oDestinationInput, false);
+            HTMLFunctions.setInputErrorState(oTextInput, false);
+
+            fTypeSelectionHandler();
+        }
 
         var fCreateLink = function (oEvent) {
             var bUpdate = oEvent.srcElement.dataset.update === "true";
@@ -1003,7 +1019,10 @@ class E621Configurator {
                 }
 
                 var oCreatedElement = oViewConfiguration.createLink(sTargetId, sElementId, sLinkText, sDestination, sElemntType, sElemntType === oViewConfiguration.BUTTON_ELEMENT ? sBackgroundColor : undefined, bOpenNewTab, bUpdate);
-                if (bUpdate) HTMLFunctions.removeTableRow(oCreatedElementsTable, { column: "Element ID", value: sElementId });
+                if (bUpdate) {
+                    iCreatedElementCount -= 1;
+                    HTMLFunctions.removeTableRow(oModifiedElementSection.table, { column: "Element ID", value: sElementId });
+                }
                 oEvent.srcElement.innerText = "Create Link";
                 oEvent.srcElement.dataset.update = false;
 
@@ -1012,18 +1031,12 @@ class E621Configurator {
                     return;
                 }
 
-                var sCreatedElementsTitle = `Created Links(${Object.keys(oViewConfiguration.getCreatedLinks()).length})`;
-                HTMLFunctions.getElement("showCreatedElementsTitle").innerText = sCreatedElementsTitle;
-                HTMLFunctions.getElement("hideCreatedElementsTitle").innerText = sCreatedElementsTitle;
+                iCreatedElementCount += 1;
+                oModifiedElementSection.setTitle(`Created Links(${iCreatedElementCount})`);
 
-                oElementIdInput.value = "";
-                oElementIdInput.disabled = false;
-                oTargetInput.input.value = "";
-                oColorPicker.value = "#1f3c67";
-                oDestinationInput.value = "";
-                oTextInput.value = "";
+                fResetInputs();
 
-                HTMLFunctions.createTableRows(oCreatedElementsTable, { sElementId: fCreateElementCrationTableRow(sElementId, sTargetId, sDestination, sElemntType) });
+                HTMLFunctions.createTableRows(oModifiedElementSection.table, { sElementId: fCreateElementCrationTableRow(sElementId, sTargetId, sDestination, sElemntType) });
 
             } else {
                 if (!sLinkText) HTMLFunctions.setInputErrorState("createElement-linkTextInput", true, "Text can't be empty")
@@ -1038,9 +1051,10 @@ class E621Configurator {
 
         HTMLFunctions.addElementStyles(ocreateElementButtonSection, { "margin-top": "10px", "margin-bottom": "10px" });
         HTMLFunctions.addElementToContainer(oCreateElementButton, ocreateElementButtonSection);
-        HTMLFunctions.addElementToContainer(ocreateElementButtonSection, oHideChangedLinksContainer);
 
         var fEditCreatedLink = function (sElementId) {
+            fResetInputs();
+
             var oCreatedLink = oViewConfiguration.getCreatedLinks()[sElementId];
 
             var oElementIdInput = HTMLFunctions.getElement("createElement-elementIdInput");
@@ -1082,12 +1096,10 @@ class E621Configurator {
                         var sId = oEvent.srcElement.dataset.element_id;
 
                         oViewConfiguration.removeCreatedLink(sId);
+                        HTMLFunctions.removeTableRow(oModifiedElementSection.table, { column: "Element ID", value: sId });
 
-                        HTMLFunctions.removeTableRow(oCreatedElementsTable, { column: "Element ID", value: sId });
-
-                        var sCreatedElementsTitle = `Created Links(${Object.keys(oViewConfiguration.getCreatedLinks()).length})`;
-                        HTMLFunctions.getElement("showCreatedElementsTitle").innerText = sCreatedElementsTitle;
-                        HTMLFunctions.getElement("hideCreatedElementsTitle").innerText = sCreatedElementsTitle;
+                        iCreatedElementCount -= 1;
+                        oModifiedElementSection.setTitle(`Created Links(${iCreatedElementCount})`);
                     }, { element_id: sElementId })
                 },
                 editButton: {
@@ -1099,34 +1111,15 @@ class E621Configurator {
             };
         };
 
-        var oCreatedElementsTable = HTMLFunctions.createTable(undefined, ["table", "striped"]);
-        HTMLFunctions.createTableColumns(oCreatedElementsTable, ["Element ID", "Target ID", "Destination", "Type", "", ""]);
-
         var oCreatedElementRows = {};
-
         for (var sKey in oCreatedElements) {
             var oCreatedElement = oCreatedElements[sKey];
             oCreatedElementRows[sKey] = fCreateElementCrationTableRow(oCreatedElement.id, oCreatedElement.targetContainer, oCreatedElement.type, oCreatedElement.destination);
         }
 
-        HTMLFunctions.createTableRows(oCreatedElementsTable, oCreatedElementRows);
-        HTMLFunctions.addElementToContainer(oCreatedElementsTable, oCreatedElementSection);
-        HTMLFunctions.addElementToContainer(oCreatedElementsTable, oHideChangedLinksContainer);
+        oModifiedElementSection.addInputs(ocreateElementButtonSection);
 
-        HTMLFunctions.addElementToContainer(oShowCreatedElementsContainer, oCreatedElementSection);
-        HTMLFunctions.addElementToContainer(oHideChangedLinksContainer, oCreatedElementSection);
-
-        oShowButton.addEventListener("click", function () {
-            HTMLFunctions.addStyleToElement(oHideChangedLinksContainer, "display", "block");
-            HTMLFunctions.addStyleToElement(oShowCreatedElementsContainer, "display", "none");
-        });
-
-        oHideButton.addEventListener("click", function () {
-            HTMLFunctions.addStyleToElement(oHideChangedLinksContainer, "display", "none");
-            HTMLFunctions.addStyleToElement(oShowCreatedElementsContainer, "display", "block");
-        });
-
-        return oCreatedElementSection;
+        return oModifiedElementSection.container;
     }
 
     createCustomAddToSetGroupSection(oViewConfiguration) {
