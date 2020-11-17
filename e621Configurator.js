@@ -150,10 +150,12 @@ class E621Configurator {
         });
 
         aSortedConfigs.forEach(oViewConfig => {
+            var sViewName = oViewConfig.getViewId().substring(0, 1).toUpperCase() + oViewConfig.getViewId().substring(1);
+
             oTableRows[oViewConfig.getId()] = {
                 view: {
                     index: 0,
-                    content: oViewConfig.getViewId()
+                    content: sViewName
                 },
                 path: {
                     index: 1,
@@ -1630,24 +1632,22 @@ class E621Configurator {
         var oprofileTable = HTMLFunctions.createTable("profileTable", ["table", "striped"]);
 
         HTMLFunctions.addElementToContainer(oprofileTable, oTableContainer);
-        HTMLFunctions.createTableColumns(oprofileTable, ["Name", "Description", "Paths", "Active", "", ""]);
+        HTMLFunctions.createTableColumns(oprofileTable, ["Name", "Description", "Views", "Active", "", ""]);
 
         var oTableRows = {};
         var oCreatedProfiles = ProfileStorage.loadCreatedProfiles();
 
-        var oCellStyles = {
-            "padding-left": "20px"
-        }
-
         for (var sConfig in oCreatedProfiles) {
             var oProfile = oCreatedProfiles[sConfig];
-            var aSortedPaths = [];
+            var aConfiguredViews = [];
 
             for (var sViewConfig in oProfile.viewConfigurations) {
-                aSortedPaths.push(oProfile.viewConfigurations[sViewConfig].getPath());
+                var sView = oProfile.viewConfigurations[sViewConfig].getViewId();
+                var sConvertedView = sView.substring(0, 1).toUpperCase() + sView.substring(1);
+                if (!aConfiguredViews.includes(sConvertedView)) aConfiguredViews.push(sConvertedView);
             };
 
-            aSortedPaths = aSortedPaths.sort((a, b) => {
+            aConfiguredViews = aConfiguredViews.sort((a, b) => {
                 return a.length - b.length;
             });
 
@@ -1658,18 +1658,15 @@ class E621Configurator {
                 },
                 description: {
                     index: 1,
-                    content: oProfile.getDescription(),
-                    styles: oCellStyles
+                    content: oProfile.getDescription()
                 },
-                paths: {
+                views: {
                     index: 2,
-                    content: aSortedPaths.join(", "),
-                    styles: oCellStyles
+                    content: aConfiguredViews.join(", ")
                 },
                 isActive: {
                     index: 3,
-                    content: oProfile.getIsActive(),
-                    styles: oCellStyles
+                    content: oProfile.getIsActive()
                 },
                 editButton: {
                     index: 4,

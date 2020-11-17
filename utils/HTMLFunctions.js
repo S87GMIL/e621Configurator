@@ -83,6 +83,7 @@ class HTMLFunctions {
 
             aColumns.forEach((sColumn, iIndex) => {
                 var oCell = oHeaderRow.insertCell();
+                if (iIndex > 0) this.addElementStyles(oCell, { "padding-left": "20px" });
                 oCell.innerHTML = sColumn;
             });
         }
@@ -95,9 +96,11 @@ class HTMLFunctions {
             var oRowConfig = oTableRows[sKey];
             var oNewRow = oTable.tBodies[0].insertRow();
 
+            var bFirstCell = true;
             for (var sColumn in oRowConfig) {
                 var oCellConfig = oRowConfig[sColumn];
                 var oCell = oNewRow.insertCell(oCellConfig.index);
+                if (!bFirstCell) this.addElementStyles(oCell, { "padding-left": "20px" });
 
                 if (typeof oCellConfig.content === "object") {
                     oCell.appendChild(oCellConfig.content);
@@ -106,6 +109,7 @@ class HTMLFunctions {
                 }
 
                 if (oCellConfig.styles) this.addElementStyles(oCell, oCellConfig.styles);
+                bFirstCell = false;
             }
         }
     }
