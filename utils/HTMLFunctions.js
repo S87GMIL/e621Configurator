@@ -39,18 +39,10 @@ class HTMLFunctions {
         var oElement = this.getElement(vElement);
         if (!oElement) return;
 
-        var iElementHeight = oElement.offsetHeight;
-        var iElementWidth = oElement.offsetWidth;
-
-        var iTop = window.innerHeight / 2 - iElementHeight / 2;
-        var iLeft = window.innerWidth / 2 - iElementWidth / 2;
-
-        iTop = iTop > 0 ? iTop : 20;
-        iLeft = iLeft > 0 ? iLeft : 0;
-
         this.addElementStyles(oElement, {
-            top: iTop + "px",
-            left: iLeft + "px"
+            margin: `-${oElement.offsetHeight / 2}px 0 0 -${oElement.offsetWidth / 2}px`,
+            top: "50%",
+            left: "50%",
         });
     }
 
