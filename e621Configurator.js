@@ -1123,23 +1123,14 @@ class E621Configurator {
     }
 
     createCustomAddToSetGroupSection(oViewConfiguration) {
-        var oCustomAddToSetGroupSection = HTMLFunctions.createElementFromHTML(`<div class="box-section" style="margin-bottom: 10px"></div>`);
-
         var oCustomGroups = oViewConfiguration.getSetSelectionGroups();
         var iCustomGroupCount = Object.keys(oCustomGroups).length;
 
-        var sCustomGroupsTitle = `Custom Set Selection Groups(${iCustomGroupCount})`;
-        var oShowCustomGroupContainer = HTMLFunctions.createElementFromHTML(`<div class="notice notice-parent"><label id="showSetSelectionGroupsTitle">${sCustomGroupsTitle}</label></div>`);
-        var oShowButton = HTMLFunctions.createElementFromHTML(`<a id="customSetGroups-showButton" style="margin-left: 5px; cursor: pointer" >show »</a>`);
-        HTMLFunctions.addElementToContainer(oShowButton, oShowCustomGroupContainer);
-
-        var oHideCustomGroupContainer = HTMLFunctions.createElementFromHTML(`<div class="notice notice-parent" style="display: none"><label id="hideSetSelectionGroupsTitle">${sCustomGroupsTitle}</label></div>`);
-        var oHideButton = HTMLFunctions.createElementFromHTML(`<a id="customSetGroups-hideSectionTitleButton" style="margin-left: 5px; cursor: pointer" >« hide</a>`);
-        HTMLFunctions.addElementToContainer(oHideButton, oHideCustomGroupContainer);
+        var oModifiedElementSection = new ConfigurationSection("Custom Set Selection Groups", iCustomGroupCount, ["Title", "Set Selector", "Sets", "Position", "", ""]);
 
         var sLabelStyles = "margin-top: 10px; display: block";
         var oCustomGroupInputSection = HTMLFunctions.createElementFromHTML(`
-                <div style="margin-top: 10px; margin-left: 10px; margin-bottom: 10px;">
+                <div>
                     <div>Group Title:<label style="color: red">*</label></div>
                     <input id="customSetGroups-titleInput" type="text" style="width: 200px; margin-top: 5px; display: block" placeholder="e.g. Avians">
     
@@ -1154,7 +1145,25 @@ class E621Configurator {
                 <div>
             `);
 
+        var fResetInputFields = function () {
+            var oTitleInput = HTMLFunctions.getElement("customSetGroups-titleInput");
+            var oSetSelectorInput = HTMLFunctions.getElement("customSetGroups-setSelectorInput");
+            var oSetsInput = HTMLFunctions.getElement("customSetGroups-setsInput");
+            var oGroupPositionInput = HTMLFunctions.getElement("customSetGroups-groupPositionInput");
+
+            oTitleInput.value = "";
+            oTitleInput.disabled = false;
+            oSetSelectorInput.value = "";
+            oSetsInput.value = "";
+            oGroupPositionInput.value = "";
+
+            HTMLFunctions.setInputErrorState(oTitleInput, false);
+            HTMLFunctions.setInputErrorState(oSetSelectorInput, false);
+            HTMLFunctions.setInputErrorState(oSetsInput, false);
+        }
+
         var fEditCustomSetGroups = function (oGroupId) {
+            fResetInputFields();
             var oSelectedGroup = oViewConfiguration.getSetSelectionGroups()[oGroupId];
 
             var oTitleInput = HTMLFunctions.getElement("customSetGroups-titleInput");
@@ -1182,12 +1191,10 @@ class E621Configurator {
                         var sId = oEvent.srcElement.dataset.group_id;
 
                         oViewConfiguration.removeSetSelectionGroup(sId);
+                        HTMLFunctions.removeTableRow(oModifiedElementSection.table, { column: "Title", value: sId });
 
-                        HTMLFunctions.removeTableRow(oCustomGroupsTable, { column: "Title", value: sId });
-
-                        var sCustomGroupsTitle = `Custom Set Selection Groups(${Object.keys(oViewConfiguration.getSetSelectionGroups()).length})`;
-                        HTMLFunctions.getElement("showSetSelectionGroupsTitle").innerText = sCustomGroupsTitle;
-                        HTMLFunctions.getElement("hideSetSelectionGroupsTitle").innerText = sCustomGroupsTitle;
+                        iCustomGroupCount -= 1;
+                        oModifiedElementSection.setTitle(`Custom Set Selection Groups(${iCustomGroupCount})`);
                     }, { group_id: sTitle.replace(/ /g, "") })
                 },
                 editButton: {
@@ -1234,7 +1241,11 @@ class E621Configurator {
                 }
 
                 var oCreatedGroup = oViewConfiguration.createSetSelectionGroup(sTitle, sSetSelector, aSets, iGroupPosition, bUpdateGroup);
-                if (bUpdateGroup) HTMLFunctions.removeTableRow(oCustomGroupsTable, { column: "Title", value: oCreatedGroup.id });
+                if (bUpdateGroup) {
+                    iCustomGroupCount -= 1;
+                    HTMLFunctions.removeTableRow(oModifiedElementSection.table, { column: "Title", value: oCreatedGroup.id });
+                }
+
                 oEvent.srcElement.dataset.update_group = false;
                 oEvent.srcElement.innerText = "Create Group";
 
@@ -1243,24 +1254,14 @@ class E621Configurator {
                     return;
                 }
 
-                var sCustomGroupsTitle = `Custom Set Selection Groups(${Object.keys(oViewConfiguration.getSetSelectionGroups()).length})`;
-                HTMLFunctions.getElement("showSetSelectionGroupsTitle").innerText = sCustomGroupsTitle;
-                HTMLFunctions.getElement("hideSetSelectionGroupsTitle").innerText = sCustomGroupsTitle;
-
-                oTitleInput.value = "";
-                oTitleInput.disabled = false;
-                oSetSelectorInput.value = "";
-                oSetsInput.value = "";
-                oGroupPositionInput.value = "";
-
-                HTMLFunctions.setInputErrorState(oTitleInput, false);
-                HTMLFunctions.setInputErrorState(oSetSelectorInput, false);
-                HTMLFunctions.setInputErrorState(oSetsInput, false);
+                iCustomGroupCount += 1;
+                oModifiedElementSection.setTitle(`Custom Set Selection Groups(${iCustomGroupCount})`);
+                fResetInputFields();
 
                 var oNewRow = {};
                 oNewRow[sTitle.replace(/ /g, "")] = fCreateGroupTableRow(sTitle, sSetSelector, aSets.join(", "), iGroupPosition);
 
-                HTMLFunctions.createTableRows(oCustomGroupsTable, oNewRow);
+                HTMLFunctions.createTableRows(oModifiedElementSection.table, oNewRow);
 
             } else {
                 if (!sSetSelector && aSets.length === 0) {
@@ -1275,38 +1276,18 @@ class E621Configurator {
         var oCreateGroupButton = HTMLFunctions.createButton("customSetGroups-createButton", "Create Group", fCreateCustomSetGroup);
         HTMLFunctions.addElementStyles(oCreateGroupButton, { padding: "0.25rem 0rem", "margin-top": "20px" });
 
-        HTMLFunctions.addElementStyles(oCustomGroupInputSection, { "margin-top": "10px", "margin-bottom": "10px" });
         HTMLFunctions.addElementToContainer(oCreateGroupButton, oCustomGroupInputSection);
-        HTMLFunctions.addElementToContainer(oCustomGroupInputSection, oHideCustomGroupContainer);
-
-        var oCustomGroupsTable = HTMLFunctions.createTable(undefined, ["table", "striped"]);
-        HTMLFunctions.createTableColumns(oCustomGroupsTable, ["Title", "Set Selector", "Sets", "Position", "", ""]);
 
         var oCreatedGroupRows = {};
-
         for (var sKey in oCustomGroups) {
             var oCreatedGroup = oCustomGroups[sKey];
             oCreatedGroupRows[sKey] = fCreateGroupTableRow(oCreatedGroup.title, oCreatedGroup.setSelector, oCreatedGroup.sets.join(", "), oCreatedGroup.position);
         }
 
-        HTMLFunctions.createTableRows(oCustomGroupsTable, oCreatedGroupRows);
-        HTMLFunctions.addElementToContainer(oCustomGroupsTable, oCustomAddToSetGroupSection);
-        HTMLFunctions.addElementToContainer(oCustomGroupsTable, oHideCustomGroupContainer);
+        oModifiedElementSection.addInputs(oCustomGroupInputSection);
+        oModifiedElementSection.addTableRows(oCreatedGroupRows);
 
-        HTMLFunctions.addElementToContainer(oShowCustomGroupContainer, oCustomAddToSetGroupSection);
-        HTMLFunctions.addElementToContainer(oHideCustomGroupContainer, oCustomAddToSetGroupSection);
-
-        oShowButton.addEventListener("click", function () {
-            HTMLFunctions.addStyleToElement(oHideCustomGroupContainer, "display", "block");
-            HTMLFunctions.addStyleToElement(oShowCustomGroupContainer, "display", "none");
-        });
-
-        oHideButton.addEventListener("click", function () {
-            HTMLFunctions.addStyleToElement(oHideCustomGroupContainer, "display", "none");
-            HTMLFunctions.addStyleToElement(oShowCustomGroupContainer, "display", "block");
-        });
-
-        return oCustomAddToSetGroupSection;
+        return oModifiedElementSection.container;
     }
 
     createBasicViewConfigView(bCreationMode, oProfile, oViewConfiguration, aCustoMSections) {
