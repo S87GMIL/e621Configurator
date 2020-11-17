@@ -763,24 +763,14 @@ class E621Configurator {
     }
 
     createModifyLinkDestination(oViewConfiguration) {
-        var oModifiedLinkSection = HTMLFunctions.createElementFromHTML(`<div class="box-section" style="margin-bottom: 10px"></div>`);
-
         var oChangedLinks = oViewConfiguration.getChangedLinks();
         var iChangedLinkCount = Object.keys(oChangedLinks).length;
 
-        var sChangedLinkTitle = `Changed Links(${iChangedLinkCount})`;
-        var oShowChangedLinksContainer = HTMLFunctions.createElementFromHTML(`<div class="notice notice-parent"><label id="showChangedLinksTitle">${sChangedLinkTitle}</label></div>`);
-        var oShowButton = HTMLFunctions.createElementFromHTML(`<a id="changeLink-showButton" style="margin-left: 5px; cursor: pointer">show »</a>`);
-        HTMLFunctions.addElementToContainer(oShowButton, oShowChangedLinksContainer);
+        var oModifiedElementSection = new ConfigurationSection("Changed Links", iChangedLinkCount, ["Element ID", "Destination", "", ""]);
 
-        var oHideChangedLinksContainer = HTMLFunctions.createElementFromHTML(`<div class="notice notice-parent" style="display: none"><label id="hideChangedLinksTitle">${sChangedLinkTitle}</label></div>`);
-        var oHideButton = HTMLFunctions.createElementFromHTML(`<a id="changeLink-hideSectionTitleButton" style="margin-left: 5px; cursor: pointer">« hide</a>`);
-        HTMLFunctions.addElementToContainer(oHideButton, oHideChangedLinksContainer);
-
-        var sLabelStyles = "margin-top: 10px; display: block";
         var oChangeLinkButtonSection = HTMLFunctions.createElementFromHTML(`
-                <div style="margin-top: 10px; margin-left: 10px; margin-bottom: 10px;">
-                    <div style="${sLabelStyles}">New Destination:<label style="color: red">*</label></div>
+                <div">
+                    <div style="margin-top: 10px; display: block">New Destination:<label style="color: red">*</label></div>
                     <input id="changeLink-destinationInput" type="text" style="width: 620px; margin-top: 5px; display: block" placeholder="e.g. /post_sets?commit=Search&search[creator_name]=S87gmil&search[order]=name">
                 <div>
             `);
@@ -826,7 +816,10 @@ class E621Configurator {
                 }
 
                 var oChangedLink = oViewConfiguration.changeLinkDestination(sElementId, sDestination, bUpdate);
-                if (bUpdate) HTMLFunctions.removeTableRow(oChangedLinksTable, { column: "Element ID", value: sElementId });
+                if (bUpdate) {
+                    iChangedLinkCount -= 1;
+                    HTMLFunctions.removeTableRow(oModifiedElementSection.table, { column: "Element ID", value: sElementId });
+                }
                 oChangeDestinationButton.innerText = "Change Destination";
                 oChangeDestinationButton.dataset.update = false;
 
@@ -835,14 +828,14 @@ class E621Configurator {
                     return;
                 }
 
-                var sChangedLinkTitle = `Changed Links(${Object.keys(oViewConfiguration.getChangedLinks()).length})`;
-                HTMLFunctions.getElement("showChangedLinksTitle").innerText = sChangedLinkTitle;
-                HTMLFunctions.getElement("hideChangedLinksTitle").innerText = sChangedLinkTitle;
+                iChangedLinkCount += 1;
+                oModifiedElementSection.setTitle(`Changed Links(${iChangedLinkCount})`);
 
                 oElementIdInput.value = "";
                 oDestinationInput.value = "";
+                HTMLFunctions.setInputErrorState(oElementIdInput, false);
 
-                HTMLFunctions.createTableRows(oChangedLinksTable, { sElementId: fCreateChangedLinkTableRow(sElementId, sDestination) });
+                HTMLFunctions.createTableRows(oModifiedElementSection.table, { sElementId: fCreateChangedLinkTableRow(sElementId, sDestination) });
 
             } else {
                 if (!sElementId) HTMLFunctions.setInputErrorState(oElementInput.input, true, "Element ID can't be empty");
@@ -852,10 +845,7 @@ class E621Configurator {
 
         var oChangeDestinationButton = HTMLFunctions.createButton(undefined, "Change Destination", fChangeLink);
         HTMLFunctions.addElementStyles(oChangeDestinationButton, { padding: "0.25rem 0rem", "margin-top": "20px" });
-
-        HTMLFunctions.addElementStyles(oChangeLinkButtonSection, { "margin-top": "10px", "margin-bottom": "10px" });
         HTMLFunctions.addElementToContainer(oChangeDestinationButton, oChangeLinkButtonSection, 5);
-        HTMLFunctions.addElementToContainer(oChangeLinkButtonSection, oHideChangedLinksContainer);
 
         var fEditChangedLink = function (sElementId) {
             var oChangedLink = oViewConfiguration.getChangedLinks()[sElementId];
@@ -877,11 +867,10 @@ class E621Configurator {
                     content: HTMLFunctions.createButton(undefined, "Remove", function (oEvent) {
                         var sId = oEvent.srcElement.dataset.element_id;
                         oViewConfiguration.removeChangeLinkDestination(sId);
-                        HTMLFunctions.removeTableRow(oChangedLinksTable, { column: "Element ID", value: sId });
+                        HTMLFunctions.removeTableRow(oModifiedElementSection.table, { column: "Element ID", value: sId });
 
-                        var sChangedLinkTitle = `Changed Links(${Object.keys(oViewConfiguration.getChangedLinks()).length})`;
-                        HTMLFunctions.getElement("showChangedLinksTitle").innerText = sChangedLinkTitle;
-                        HTMLFunctions.getElement("hideChangedLinksTitle").innerText = sChangedLinkTitle;
+                        iChangedLinkCount -= 1;
+                        oModifiedElementSection.setTitle(`Changed Links(${iChangedLinkCount})`);
                     }, { element_id: sElementId })
                 },
                 editButton: {
@@ -893,34 +882,16 @@ class E621Configurator {
             };
         };
 
-        var oChangedLinksTable = HTMLFunctions.createTable(undefined, ["table", "striped"]);
-        HTMLFunctions.createTableColumns(oChangedLinksTable, ["Element ID", "Destination", "", ""]);
-
         var oChangedLinkRows = {};
-
         for (var sKey in oChangedLinks) {
             var oChangedLink = oChangedLinks[sKey];
             oChangedLinkRows[sKey] = fCreateChangedLinkTableRow(oChangedLink.id, oChangedLink.destination);
         }
 
-        HTMLFunctions.createTableRows(oChangedLinksTable, oChangedLinkRows);
-        HTMLFunctions.addElementToContainer(oChangedLinksTable, oModifiedLinkSection);
-        HTMLFunctions.addElementToContainer(oChangedLinksTable, oHideChangedLinksContainer);
+        oModifiedElementSection.addTableRows(oChangedLinkRows);
+        oModifiedElementSection.addInputs(oChangeLinkButtonSection);
 
-        HTMLFunctions.addElementToContainer(oShowChangedLinksContainer, oModifiedLinkSection);
-        HTMLFunctions.addElementToContainer(oHideChangedLinksContainer, oModifiedLinkSection);
-
-        oShowButton.addEventListener("click", function () {
-            HTMLFunctions.addStyleToElement(oHideChangedLinksContainer, "display", "block");
-            HTMLFunctions.addStyleToElement(oShowChangedLinksContainer, "display", "none");
-        });
-
-        oHideButton.addEventListener("click", function () {
-            HTMLFunctions.addStyleToElement(oHideChangedLinksContainer, "display", "none");
-            HTMLFunctions.addStyleToElement(oShowChangedLinksContainer, "display", "block");
-        });
-
-        return oModifiedLinkSection;
+        return oModifiedElementSection.container;
     }
 
     createCreatedLinkSection(oViewConfiguration) {
