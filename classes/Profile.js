@@ -121,38 +121,40 @@ class Profile {
 
     #createViewConfigurator(sId, sPath, bIncludeSubPaths, sSearchParameters) {
         bIncludeSubPaths = bIncludeSubPaths === undefined ? true : bIncludeSubPaths;
-        if (sPath.includes("/explore/posts/popular")) {
-            return new ViewConfiguration(sId, sPath, bIncludeSubPaths, sSearchParameters, "popular");
-        } else if (sPath.includes("/posts")) {
-            return new PostViewConfiguration(sId, sPath, bIncludeSubPaths, sSearchParameters);
-        } else if (sPath.includes("/post_sets")) {
-            return new SetsViewConfiguration(sId, sPath, bIncludeSubPaths, sSearchParameters);
-        } else if (sPath.includes("/uploads")) {
-            return new ViewConfiguration(sId, sPath, bIncludeSubPaths, sSearchParameters, "uploads");
-        } else if (sPath.includes("/favorites")) {
-            return new ViewConfiguration(sId, sPath, bIncludeSubPaths, sSearchParameters, "favorites");
-        } else if (sPath.includes("/post_versions")) {
-            return new ViewConfiguration(sId, sPath, bIncludeSubPaths, sSearchParameters, "postVersions");
-        } else if (sPath.includes("/comments")) {
-            return new ViewConfiguration(sId, sPath, bIncludeSubPaths, sSearchParameters, "comments");
-        } else if (sPath.includes("/artists")) {
-            return new ViewConfiguration(sId, sPath, bIncludeSubPaths, sSearchParameters, "artists");
-        } else if (sPath.includes("/tag")) {
-            return new ViewConfiguration(sId, sPath, bIncludeSubPaths, sSearchParameters, "tags");
-        } else if (sPath.includes("/blips")) {
-            return new ViewConfiguration(sId, sPath, bIncludeSubPaths, sSearchParameters, "blips");
-        } else if (sPath.includes("/pools")) {
-            return new ViewConfiguration(sId, sPath, bIncludeSubPaths, sSearchParameters, "pools");
-        } else if (sPath.includes("/wiki_pages")) {
-            return new ViewConfiguration(sId, sPath, bIncludeSubPaths, sSearchParameters, "wiki");
-        } else if (sPath.includes("/forum_topics")) {
-            return new ViewConfiguration(sId, sPath, bIncludeSubPaths, sSearchParameters, "forum");
-        } else if (sPath.includes("/users")) {
-            return new ViewConfiguration(sId, sPath, bIncludeSubPaths, sSearchParameters, "users");
-        } else if (sPath === "/" || sPath === "/*") {
-            return new ViewConfiguration(sId, sPath, bIncludeSubPaths, sSearchParameters, rootViewId);
-        } else {
-            return new ViewConfiguration(sId, sPath, bIncludeSubPaths, sSearchParameters, "unknown");
+
+        switch (true) {
+            case sPath.includes("/explore/posts/popular"):
+                return new ViewConfiguration(sId, sPath, bIncludeSubPaths, sSearchParameters, "popular");
+            case sPath.includes("/posts"):
+                return new PostViewConfiguration(sId, sPath, bIncludeSubPaths, sSearchParameters);
+            case sPath.includes("/post_sets"):
+                return new SetsViewConfiguration(sId, sPath, bIncludeSubPaths, sSearchParameters);
+            case sPath.includes("/uploads"):
+                return new ViewConfiguration(sId, sPath, bIncludeSubPaths, sSearchParameters, "uploads");
+            case sPath.includes("/favorites"):
+                return new ViewConfiguration(sId, sPath, bIncludeSubPaths, sSearchParameters, "favorites");
+            case sPath.includes("/post_versions"):
+                return new ViewConfiguration(sId, sPath, bIncludeSubPaths, sSearchParameters, "postVersions");
+            case sPath.includes("/comments"):
+                return new ViewConfiguration(sId, sPath, bIncludeSubPaths, sSearchParameters, "comments");
+            case sPath.includes("/artists"):
+                return new ViewConfiguration(sId, sPath, bIncludeSubPaths, sSearchParameters, "artists");
+            case sPath.includes("/tag"):
+                return new ViewConfiguration(sId, sPath, bIncludeSubPaths, sSearchParameters, "tags");
+            case sPath.includes("/blips"):
+                return new ViewConfiguration(sId, sPath, bIncludeSubPaths, sSearchParameters, "blips");
+            case sPath.includes("/pools"):
+                return new ViewConfiguration(sId, sPath, bIncludeSubPaths, sSearchParameters, "pools");
+            case sPath.includes("/wiki_pages"):
+                return new ViewConfiguration(sId, sPath, bIncludeSubPaths, sSearchParameters, "wiki");
+            case sPath.includes("/forum_topics"):
+                return new ViewConfiguration(sId, sPath, bIncludeSubPaths, sSearchParameters, "forum");
+            case sPath.includes("/users"):
+                return new ViewConfiguration(sId, sPath, bIncludeSubPaths, sSearchParameters, "users");
+            case sPath === "/" || sPath === "/*":
+                return new ViewConfiguration(sId, sPath, bIncludeSubPaths, sSearchParameters, rootViewId);
+            default:
+                return new ViewConfiguration(sId, sPath, bIncludeSubPaths, sSearchParameters, "unknown");
         }
     }
 
