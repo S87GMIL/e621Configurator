@@ -1343,23 +1343,14 @@ class E621Configurator {
     }
 
     createCustomSetTableSection(oViewConfiguration) {
-        var oCustomSetTableSection = HTMLFunctions.createElementFromHTML(`<div class="box-section" style="margin-bottom: 10px"></div>`);
-
         var oCustomTables = oViewConfiguration.getCustomSetTables();
         var iCustomGroupCount = Object.keys(oCustomTables).length;
 
-        var sCustomSetTablesTitle = `Custom Set Tables(${iCustomGroupCount})`;
-        var oShowCustomSetTablesContainer = HTMLFunctions.createElementFromHTML(`<div class="notice notice-parent"><label id="showCustomSetTableTitle">${sCustomSetTablesTitle}</label></div>`);
-        var oShowButton = HTMLFunctions.createElementFromHTML(`<a id="customSetTables-showButton" style="margin-left: 5px; cursor: pointer" >show »</a>`);
-        HTMLFunctions.addElementToContainer(oShowButton, oShowCustomSetTablesContainer);
-
-        var oHideCustomSetTablesContainer = HTMLFunctions.createElementFromHTML(`<div class="notice notice-parent" style="display: none"><label id="hideCustomSetTableTitle">${sCustomSetTablesTitle}</label></div>`);
-        var oHideButton = HTMLFunctions.createElementFromHTML(`<a id="customSetTables-hideSectionTitleButton" style="margin-left: 5px; cursor: pointer" >« hide</a>`);
-        HTMLFunctions.addElementToContainer(oHideButton, oHideCustomSetTablesContainer);
+        var oModifiedElementSection = new ConfigurationSection("Custom Set Tables", iCustomGroupCount, ["Title", "Set Selector", "Sets", "", ""]);
 
         var sLabelStyles = "margin-top: 10px; display: block";
         var oCustomTableInputSection = HTMLFunctions.createElementFromHTML(`
-                <div style="margin-top: 10px; margin-left: 10px; margin-bottom: 10px;">
+                <div>
                     <div>Table Title:<label style="color: red">*</label></div>
                     <input id="customSetTables-titleInput" type="text" style="width: 200px; margin-top: 5px; display: block" placeholder="e.g. Avians">
     
@@ -1370,6 +1361,21 @@ class E621Configurator {
                     <input id="customSetTables-setsInput" type="text" style="width: 600px; margin-top: 5px; display: block" placeholder="e.g. Equine, Birb, Panther, ...">
                 <div>
             `);
+
+        var fResetInputFields = function () {
+            var oTitleInput = HTMLFunctions.getElement("customSetTables-titleInput");
+            var oSetSelectorInput = HTMLFunctions.getElement("customSetTables-setSelectorInput");
+            var oSetsInput = HTMLFunctions.getElement("customSetTables-setsInput");
+
+            oTitleInput.value = "";
+            oSetSelectorInput.value = "";
+            oSetsInput.value = "";
+            oTitleInput.disabled = false;
+
+            HTMLFunctions.setInputErrorState(oTitleInput, false);
+            HTMLFunctions.setInputErrorState(oSetSelectorInput, false);
+            HTMLFunctions.setInputErrorState(oSetsInput, false);
+        }
 
         var fCreateCustomTable = function (oEvent) {
             var bUpdate = oEvent.srcElement.dataset.update === "true";
@@ -1398,7 +1404,10 @@ class E621Configurator {
 
             if (sTitle && (sSetSelector || aSets.length > 0)) {
                 var oCreatedTable = oViewConfiguration.createCustomSetTable(sTitle.toLowerCase().replace(/ /g, ""), sTitle, sSetSelector, aSets, undefined, bUpdate);
-                if (bUpdate) HTMLFunctions.removeTableRow(oCustomTablesTable, { column: "Title", value: sTitle });
+                if (bUpdate) {
+                    iCustomGroupCount -= 1;
+                    HTMLFunctions.removeTableRow(oModifiedElementSection.table, { column: "Title", value: sTitle });
+                }
                 oEvent.srcElement.innerText = "Create Group";
                 oEvent.srcElement.dataset.update = false;
 
@@ -1407,24 +1416,14 @@ class E621Configurator {
                     return;
                 }
 
-                var sCustomSetTablesTitle = `Custom Set Tables(${Object.keys(oViewConfiguration.getCustomSetTables()).length})`;
-                HTMLFunctions.getElement("showCustomSetTableTitle").innerText = sCustomSetTablesTitle;
-                HTMLFunctions.getElement("hideCustomSetTableTitle").innerText = sCustomSetTablesTitle;
-
-                oTitleInput.value = "";
-                oSetSelectorInput.value = "";
-                oSetsInput.value = "";
-                oTitleInput.disabled = false;
-
-                HTMLFunctions.setInputErrorState(oTitleInput, false);
-                HTMLFunctions.setInputErrorState(oSetSelectorInput, false);
-                HTMLFunctions.setInputErrorState(oSetsInput, false);
+                iCustomGroupCount += 1;
+                oModifiedElementSection.setTitle(`Custom Set Tables(${iCustomGroupCount})`);
+                fResetInputFields();
 
                 var oNewRow = {};
                 oNewRow[sTitle.replace(/ /g, "")] = fCreateCustomTableRow(sTitle, sSetSelector, aSets.join(", "), undefined);
 
-                HTMLFunctions.createTableRows(oCustomTablesTable, oNewRow);
-
+                oModifiedElementSection.addTableRows(oNewRow);
             } else {
                 if (!sSetSelector && aSets.length === 0) {
                     if (!sSetSelector) HTMLFunctions.setInputErrorState(oSetSelectorInput, true, "At least one selection method has to be filed");
@@ -1437,12 +1436,10 @@ class E621Configurator {
 
         var oCreateGroupButton = HTMLFunctions.createButton(undefined, "Create Group", fCreateCustomTable);
         HTMLFunctions.addElementStyles(oCreateGroupButton, { padding: "0.25rem 0rem", "margin-top": "20px" });
-
-        HTMLFunctions.addElementStyles(oCustomTableInputSection, { "margin-top": "10px", "margin-bottom": "10px" });
         HTMLFunctions.addElementToContainer(oCreateGroupButton, oCustomTableInputSection);
-        HTMLFunctions.addElementToContainer(oCustomTableInputSection, oHideCustomSetTablesContainer);
 
         var fEditCustomSetTables = function (sTableId) {
+            fResetInputFields();
             var oCustomTabel = oViewConfiguration.getCustomSetTables()[sTableId.toLowerCase().replace(/ /g, "")];
 
             var oTitleInput = HTMLFunctions.getElement("customSetTables-titleInput");
@@ -1468,11 +1465,10 @@ class E621Configurator {
                         var sTitle = oEvent.srcElement.dataset.group_title;
 
                         oViewConfiguration.remvoeCustomSetTable(sTitle.toLowerCase().replace(/ /g, ""));
-                        HTMLFunctions.removeTableRow(oCustomTablesTable, { column: "Title", value: sTitle });
+                        HTMLFunctions.removeTableRow(oModifiedElementSection.table, { column: "Title", value: sTitle });
 
-                        var sCustomSetTablesTitle = `Custom Set Tables(${Object.keys(oViewConfiguration.getCustomSetTables()).length})`;
-                        HTMLFunctions.getElement("showCustomSetTableTitle").innerText = sCustomSetTablesTitle;
-                        HTMLFunctions.getElement("hideCustomSetTableTitle").innerText = sCustomSetTablesTitle;
+                        iCustomGroupCount -= 1;
+                        oModifiedElementSection.setTitle(`Custom Set Tables(${iCustomGroupCount})`);
                     }, { group_title: sTitle })
                 },
                 editButton: {
@@ -1484,34 +1480,16 @@ class E621Configurator {
             };
         };
 
-        var oCustomTablesTable = HTMLFunctions.createTable(undefined, ["table", "striped"]);
-        HTMLFunctions.createTableColumns(oCustomTablesTable, ["Title", "Set Selector", "Sets", "", ""]);
-
         var oCreatedTableRows = {};
-
         for (var sKey in oCustomTables) {
             var oCreatedTable = oCustomTables[sKey];
             oCreatedTableRows[sKey] = fCreateCustomTableRow(oCreatedTable.title, oCreatedTable.setSelector, oCreatedTable.setNames.join(", "), oCreatedTable.position);
         }
 
-        HTMLFunctions.createTableRows(oCustomTablesTable, oCreatedTableRows);
-        HTMLFunctions.addElementToContainer(oCustomTablesTable, oCustomSetTableSection);
-        HTMLFunctions.addElementToContainer(oCustomTablesTable, oHideCustomSetTablesContainer);
+        oModifiedElementSection.addInputs(oCustomTableInputSection);
+        oModifiedElementSection.addTableRows(oCreatedTableRows);
 
-        HTMLFunctions.addElementToContainer(oShowCustomSetTablesContainer, oCustomSetTableSection);
-        HTMLFunctions.addElementToContainer(oHideCustomSetTablesContainer, oCustomSetTableSection);
-
-        oShowButton.addEventListener("click", function () {
-            HTMLFunctions.addStyleToElement(oHideCustomSetTablesContainer, "display", "block");
-            HTMLFunctions.addStyleToElement(oShowCustomSetTablesContainer, "display", "none");
-        });
-
-        oHideButton.addEventListener("click", function () {
-            HTMLFunctions.addStyleToElement(oHideCustomSetTablesContainer, "display", "none");
-            HTMLFunctions.addStyleToElement(oShowCustomSetTablesContainer, "display", "block");
-        });
-
-        return oCustomSetTableSection;
+        return oModifiedElementSection.container;
     }
 
     displayProfile(bCreationMode, oProfile) {
