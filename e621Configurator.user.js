@@ -5,7 +5,7 @@
 // @description  Configure e621 to your liking
 // @author       S87GMIL
 // @match        https://e621.net/*
-// @icon64       https://raw.githubusercontent.com/S87GMIL/e621Configurator/main/icons/test.png
+// @icon64       https://raw.githubusercontent.com/S87GMIL/e621Configurator/main/icons/e621Configurator.png
 // @require      https://raw.githubusercontent.com/S87GMIL/e621Configurator/main/utils/HTMLFunctions.js
 // @require      https://raw.githubusercontent.com/S87GMIL/e621Configurator/main/utils/ProfileStorage.js
 // @require      https://raw.githubusercontent.com/S87GMIL/e621Configurator/main/utils/URLFunctions.js
