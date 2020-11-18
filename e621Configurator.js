@@ -1847,7 +1847,7 @@ class E621Configurator {
         var oViewConfigs = {};
         oViewConfigs[oPostsViewConfig.id] = oPostsViewConfig;
 
-        var oDefaultConfig = this.createNewProfile("s87Tweeks", "S87 Tweeks", "S87's Profile", false, oViewConfigs, false, true);
+        var oDefaultConfig = this.createNewProfile("s87Tweaks", "S87 Tweaks", "S87's little tweaks", false, oViewConfigs, false, true);
         ProfileStorage.saveProfile(oDefaultConfig, true);
 
         return oDefaultConfig;
