@@ -4,8 +4,8 @@
 </div>
 
 # Installation
-To install you will first need a user script manager like [Tampermonkey](https://www.tampermonkey.net/).<br>
-Once installed you can either follow this [installation link](https://github.com/S87GMIL/e621Configurator/raw/main/e621Configurator.user.js). 
+To install the script, you will need a user script manager like [Tampermonkey](https://www.tampermonkey.net/).<br>
+Once installed, simply follow this [installation link](https://github.com/S87GMIL/e621Configurator/raw/main/e621Configurator.user.js) to install. 
 
 # Use
 
