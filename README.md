@@ -4,32 +4,28 @@
 </div>
 
 # Installation
-To install you will first need a user script manager like [Tampermonkey](https://www.tampermonkey.net/).<br>
-Once installed you can either follow this [installation link](./e621Configurator.user.js). 
+To install the script, you will need a user script manager like <a href="https://www.tampermonkey.net/" target="_blank">Tanpermonkey</a>.<br>
+Once installed, simply follow this [installation link](https://github.com/S87GMIL/e621Configurator/raw/main/e621Configurator.user.js) to install. 
 
 # Use
 
 This user script enables you to modify the UI of e621 to your liking with the use of profiles and view configurations.<br>
-The main configuration dialog can be accessed using the "Configure View" button on the right side of the main navigation bar.<br><br>
-<image src="./images/configureViewButton.png" style="box-shadow: 0px 0px 10px black;"><br><br> 
+The main configuration dialog can be accessed using the "Configure View" button on the right side of the main navigation bar.<br>
+<image src="./images/configureViewButton.png" style="box-shadow: 0px 0px 10px black;"><br> 
 
 # Profiles
 A profile is used as a container for view configurations and a way to manage your different layouts, they can also be imported and exported in order to share them between devices.<br>
 By pressing "Use" the selected profile will be loaded and set as default, so every time you open the site, that profile will be loaded.<br><br>
-<image src="./images/profileSelection.png" style="box-shadow: 0px 0px 10px black;"><br><br> 
+<image src="./images/profileSelection.png" style="box-shadow: 0px 0px 10px black;">
 
 # View Configurations
-
-## View Configuration Table
 The view configuration page can be accessed by pressing "Edit" on a profile, the view configuration table is located bellow the "Edit Profile" section.<br>
 In order to create a view configuration you will first have to define a relative URL path, for which the configuration should be used. If you want to configure the current path, you can simply press "User Current Path" and then "Create".<br>
 It is also possible to edit or delete view configurations on this page.<br><br> 
 
-<image src="./images/viewConfigurationOverview.png" style="box-shadow: 0px 0px 10px black;"><br><br><br>
+<image src="./images/viewConfigurationOverview.png" style="box-shadow: 0px 0px 10px black;">
 
 ## View Configuration
-<br>
-
 ### Basic Settings 
 <p>
 After creating a view configuration or pressing "Edit" on an existing one, you will be lead to the view configuration page.<br>
@@ -40,6 +36,7 @@ As an exmaple for this option we use the following path: "/posts/1802444"
 <br>If "Include subpaths" is checked, this view configuration will be used because only the beginning, in our case "/posts", has to match. 
 <br>If the subpaths are not inlcluded, the view configuration will not be used for the path above, because the URL path has to exactly match the view configuration path.
 </p>
+
 <p>
 It is also possible to define specific URL parameters, that have to be matched, in order for the view configuration to become active.
 These parameters can either be entered manually, or by using the "Use Current Parameters" button.
@@ -47,9 +44,7 @@ These parameters can either be entered manually, or by using the "Use Current Pa
 This is usefull if you are creating a view configuration for your post sets where the parameters have to macth your ID e.g "?search[creator_id]=YourID>";
 </p>
 
-<br>
-
-<image src="./images/viewConfigurationPage.png" style="box-shadow: 0px 0px 10px black;"><br><br> 
+<image src="./images/viewConfigurationPage.png" style="box-shadow: 0px 0px 10px black;"><br>
 
 ### Element Modification
 
@@ -61,13 +56,11 @@ Bellow the basic settings you will find the following expandable panels, which a
 - Moved Elements: In here you can move elements to another position, e.g. move the "Add To Set" button next to the favorite button (Example in the S87 Tweeks Profile)<br>
 - Changed Links: This is used to change the destination of a link, e.g. change the link of the "My Sets" button, so it opens your sets sorted by name.<br>
 - Created Links: As the name suggests you can create your own links and buttons in this section
-<br><br>
 
 ### View Specific Settings
 <p>
 At the moment there are the following view specific settings, which are only available for certain views like "Posts" and "Post Sets":
 </p>
-<br>
 
 ### Post View Specific Settings
 <p>
@@ -77,11 +70,10 @@ Sets that should be included in a group can be defined either using wildcards in
 </p>
 
 <image src="./images/customSetGroupTable.png" style="box-shadow: 0px 0px 10px black;">
-<br><br>
 
 **Final Result**
 
-<image src="./images/addToSetSelectionGroups.png" style="box-shadow: 0px 0px 10px black;"><br><br> 
+<image src="./images/addToSetSelectionGroups.png" style="box-shadow: 0px 0px 10px black;">
 
 ### Set View Specific Settings
 <p>
@@ -89,20 +81,20 @@ In here you can define custom set tables, similar to the groups above, only diff
 e.g.:
 </p>
 
-<image src="./images/customSetTables.png" style="box-shadow: 0px 0px 10px black;"><br><br> 
+<image src="./images/customSetTables.png" style="box-shadow: 0px 0px 10px black;"><br>
 <br>
 
 # Examples
 These are just a few simple changes performed using this tool<br><br>
 
 ### Cleaner image controls with a custom add to set button
-<image src="./images/customizedImageControls.png" style="box-shadow: 0px 0px 10px black;"><br><br> 
+<image src="./images/customizedImageControls.png" style="box-shadow: 0px 0px 10px black;"><br> 
 
 ### Custom add to set dialog that allows the creation of new sets
-<image src="./images/CustomAddToSetPopup.png" style="box-shadow: 0px 0px 10px black;"><br><br> 
+<image src="./images/CustomAddToSetPopup.png" style="box-shadow: 0px 0px 10px black;"><br>
 
 ### Larger artist tag with custom margins so it's easier to press on tablets
-<image src="./images/largerArtistTag.png" style="box-shadow: 0px 0px 10px black;"><br><br> 
+<image src="./images/largerArtistTag.png" style="box-shadow: 0px 0px 10px black;"><br>
 
 ### Changed "Mine" link, so it opens my sets sorted by name
-<image src="./images/CustomMySetsLink.png" style="box-shadow: 0px 0px 10px black;"><br><br> 
+<image src="./images/CustomMySetsLink.png" style="box-shadow: 0px 0px 10px black;"><br>
