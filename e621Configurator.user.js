@@ -18,7 +18,7 @@
 // @require      https://raw.githubusercontent.com/S87GMIL/e621Configurator/main/classes/Profile.js
 // @require      https://raw.githubusercontent.com/S87GMIL/e621Configurator/main/classes/SetsViewConfiguration.js
 // @require      https://raw.githubusercontent.com/S87GMIL/e621Configurator/main/classes/SetsViewParser.js
-// @require      https://raw.githubusercontent.com/S87GMIL/e621Configurator/main/e621Configurator.js
+// @require      https://raw.githubusercontent.com/S87GMIL/e621Configurator/main/classes/e621Configurator.js
 // @grant        GM_setValue
 // @grant        GM_getValue
 // @grant        GM_deleteValue
