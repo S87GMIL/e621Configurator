@@ -1120,6 +1120,7 @@ class E621Configurator {
         }
 
         oModifiedElementSection.addInputs(ocreateElementButtonSection);
+        oModifiedElementSection.addTableRows(oCreatedElementRows);
 
         return oModifiedElementSection.container;
     }
@@ -1823,11 +1824,13 @@ class E621Configurator {
         var oE621Layout = this.createNewProfile("e621Profile", "E621", "Default layout of e621", false, {}, false, false);
         ProfileStorage.saveProfile(oE621Layout, false);
 
-        var oPostViewSettings = new PostViewConfiguration("postsViewConfig", "/posts", true);
+        var oS87Profile = this.createNewProfile("s87Tweaks", "S87 Tweaks", "S87's e621 tweaks", false, undefined, false, true);
+        var oPostViewSettings = oS87Profile.createViewConfiguration("postsViewConfig", "/posts", true);
 
         oPostViewSettings.hideElement("post-related-images");
         oPostViewSettings.hideElement("post-information");
         oPostViewSettings.hideElement("image-resize-selector");
+        oPostViewSettings.hideElement("/html/body/div[1]/div[3]/div[1]/section/section[1]/div[4]");
 
         oPostViewSettings.moveElement("set", "image-extra-controls", 4);
         oPostViewSettings.modifyElementStyle("set", undefined, { "background": "#453269", "margin-right": "10px" });
@@ -1843,14 +1846,9 @@ class E621Configurator {
         oPostViewSettings.modifyElementStyle("add-to-set-id", undefined, { "width": "256px", "font-size": "17px" });
         oPostViewSettings.modifyElementStyle("add-to-set-submit", undefined, { "margin-top": "20px", "width": "100%", "height": "30px" });
 
-        var oPostsViewConfig = oPostViewSettings.getConfiguration();
-        var oViewConfigs = {};
-        oViewConfigs[oPostsViewConfig.id] = oPostsViewConfig;
+        ProfileStorage.saveProfile(oS87Profile, true);
 
-        var oDefaultConfig = this.createNewProfile("s87Tweaks", "S87 Tweaks", "S87's little tweaks", false, oViewConfigs, false, true);
-        ProfileStorage.saveProfile(oDefaultConfig, true);
-
-        return oDefaultConfig;
+        return oS87Profile;
     }
 
     configureView(oProfile) {
