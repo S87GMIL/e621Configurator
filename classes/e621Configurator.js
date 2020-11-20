@@ -1840,6 +1840,8 @@ class E621Configurator {
         oPostViewSettings.modifyElementStyle(undefined, "artist-tag-list", { "font-size": "18px", "padding-top": "15px", "padding-bottom": "15px" });
 
         oPostViewSettings.createLink("add-to-set-dialog", "createNewSet", "Create Set", "/post_sets/new", oPostViewSettings.BUTTON_ELEMENT, undefined, true);
+        oPostViewSettings.createLink("/html/body/header/nav/menu[2]", "liked-posts", "Liked", "/posts?tags=votedup:anything", oPostViewSettings.LINK_ELEMENT);
+
         oPostViewSettings.modifyElementStyle("createNewSet", undefined, { "margin-top": "20px", "width": "100%", "text-align": "center" });
         oPostViewSettings.addElementToSetSelectionDialog("createNewSet");
 
