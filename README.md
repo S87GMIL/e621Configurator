@@ -4,10 +4,17 @@
 </div>
 
 # Installation
+
+## Userscript
 To install the script, you will need a user script manager like <a href="https://www.tampermonkey.net/" target="_blank">Tanpermonkey</a>.<br>
 Once installed, simply follow this [link](https://github.com/S87GMIL/e621Configurator/raw/main/e621Configurator.user.js) to install. 
 
-<br><br>
+## Chromium Extension
+Download and unpack the [e621Configurator-BrowserExtension.zip](https://github.com/S87GMIL/e621Configurator/blob/main/e621Configurator-BrowserExtension.zip).<br>
+To install a chromium extension from a local file, you will have to visit the [extension page](chrome://extensions/) and activate the "Developmer mode", this switch is usually located in the top right corner of the extension page.<br>
+After enabling the developer mode, you should see a button called "Load unpacked", once pressed you can select the unpacked "e621Configurator-BrowserExtension" folder and press "select folder".<br>
+This should automatically add the local extension to your browser.<br>
+
 # Overview
 
 This user script enables you to modify the UI of e621 to your liking, with the use of profiles and view configurations.<br>
