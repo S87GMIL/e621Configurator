@@ -7,11 +7,15 @@
 To install the script, you will need a user script manager like <a href="https://www.tampermonkey.net/" target="_blank">Tanpermonkey</a>.<br>
 Once installed, simply follow this [link](https://github.com/S87GMIL/e621Configurator/raw/main/e621Configurator.user.js) to install. 
 
-# Use
+<br><br>
+# Overview
 
 This user script enables you to modify the UI of e621 to your liking, with the use of profiles and view configurations.<br>
 The main configuration dialog can be accessed using the "Configure View" button on the right side of the main navigation bar.<br>
 <image src="./images/configureViewButton.png" style="box-shadow: 0px 0px 10px black;"><br> 
+    
+# Tutorial
+Visit the [Wiki](https://github.com/S87GMIL/e621Configurator/wiki) for an in depth tutorial.
 
 # Profiles
 A profile is used as a container for view configurations and a way to manage your different layouts, they can also be imported and exported in order to share them between devices.<br>
