@@ -1,6 +1,6 @@
-static class SuggestionHelper {
+class SuggestionHelper {
 
-    async suggestSets(postID) {
+    static async suggestSets(postID) {
         let apiHelper = APIHelper.getInstance();
 
         let post = await apiHelper.getPost(postID);
