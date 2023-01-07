@@ -69,15 +69,15 @@ class APIHelper {
 
         setPosts.posts.forEach(post => {
             post.tags.general.forEach(tag => {
-                setTags.general.add();
+                setTags.general.add(tag);
             });
 
             post.tags.species.forEach(tag => {
-                setTags.species.add();
+                setTags.species.add(tag);
             });
 
             post.tags.lore.forEach(tag => {
-                setTags.lore.add();
+                setTags.lore.add(tag);
             });
         });
 
