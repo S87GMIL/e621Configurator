@@ -20,11 +20,11 @@ class APIHelper {
     }
 
     async getPost(postID) {
-        let post = await this.#performRequest(`/posts/${postID}.json`);
-        if (!post)
+        let postResposen = await this.#performRequest(`/posts/${postID}.json`);
+        if (!postResposen)
             throw Error(`No post with the ID '${postID}' could be found!`);
 
-        return post;
+        return postResposen.post;
     }
 
     async getUserSets() {
