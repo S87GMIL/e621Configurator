@@ -9,7 +9,7 @@ class APIHelper {
         this.userSets;
         this.setTags = {};
 
-        this.setPostTagCheckAmount = 20;
+        this.setPostTagCheckAmount = 10;
     }
 
     static getInstance() {
@@ -56,6 +56,7 @@ class APIHelper {
             return this.setTags[setID];
 
         this.setTags[setID] = {
+            id: setID,
             general: new Set(),
             species: new Set(),
             lore: new Set()
@@ -64,12 +65,9 @@ class APIHelper {
         let setTags = this.setTags[setID];
 
         let set = await this.getSet(setID);
+        let setPosts = await this.#performRequest(`/posts.json?tags=set:${set.shortname}`);
 
-        for (let index = 0; index < this.setPostTagCheckAmount; index++) {
-            let postId = set.post_ids[index];
-
-            let post = await this.getPost(postId);
-
+        setPosts.forEach(post => {
             post.tags.general.forEach(tag => {
                 setTags.general.add();
             });
@@ -81,7 +79,7 @@ class APIHelper {
             post.tags.lore.forEach(tag => {
                 setTags.lore.add();
             });
-        }
+        });
 
         return this.setTags[setID]
     }

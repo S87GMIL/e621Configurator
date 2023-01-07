@@ -29,7 +29,7 @@ class SuggestionHelper {
             }).length;
 
             setTagMatches.push({
-                id: set.id,
+                id: setTags.id,
                 matchingTags: matches
             });
         });
