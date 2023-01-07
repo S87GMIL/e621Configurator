@@ -44,7 +44,7 @@ class SuggestionHelper {
         let apiHelper = APIHelper.getInstance();
         let setTags = [];
 
-        if (!sets[index + 1])
+        if (!sets[index])
             return setTags;
 
         let tags = await apiHelper.getSetTags(sets[index].id);
