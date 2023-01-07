@@ -43,7 +43,7 @@ class ProfileStorage {
             activeProfileConfig = profiles[key];
         };
 
-        return new Profile(profileConfig.id).parseProfile(activeProfileConfig);
+        return new Profile(activeProfileConfig.id).parseProfile(activeProfileConfig);
     }
 
     static setProfileActive(oProfile, bIsActive) {
