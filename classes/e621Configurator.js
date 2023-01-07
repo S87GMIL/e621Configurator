@@ -1621,6 +1621,8 @@ class E621Configurator {
         var sId;
         var oNameInput = HTMLFunctions.getElement("profileNameInput");
         var oDescriptionInput = HTMLFunctions.getElement("profileDescriptionInput");
+        let suggestSets = HTMLFunctions.getElement("suggestSetsCheckbox").checked;
+        let username = HTMLFunctions.getElement("usernameInput").value;
 
         if (bCreationMode) {
             var oIdInput = HTMLFunctions.getElement("profileIdInput");
@@ -1637,6 +1639,8 @@ class E621Configurator {
             oProfile.setId(sId);
             oProfile.setName(sName);
             oProfile.setDescription(sDescription);
+            oProfile.setSuggestSets(suggestSets);
+            oProfile.setUsername(username);
 
             ProfileStorage.saveProfile(oProfile, oProfile.getActive());
 

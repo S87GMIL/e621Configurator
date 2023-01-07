@@ -205,7 +205,15 @@ class Profile {
         return this.suggestSets;
     }
 
+    setSuggestSets(suggestSets){
+        this.suggestSets = suggestSets;
+    }
+
     getUsername() {
         return this.username;
+    }
+
+    setUsername(username){
+        this.username = username;
     }
 }
