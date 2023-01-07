@@ -7,27 +7,28 @@ class SuggestionHelper {
         let setTagMatches = [];
 
         apiHelper.getUserSets().forEach(set => {
-            if (set.post_ids.includes(postID))
-                continue;
+            if (!set.post_ids.includes(postID)) {
 
-            let setTags = apiHelper.getSetTags(set.id);
+                let setTags = apiHelper.getSetTags(set.id);
 
-            let matches = post.tags.general.filter(tag => {
-                return setTags.general.has(tag);
-            }).length;
+                let matches = post.tags.general.filter(tag => {
+                    return setTags.general.has(tag);
+                }).length;
 
-            matches += post.tags.species.filter(tag => {
-                return setTags.species.has(tag);
-            }).length;
+                matches += post.tags.species.filter(tag => {
+                    return setTags.species.has(tag);
+                }).length;
 
-            matches += post.tags.lore.filter(tag => {
-                return setTags.lore.has(tag);
-            }).length;
+                matches += post.tags.lore.filter(tag => {
+                    return setTags.lore.has(tag);
+                }).length;
 
-            setTagMatches.push({
-                id: set.id,
-                matchingTags: matches
-            });
+                setTagMatches.push({
+                    id: set.id,
+                    matchingTags: matches
+                });
+
+            }
         });
 
         let setSuggestions = setTagMatches.sort((a, b) => {
