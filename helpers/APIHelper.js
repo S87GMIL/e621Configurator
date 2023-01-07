@@ -97,7 +97,7 @@ class APIHelper {
     }
 
     #performRequest(requestPath, method = "GET", body = {}) {
-        return new Promise(resolve, reject => {
+        return new Promise((resolve, reject) => {
 
             if (requestPath.substring(0, 1) !== "/")
                 requestPath = "/" + requestPath;
