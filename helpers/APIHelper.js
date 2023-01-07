@@ -55,17 +55,18 @@ class APIHelper {
         if (this.setTags[setID])
             return this.setTags[setID];
 
+        let set = await this.getSet(setID);
+        let setPosts = await this.#performRequest(`/posts.json?tags=set:${set.shortname}`);
+
         this.setTags[setID] = {
             id: setID,
+            shortName: set.shortname,
             general: new Set(),
             species: new Set(),
             lore: new Set()
         };
 
         let setTags = this.setTags[setID];
-
-        let set = await this.getSet(setID);
-        let setPosts = await this.#performRequest(`/posts.json?tags=set:${set.shortname}`);
 
         setPosts.posts.forEach(post => {
             post.tags.general.forEach(tag => {

@@ -31,11 +31,11 @@ class SuggestionHelper {
         });
 
         let setSuggestions = setTagMatches.sort((a, b) => {
-            return a.matchingTags - b.matchingTags;
+            return b.matchingTags - a.matchingTags;
         });
 
         setSuggestions = setSuggestions.filter(tagMatches => {
-            return tagMatches.matchingTags > 4;
+            return tagMatches.matchingTags > 10;
         });
 
         return setSuggestions;
