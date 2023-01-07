@@ -36,11 +36,14 @@ class ProfileStorage {
         let activeProfileConfig = {};
 
         for (let key in profiles) {
-            if (profiles[key].active === true);
+            if (!profiles[key].active) {
+                continue;
+            };
+
             activeProfileConfig = profiles[key];
         };
 
-        return new Profile(profileConfig.id).parseProfile(profileConfig);
+        return new Profile(profileConfig.id).parseProfile(activeProfileConfig);
     }
 
     static setProfileActive(oProfile, bIsActive) {
