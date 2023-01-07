@@ -8,7 +8,8 @@ class SuggestionHelper {
 
         let userSets = await apiHelper.getUserSets();
 
-        let setTagResults = await this.#getTagsForSets(userSets, 0);
+        let setTagResults = [];
+        await this.#getTagsForSets(userSets, 0, setTagResults);
 
         setTagResults.forEach(setTags => {
             let matches = post.tags.general.filter(tag => {
@@ -40,9 +41,8 @@ class SuggestionHelper {
         return setSuggestions;
     }
 
-    static async #getTagsForSets(sets, index) {
+    static async #getTagsForSets(sets, index, setTags) {
         let apiHelper = APIHelper.getInstance();
-        let setTags = [];
 
         if (!sets[index])
             return setTags;
@@ -50,6 +50,6 @@ class SuggestionHelper {
         let tags = await apiHelper.getSetTags(sets[index].id);
         setTags.push(tags);
 
-        setTags.concat(this.#getTagsForSets(sets, index + 1));
+        this.#getTagsForSets(sets, index + 1);
     }
 }
