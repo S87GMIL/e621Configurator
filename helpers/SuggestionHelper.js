@@ -8,12 +8,7 @@ class SuggestionHelper {
 
         let userSets = await apiHelper.getUserSets();
 
-        let setTagPromises = userSets.map(async set => {
-            if (!set.post_ids.includes(postID))
-                return apiHelper.getSetTags(set.id);
-        });
-
-        let setTagResults = await Promise.all(setTagPromises);
+        let setTagResults = await this.#getTagsForSets(userSets, 0);
 
         setTagResults.forEach(setTags => {
             let matches = post.tags.general.filter(tag => {
@@ -43,5 +38,18 @@ class SuggestionHelper {
         });
 
         return setSuggestions;
+    }
+
+    async #getTagsForSets(sets, index) {
+        let apiHelper = APIHelper.getInstance();
+        let setTags = [];
+
+        let tags = await apiHelper.getSetTags(sets[index].id);
+        setTags.concat(tags);
+
+        if (!sets[index + 1])
+            return setTags;
+
+        setTags.concat(this.#getTagsForSets(sets, index + 1));
     }
 }
