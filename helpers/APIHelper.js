@@ -67,7 +67,7 @@ class APIHelper {
         let set = await this.getSet(setID);
         let setPosts = await this.#performRequest(`/posts.json?tags=set:${set.shortname}`);
 
-        setPosts.forEach(post => {
+        setPosts.posts.forEach(post => {
             post.tags.general.forEach(tag => {
                 setTags.general.add();
             });
