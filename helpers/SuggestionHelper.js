@@ -26,6 +26,8 @@ class SuggestionHelper {
 
             setTagMatches.push({
                 id: setTags.id,
+                shortName: setTags.shortName,
+                name: setTags.name,
                 matchingTags: matches
             });
         });

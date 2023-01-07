@@ -61,6 +61,7 @@ class APIHelper {
         this.setTags[setID] = {
             id: setID,
             shortName: set.shortname,
+            name: set.name,
             general: new Set(),
             species: new Set(),
             lore: new Set()
