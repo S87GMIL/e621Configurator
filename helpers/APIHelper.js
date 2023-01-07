@@ -12,7 +12,7 @@ class APIHelper {
         this.setPostTagCheckAmount = 20;
     }
 
-    getInstance() {
+    static getInstance() {
         if (!instance)
             instance = new APIHelper();
 
