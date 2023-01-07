@@ -50,6 +50,6 @@ class SuggestionHelper {
         let tags = await apiHelper.getSetTags(sets[index].id);
         setTags.push(tags);
 
-        this.#getTagsForSets(sets, index + 1, setTags);
+        await this.#getTagsForSets(sets, index + 1, setTags);
     }
 }
