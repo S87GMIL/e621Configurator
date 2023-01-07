@@ -8,29 +8,30 @@ class SuggestionHelper {
 
         let userSets = await apiHelper.getUserSets();
 
-        userSets.forEach(async set => {
-            if (!set.post_ids.includes(postID)) {
+        let setTagPromises = userSets.map(async set => {
+            if (!set.post_ids.includes(postID))
+                return apiHelper.getSetTags(set.id);
+        });
 
-                let setTags = await apiHelper.getSetTags(set.id);
+        let setTagResults = await Promise.all(setTagPromises);
 
-                let matches = post.tags.general.filter(tag => {
-                    return setTags.general.has(tag);
-                }).length;
+        setTagResults.forEach(setTags => {
+            let matches = post.tags.general.filter(tag => {
+                return setTags.general.has(tag);
+            }).length;
 
-                matches += post.tags.species.filter(tag => {
-                    return setTags.species.has(tag);
-                }).length;
+            matches += post.tags.species.filter(tag => {
+                return setTags.species.has(tag);
+            }).length;
 
-                matches += post.tags.lore.filter(tag => {
-                    return setTags.lore.has(tag);
-                }).length;
+            matches += post.tags.lore.filter(tag => {
+                return setTags.lore.has(tag);
+            }).length;
 
-                setTagMatches.push({
-                    id: set.id,
-                    matchingTags: matches
-                });
-
-            }
+            setTagMatches.push({
+                id: set.id,
+                matchingTags: matches
+            });
         });
 
         let setSuggestions = setTagMatches.sort((a, b) => {
