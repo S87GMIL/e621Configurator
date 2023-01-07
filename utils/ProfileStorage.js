@@ -33,10 +33,12 @@ class ProfileStorage {
 
     static getActiveProfile() {
         let profiles = GM_getValue(createdProfilesStorageKey);
+        let activeProfileConfig = {};
 
-        let profileConfig = profiles.filter(profile => {
-            return profile.active === true;
-        })[0];
+        for (let key in profiles) {
+            if (profiles[key].active === true);
+            activeProfileConfig = profiles[key];
+        };
 
         return new Profile(profileConfig.id).parseProfile(profileConfig);
     }
