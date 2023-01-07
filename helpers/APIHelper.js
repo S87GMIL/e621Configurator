@@ -6,7 +6,7 @@ class APIHelper {
         if (instance)
             return instance;
 
-        this.userSets = [];
+        this.userSets;
         this.setTags = {};
 
         this.setPostTagCheckAmount = 20;
