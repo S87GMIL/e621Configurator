@@ -44,11 +44,11 @@ class SuggestionHelper {
         let apiHelper = APIHelper.getInstance();
         let setTags = [];
 
-        let tags = await apiHelper.getSetTags(sets[index].id);
-        setTags.concat(tags);
-
         if (!sets[index + 1])
             return setTags;
+
+        let tags = await apiHelper.getSetTags(sets[index].id);
+        setTags.concat(tags);
 
         setTags.concat(this.#getTagsForSets(sets, index + 1));
     }
