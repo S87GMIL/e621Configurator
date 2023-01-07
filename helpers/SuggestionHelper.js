@@ -11,7 +11,7 @@ class SuggestionHelper {
         userSets.forEach(set => {
             if (!set.post_ids.includes(postID)) {
 
-                let setTags = apiHelper.getSetTags(set.id);
+                let setTags = await apiHelper.getSetTags(set.id);
 
                 let matches = post.tags.general.filter(tag => {
                     return setTags.general.has(tag);
