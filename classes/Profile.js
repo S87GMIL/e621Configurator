@@ -1,7 +1,7 @@
 class Profile {
     rootViewId = "root";
 
-    constructor(sId, sName, sDescription, bIsActive, oViewConfigrations, bDeletable, bEditable) {
+    constructor(sId, sName, sDescription, bIsActive, oViewConfigrations, bDeletable, bEditable, suggestSets, username) {
         this.deletable = bDeletable === undefined ? true : bDeletable;
         this.editable = bEditable === undefined ? true : bEditable;
 
@@ -11,6 +11,8 @@ class Profile {
         this.name = sName;
         this.description = sDescription;
         this.active = bIsActive || false;
+        this.suggestSets = suggestSets || false;
+        this.username = username;
 
         this.viewConfigurations = {};
         if (oViewConfigrations) {
@@ -32,6 +34,8 @@ class Profile {
         this.active = oProfile.active;
         this.editable = oProfile.editable;
         this.deletable = oProfile.deletable;
+        this.suggestSets = oProfile.suggestSets;
+        this.username = oProfile.username;
 
         this.#parseViewConfigs(oProfile.viewConfigurations);
         return this;
@@ -128,7 +132,9 @@ class Profile {
             name: this.name,
             description: this.description,
             active: this.active,
-            viewConfigurations: {}
+            viewConfigurations: {},
+            suggestSets: this.suggestSets,
+            username: this.username
         }
 
         for (var sKey in this.viewConfigurations) {
@@ -193,5 +199,13 @@ class Profile {
     deleteViewConfiguration(sId) {
         this.isDirty = true;
         delete this.viewConfigurations[sId];
+    }
+
+    getSuggestSets() {
+        return this.suggestSets;
+    }
+
+    getUsername() {
+        return this.username;
     }
 }

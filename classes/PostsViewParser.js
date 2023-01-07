@@ -1,5 +1,8 @@
 class PostsViewParser extends ViewConfigParser {
-    performUiChanges(oViewConfig) {
+    async performUiChanges(oViewConfig, oProfile) {
+        if (oProfile.getSuggestSets())
+            await this.addSetSuggestionSection(oProfile.getUsername());
+
         oViewConfig.executionOrder.forEach(sFunctionName => {
             var oConfig = oViewConfig[sFunctionName];
 
@@ -62,5 +65,35 @@ class PostsViewParser extends ViewConfigParser {
         };
         var oObserver = new MutationObserver(fObserverCallback);
         oObserver.observe(oTarget, { attributes: true, childList: true, subtree: true });
+    }
+
+    async addSetSuggestionSection(username) {
+        let addToSetDialog = HTMLFunctions.getElement("add-to-set-dialog");
+
+        let suggestionForm = document.createElement("div");
+        suggestionForm.classList.add("simple_form");
+
+        let currentPostId = document.location.pathname.split("/").pop();
+        let suggestedSets = await SuggestionHelper.suggestSets(currentPostId);
+
+        if (suggestedSets.length === 0)
+            return;
+
+        suggestedSets.forEach(set => {
+            let suggestedSetLable = document.createElement("label");
+            suggestedSetLable.innerText = set.name;
+
+            suggestionForm.appendChild(suggestedSetLable);
+        });
+
+        var addToSuggstedButton = HTMLFunctions.createButton("addToSuggestedButton", "Add to suggested sets", function () {
+            suggestedSets.forEach(set => {
+                APIHelper.getInstance().addPostToSet(set.id, currentPostId);
+            });
+        });
+
+        suggestionForm.appendChild(addToSuggstedButton);
+
+        addToSetDialog.appendChild(suggestionForm);
     }
 }

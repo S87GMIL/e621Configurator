@@ -31,6 +31,16 @@ class ProfileStorage {
 
     }
 
+    static getActiveProfile() {
+        let profiles = GM_getValue(createdProfilesStorageKey);
+
+        let profileConfig = profiles.filter(profile => {
+            return profile.active === true;
+        })[0];
+
+        return new Profile(profileConfig.id).parseProfile(profileConfig);
+    }
+
     static setProfileActive(oProfile, bIsActive) {
         oProfile.setActive(bIsActive);
         this.saveProfile(oProfile, bIsActive);
