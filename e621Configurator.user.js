@@ -19,6 +19,8 @@
 // @require      https://raw.githubusercontent.com/S87GMIL/e621Configurator/v1.0/classes/SetsViewConfiguration.js
 // @require      https://raw.githubusercontent.com/S87GMIL/e621Configurator/v1.0/classes/SetsViewParser.js
 // @require      https://raw.githubusercontent.com/S87GMIL/e621Configurator/v1.0/classes/e621Configurator.js
+// @require      https://raw.githubusercontent.com/S87GMIL/e621Configurator/helpers/APIHelper.js
+// @require      https://raw.githubusercontent.com/S87GMIL/e621Configurator/helpers/SuggestionHelper.js
 // @grant        GM_setValue
 // @grant        GM_getValue
 // @grant        GM_deleteValue
