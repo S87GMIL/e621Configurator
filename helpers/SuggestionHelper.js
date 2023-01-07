@@ -40,7 +40,7 @@ class SuggestionHelper {
         return setSuggestions;
     }
 
-    async #getTagsForSets(sets, index) {
+    static async #getTagsForSets(sets, index) {
         let apiHelper = APIHelper.getInstance();
         let setTags = [];
 
