@@ -33,7 +33,7 @@ class APIHelper {
             throw Error("No username was set for the currently active profile!");
 
         if (!this.userSets)
-            this.userSets = await this.#performRequest.#performRequest(`/post_sets.json?commit=Search&search[creator_name]=${activeSet.getUsername()}`);
+            this.userSets = await this.#performRequest(`/post_sets.json?commit=Search&search[creator_name]=${activeSet.getUsername()}`);
 
         return this.userSets;
     }
