@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         e621 configurator
 // @namespace    http://tampermonkey.net/
-// @version      1.0
+// @version      2.0
 // @description  Configure e621 to your liking
 // @author       S87GMIL
 // @match        https://e621.net/*
