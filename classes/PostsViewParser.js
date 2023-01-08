@@ -1,13 +1,13 @@
 class PostsViewParser extends ViewConfigParser {
     async performUiChanges(oViewConfig, oProfile) {
-        if (oProfile.getSuggestSets())
-            await this.addSetSuggestionSection(oProfile.getUsername());
-
         oViewConfig.executionOrder.forEach(sFunctionName => {
             var oConfig = oViewConfig[sFunctionName];
 
             if (oConfig) this[sFunctionName](oConfig);
         });
+
+        if (oProfile.getSuggestSets())
+            await this.addSetSuggestionSection(oProfile.getUsername());
     }
 
     createCustomSetGroup(oConfigs) {
