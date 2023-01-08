@@ -23,24 +23,6 @@ class SuggestionHelper {
                 return false;
             }).length;
 
-            importantTagMatches += post.tags.species.filter(tag => {
-                if (setTags.species[tag]) {
-                    matchedTags.push(tag);
-                    return true;
-                }
-
-                return false;
-            }).length;
-
-            importantTagMatches += post.tags.lore.filter(tag => {
-                if (setTags.lore[tag]) {
-                    matchedTags.push(tag);
-                    return true;
-                }
-
-                return false;
-            }).length;
-
             setTagMatches.push({
                 id: setTags.id,
                 shortName: setTags.shortName,
