@@ -134,7 +134,7 @@ class APIHelper {
             $.ajax({
                 type: method,
                 url: host + requestPath,
-                data: JSON.stringify(body),
+                data: body,
                 success: resolve,
                 error: error => {
                     reject(error);
