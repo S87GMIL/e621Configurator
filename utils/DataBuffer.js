@@ -5,7 +5,7 @@ class DataBuffer {
         expirationDate.setDate(expirationDate.getDate() + expirationDays);
 
         dataJson.expiration = expirationDate.getTime();
-        GM_setValue(key, vValue);
+        GM_setValue(key, dataJson);
     }
 
     static getBufferData(key) {
