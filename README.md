@@ -29,6 +29,10 @@ A profile is used as a container for view configurations and a way to manage you
 By pressing "Use", the selected profile will be loaded and set as default, so every time you open the site that profile will be loaded.<br><br>
 <image src="./images/profileSelection.png" style="box-shadow: 0px 0px 10px black;">
 
+# Set Suggestion
+Since version 2 of the script, users can enable the set suggestion feature in the profile configuration dialog.<br>
+<image src="./images/viewConfigurationSetSuggestion.png" style="box-shadow: 0px 0px 10px black;">
+
 # View Configurations
 The view configuration page can be accessed by pressing "Edit" on a profile, the view configuration table is located below the "Edit Profile" section.<br>
 In order to create a view configuration you will first have to define a relative URL path, for which the configuration should be used. If you want to configure the current path, you can simply press "User Current Path" and then "Create".<br>
