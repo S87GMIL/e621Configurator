@@ -75,41 +75,32 @@ class APIHelper {
         setPosts.posts.forEach(post => {
             post.tags.general.forEach(tag => {
                 let total = setTags.general.get(tag) || 0;
-                if (total === 0)
-                    setTags.generalTotal += 1;
-
                 setTags.general.set(tag, total + 1);
             });
 
             post.tags.species.forEach(tag => {
                 let total = setTags.species.get(tag) || 0;
-                if (total === 0)
-                    setTags.speciesTotal += 1;
-
                 setTags.species.set(tag, total + 1);
             });
 
             post.tags.lore.forEach(tag => {
                 let total = setTags.lore.get(tag) || 0;
-                if (total === 0)
-                    setTags.loreTotal += 1;
-
                 setTags.lore.set(tag, total + 1);
             });
         });
 
         setTags.general.forEach((amount, tag) => {
-            if (amount / setTags.generalTotal < 0.02)
+            if (amount / setPosts.posts < 0.1)
                 setTags.general.delete(tag);
         });
 
         setTags.species.forEach((amount, tag) => {
-            if (amount / setTags.speciesTotal < 0.02)
+            if (amount / setPosts.posts < 0.1)
                 setTags.species.delete(tag);
         });
 
         setTags.lore.forEach((amount, tag) => {
-            if (amount / setTags.loreTotal < 0.02)
+            if (amount / setPosts.posts < 0.1)
                 setTags.lore.delete(tag);
         });
 
@@ -120,15 +111,15 @@ class APIHelper {
 
 
         setTags.general.forEach((amount, tag) => {
-            setTags.generalTotal += amount;
+            setTags.generalTotal++;
         });
 
         setTags.general.forEach((amount, tag) => {
-            setTags.speciesTotal += amount;
+            setTags.speciesTotal++;
         });
 
         setTags.general.forEach((amount, tag) => {
-            setTags.loreTotal += amount;
+            setTags.loreTotal++;
         });
 
         return this.setTags[setID]
