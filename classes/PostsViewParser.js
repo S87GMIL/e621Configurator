@@ -71,8 +71,14 @@ class PostsViewParser extends ViewConfigParser {
         let addToSetDialog = HTMLFunctions.getElement("add-to-set-dialog");
 
         let suggestionForm = document.querySelector("#setSuggestionForm");
-        if (suggestionForm)
+        if (suggestionForm) {
             suggestionForm.innerHTML = "";
+
+            let loadingIndicator = document.createElement("label");
+            loadingIndicator.innerText = "Loading suggestions ...";
+
+            suggestionForm.appendChild(loadingIndicator);
+        }
 
         if (!suggestionForm) {
             suggestionForm = document.createElement("div");
@@ -87,8 +93,12 @@ class PostsViewParser extends ViewConfigParser {
             return !ignoredSets.includes(set.id);
         });
 
-        if (suggestedSets.length === 0)
+        if (suggestedSets.length === 0) {
+            loadingIndicator.innerText = "No suggestions available";
             return;
+        }
+
+        loadingIndicator.style.display = "none";
 
         let topSuggestion = suggestedSets[0];
 
