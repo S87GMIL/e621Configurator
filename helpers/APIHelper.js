@@ -68,6 +68,7 @@ class APIHelper {
             shortName: set.shortname,
             name: set.name,
             general: {},
+            importantTags: {},
             species: {},
             lore: {},
             totalPosts: setPosts.posts.length
@@ -94,6 +95,9 @@ class APIHelper {
             let amount = setTags.general[tag];
             if (amount / setPosts.posts.length < 0.45)
                 delete setTags.general[tag];
+
+            if (amount / setPosts.posts.length > 0.9)
+                importantTags[tag] = amount;
         }
 
 

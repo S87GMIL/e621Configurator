@@ -13,9 +13,12 @@ class SuggestionHelper {
 
         setTagResults.forEach(setTags => {
             let matchedTags = [];
+            let matchScore = 0;
 
             let importantTagMatches = post.tags.general.filter(tag => {
-                if (setTags.general[tag]) {
+                let tagAmount = setTags.general[tag]
+                if (tagAmount) {
+                    matchScore += 1 * tagAmount / setTags.totalPosts;
                     matchedTags.push(tag);
                     return true;
                 }
@@ -27,18 +30,19 @@ class SuggestionHelper {
                 id: setTags.id,
                 shortName: setTags.shortName,
                 name: setTags.name,
-                importantTagMatches: importantTagMatches,
+                matches: importantTagMatches,
+                matchScore: matchScore,
                 matchedTags: matchedTags
             });
         });
 
         let setSuggestions = setTagMatches.sort((a, b) => {
-            return b.importantTagMatches - a.importantTagMatches;
+            return b.matchScore - a.matchScore;
         });
 
-        setSuggestions = setSuggestions.filter(tagMatches => {
-            return tagMatches.importantTagMatches > 3;
-        });
+        /*setSuggestions = setSuggestions.filter(tagMatches => {
+            return tagMatches.matches > 3;
+        });*/
 
         return setSuggestions;
     }
