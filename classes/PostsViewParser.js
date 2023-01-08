@@ -67,14 +67,24 @@ class PostsViewParser extends ViewConfigParser {
         oObserver.observe(oTarget, { attributes: true, childList: true, subtree: true });
     }
 
-    async addSetSuggestionSection(username) {
+    async addSetSuggestionSection(username, ignoredSets = []) {
         let addToSetDialog = HTMLFunctions.getElement("add-to-set-dialog");
 
-        let suggestionForm = document.createElement("div");
-        suggestionForm.classList.add("simple_form");
+        let suggestionForm = document.querySelector("#setSuggestionForm");
+        suggestionForm.innerHTML = "";
+
+        if (!suggestionForm) {
+            suggestionForm = document.createElement("div");
+            suggestionForm.id = "setSuggestionForm";
+            suggestionForm.classList.add("simple_form");
+        }
 
         let currentPostId = document.location.pathname.split("/").pop();
         let suggestedSets = await SuggestionHelper.suggestSets(currentPostId);
+
+        suggestedSets = suggestedSets.filter(set => {
+            return !ignoredSets.includes(set.id);
+        });
 
         if (suggestedSets.length === 0)
             return;
@@ -87,9 +97,10 @@ class PostsViewParser extends ViewConfigParser {
 
         suggestionForm.appendChild(suggestedSetLable);
 
-        var addToSuggstedButton = HTMLFunctions.createButton("addToSuggestedButton", "Add to suggested set", function () {
+        var addToSuggstedButton = HTMLFunctions.createButton("addToSuggestedButton", "Add to suggested set", () => {
             APIHelper.getInstance().addPostToSet(topSuggestion.id, currentPostId);
-            this.addSetSuggestionSection();
+            ignoredSets.push(topSuggestion.id);
+            this.addSetSuggestionSection(username, ignoredSets);
         });
 
         suggestionForm.appendChild(addToSuggstedButton);
