@@ -12,32 +12,44 @@ class SuggestionHelper {
         await this.#getTagsForSets(userSets, 0, setTagResults);
 
         setTagResults.forEach(setTags => {
-            let matches = post.tags.general.filter(tag => {
-                return setTags.general.has(tag);
+            let importantTagMatches = post.tags.general.filter(tag => {
+                let setTagAmount = setTags.general.get(tag);
+                if (setTagAmount && setTagAmount / setTags.generalTotal > 0.7)
+                    return true;
+
+                return false;
             }).length;
 
-            matches += post.tags.species.filter(tag => {
-                return setTags.species.has(tag);
+            importantTagMatches += post.tags.species.filter(tag => {
+                let setTagAmount = setTags.species.get(tag);
+                if (setTagAmount && setTagAmount / setTags.speciesTotal > 0.7)
+                    return true;
+
+                return false;
             }).length;
 
-            matches += post.tags.lore.filter(tag => {
-                return setTags.lore.has(tag);
+            importantTagMatches += post.tags.lore.filter(tag => {
+                let setTagAmount = setTags.lore.get(tag);
+                if (setTagAmount && setTagAmount / setTags.loreTotal > 0.7)
+                    return true;
+
+                return false;
             }).length;
 
             setTagMatches.push({
                 id: setTags.id,
                 shortName: setTags.shortName,
                 name: setTags.name,
-                matchingTags: matches
+                importantTagMatches: matches
             });
         });
 
         let setSuggestions = setTagMatches.sort((a, b) => {
-            return b.matchingTags - a.matchingTags;
+            return b.importantTagMatches - a.importantTagMatches;
         });
 
         setSuggestions = setSuggestions.filter(tagMatches => {
-            return tagMatches.matchingTags > 10;
+            return tagMatches.importantTagMatches > 3;
         });
 
         return setSuggestions;

@@ -62,24 +62,30 @@ class APIHelper {
             id: setID,
             shortName: set.shortname,
             name: set.name,
-            general: new Set(),
-            species: new Set(),
-            lore: new Set()
+            general: new Map(),
+            generalTotal: 0,
+            species: new Map(),
+            speciesTotal: 0,
+            lore: new Map(),
+            loreTotal: 0,
         };
 
         let setTags = this.setTags[setID];
 
         setPosts.posts.forEach(post => {
             post.tags.general.forEach(tag => {
-                setTags.general.add(tag);
+                generalTotal += 1;
+                setTags.general.set(tag, setTags.general.get(tag) + 1);
             });
 
             post.tags.species.forEach(tag => {
-                setTags.species.add(tag);
+                speciesTotal += 1;
+                setTags.species.add(tag, setTags.species.get(tag) + 1);
             });
 
             post.tags.lore.forEach(tag => {
-                setTags.lore.add(tag);
+                loreTotal += 1;
+                setTags.lore.add(tag, setTags.lore.get(tag) + 1);
             });
         });
 
