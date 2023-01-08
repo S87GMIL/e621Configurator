@@ -1,7 +1,7 @@
 
 class URLFunctions {
 
-    static doesCurrentUrlMatch(sSearchString, sSearchParameters) {
+    static doesCurrentUrlMatch(sSearchString, sSearchParameters = "") {
         var bMatches = false;
         var oPathRegex = HTMLFunctions.createRegexFromWildcardString(sSearchString);
 
