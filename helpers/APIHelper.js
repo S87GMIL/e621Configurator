@@ -68,6 +68,7 @@ class APIHelper {
             speciesTotal: 0,
             lore: new Map(),
             loreTotal: 0,
+            totalPosts: setPosts.posts.length
         };
 
         let setTags = this.setTags[setID];
@@ -90,17 +91,17 @@ class APIHelper {
         });
 
         setTags.general.forEach((amount, tag) => {
-            if (amount / setPosts.posts.length < 0.3)
+            if (amount / setPosts.posts.length < 0.10)
                 setTags.general.delete(tag);
         });
 
         setTags.species.forEach((amount, tag) => {
-            if (amount / setPosts.posts.length < 0.3)
+            if (amount / setPosts.posts.length < 0.10)
                 setTags.species.delete(tag);
         });
 
         setTags.lore.forEach((amount, tag) => {
-            if (amount / setPosts.posts.length < 0.3)
+            if (amount / setPosts.posts.length < 0.10)
                 setTags.lore.delete(tag);
         });
 
