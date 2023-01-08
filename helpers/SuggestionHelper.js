@@ -23,7 +23,7 @@ class SuggestionHelper {
                 return false;
             }).length;
 
-            let importantTagMatches = post.tags.species.filter(tag => {
+            importantTagMatches += post.tags.species.filter(tag => {
                 if (setTags.species[tag]) {
                     matchedTags.push(tag);
                     return true;
@@ -32,7 +32,7 @@ class SuggestionHelper {
                 return false;
             }).length;
 
-            let importantTagMatches = post.tags.lore.filter(tag => {
+            importantTagMatches += post.tags.lore.filter(tag => {
                 if (setTags.lore[tag]) {
                     matchedTags.push(tag);
                     return true;
