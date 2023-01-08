@@ -92,7 +92,7 @@ class APIHelper {
 
         for (let tag in setTags.general) {
             let amount = setTags.general[tag];
-            if (amount / setPosts.posts.length < 0.25)
+            if (amount / setPosts.posts.length < 0.45)
                 delete setTags.general[tag];
         }
 
