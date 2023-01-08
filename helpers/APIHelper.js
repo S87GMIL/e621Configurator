@@ -80,12 +80,12 @@ class APIHelper {
 
             post.tags.species.forEach(tag => {
                 setTags.speciesTotal += 1;
-                setTags.species.add(tag, setTags.species.get(tag) + 1);
+                setTags.species.set(tag, setTags.species.get(tag) + 1);
             });
 
             post.tags.lore.forEach(tag => {
                 setTags.loreTotal += 1;
-                setTags.lore.add(tag, setTags.lore.get(tag) + 1);
+                setTags.lore.set(tag, setTags.lore.get(tag) + 1);
             });
         });
 
