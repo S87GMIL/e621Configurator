@@ -1929,7 +1929,7 @@ class E621Configurator {
             }
         }
 
-        if (oProfile.getSuggestSets() && URLFunctions.doesCurrentUrlMatch("/posts"))
+        if (oProfile.getSuggestSets() && URLFunctions.doesCurrentUrlMatch("/posts/*"))
             new PostsViewParser().addSetSuggestionSection(oProfile.getUsername());
 
         aSortedConfigsNoParams.concat(aSortedConfigsWithParams).forEach(oViewConfig => {
