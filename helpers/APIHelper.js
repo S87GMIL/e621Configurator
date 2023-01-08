@@ -68,7 +68,6 @@ class APIHelper {
             shortName: set.shortname,
             name: set.name,
             general: {},
-            importantTags: {},
             species: {},
             lore: {},
             totalPosts: setPosts.posts.length
@@ -91,13 +90,10 @@ class APIHelper {
             });
         });
 
-        for (let tag in setTags.general) {
+        /*for (let tag in setTags.general) {
             let amount = setTags.general[tag];
             if (amount / setPosts.posts.length < 0.45)
                 delete setTags.general[tag];
-
-            if (amount / setPosts.posts.length > 0.9)
-                importantTags[tag] = amount;
         }
 
 
@@ -111,7 +107,7 @@ class APIHelper {
             let amount = setTags.lore[tag];
             if (amount / setPosts.posts.length < 0.7)
                 delete setTags.lore[tag];
-        }
+        }*/
 
         DataBuffer.addDataToBuffer(`setTags${setID}`, setTags, 30);
 
