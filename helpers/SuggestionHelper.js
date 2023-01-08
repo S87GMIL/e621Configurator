@@ -16,13 +16,13 @@ class SuggestionHelper {
                 return setTags.general.has(tag);
             }).length;
 
-            importantTagMatches += post.tags.species.filter(tag => {
+            /*importantTagMatches += post.tags.species.filter(tag => {
                 return setTags.species.has(tag);
             }).length;
 
             importantTagMatches += post.tags.lore.filter(tag => {
                 return setTags.lore.has(tag);
-            }).length;
+            }).length;*/
 
             setTagMatches.push({
                 id: setTags.id,
