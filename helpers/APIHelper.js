@@ -39,6 +39,10 @@ class APIHelper {
     }
 
     async getSet(setID) {
+        let bufferedSet = DataBuffer.getBufferData(`sets${setID}`);
+        if (bufferedSet)
+            return bufferedSet;
+
         let sets = await this.getUserSets();
 
         let set = sets.filter(set => {
@@ -52,13 +56,14 @@ class APIHelper {
     }
 
     async getSetTags(setID) {
-        if (this.setTags[setID])
-            return this.setTags[setID];
+        let bufferedSet = DataBuffer.getBufferData(`setTags${setID}`);
+        if (bufferedSet)
+            return bufferedSet;
 
         let set = await this.getSet(setID);
         let setPosts = await this.#performRequest(`/posts.json?tags=set:${set.shortname}`);
 
-        this.setTags[setID] = {
+        let setTags = {
             id: setID,
             shortName: set.shortname,
             name: set.name,
@@ -70,8 +75,6 @@ class APIHelper {
             loreTotal: 0,
             totalPosts: setPosts.posts.length
         };
-
-        let setTags = this.setTags[setID];
 
         setPosts.posts.forEach(post => {
             post.tags.general.forEach(tag => {
@@ -91,17 +94,17 @@ class APIHelper {
         });
 
         setTags.general.forEach((amount, tag) => {
-            if (amount / setPosts.posts.length < 0.10)
+            if (amount / setPosts.posts.length < 0.7)
                 setTags.general.delete(tag);
         });
 
         setTags.species.forEach((amount, tag) => {
-            if (amount / setPosts.posts.length < 0.10)
+            if (amount / setPosts.posts.length < 0.7)
                 setTags.species.delete(tag);
         });
 
         setTags.lore.forEach((amount, tag) => {
-            if (amount / setPosts.posts.length < 0.10)
+            if (amount / setPosts.posts.length < 0.7)
                 setTags.lore.delete(tag);
         });
 
@@ -123,7 +126,9 @@ class APIHelper {
             setTags.loreTotal++;
         });
 
-        return this.setTags[setID]
+        DataBuffer.addDataToBuffer(`setTags${setID}`, setTags, 30);
+
+        return setTags;
     }
 
     async getPostTags(postID) {

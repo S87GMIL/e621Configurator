@@ -9,6 +9,7 @@
 // @require      https://raw.githubusercontent.com/S87GMIL/e621Configurator/v2.0/utils/HTMLFunctions.js
 // @require      https://raw.githubusercontent.com/S87GMIL/e621Configurator/v2.0/utils/ProfileStorage.js
 // @require      https://raw.githubusercontent.com/S87GMIL/e621Configurator/v2.0/utils/URLFunctions.js
+// @require      https://raw.githubusercontent.com/S87GMIL/e621Configurator/v2.0/utils/DataBuffer.js
 // @require      https://raw.githubusercontent.com/S87GMIL/e621Configurator/v2.0/classes/ConfigurationSection.js
 // @require      https://raw.githubusercontent.com/S87GMIL/e621Configurator/v2.0/classes/ElementSelection.js
 // @require      https://raw.githubusercontent.com/S87GMIL/e621Configurator/v2.0/classes/ViewConfiguration.js
