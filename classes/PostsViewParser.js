@@ -71,7 +71,8 @@ class PostsViewParser extends ViewConfigParser {
         let addToSetDialog = HTMLFunctions.getElement("add-to-set-dialog");
 
         let suggestionForm = document.querySelector("#setSuggestionForm");
-        suggestionForm.innerHTML = "";
+        if (suggestionForm)
+            suggestionForm.innerHTML = "";
 
         if (!suggestionForm) {
             suggestionForm = document.createElement("div");
