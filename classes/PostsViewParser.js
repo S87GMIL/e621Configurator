@@ -109,7 +109,14 @@ class PostsViewParser extends ViewConfigParser {
 
         suggestionForm.appendChild(suggestedSetLable);
 
-        var addToSuggstedButton = HTMLFunctions.createButton("addToSuggestedButton", "Add to suggested set", () => {
+        let nextSuggestionButton = HTMLFunctions.createButton("nextSuggestionButton", "Next Suggestion", () => {
+            ignoredSets.push(topSuggestion.id);
+            this.addSetSuggestionSection(username, ignoredSets);
+        });
+        nextSuggestionButton.style.marginTop = "15px";
+        suggestionForm.appendChild(nextSuggestionButton);
+
+        let addToSuggstedButton = HTMLFunctions.createButton("addToSuggestedButton", "Add to suggested set", () => {
             APIHelper.getInstance().addPostToSet(topSuggestion.id, currentPostId);
             ignoredSets.push(topSuggestion.id);
             this.addSetSuggestionSection(username, ignoredSets);
