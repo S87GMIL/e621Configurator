@@ -11,7 +11,7 @@ class Profile {
         this.name = sName;
         this.description = sDescription;
         this.active = bIsActive || false;
-        this.suggestSets = suggestSets || false;
+        this.suggestSets = suggestSets;
         this.username = username;
 
         this.viewConfigurations = {};
