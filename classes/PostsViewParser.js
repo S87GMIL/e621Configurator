@@ -73,11 +73,6 @@ class PostsViewParser extends ViewConfigParser {
         let suggestionForm = document.querySelector("#setSuggestionForm");
         if (suggestionForm) {
             suggestionForm.innerHTML = "";
-
-            let loadingIndicator = document.createElement("label");
-            loadingIndicator.innerText = "Loading suggestions ...";
-
-            suggestionForm.appendChild(loadingIndicator);
         }
 
         if (!suggestionForm) {
@@ -85,6 +80,11 @@ class PostsViewParser extends ViewConfigParser {
             suggestionForm.id = "setSuggestionForm";
             suggestionForm.classList.add("simple_form");
         }
+
+        let loadingIndicator = document.createElement("label");
+        loadingIndicator.innerText = "Loading suggestions ...";
+
+        suggestionForm.appendChild(loadingIndicator);
 
         let currentPostId = document.location.pathname.split("/").pop();
         let suggestedSets = await SuggestionHelper.suggestSets(currentPostId);
