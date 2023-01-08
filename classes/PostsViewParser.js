@@ -69,6 +69,8 @@ class PostsViewParser extends ViewConfigParser {
 
     async addSetSuggestionSection(username, ignoredSets = []) {
         let addToSetDialog = HTMLFunctions.getElement("add-to-set-dialog");
+        if (!addToSetDialog)
+            return;
 
         let suggestionForm = document.querySelector("#setSuggestionForm");
         if (suggestionForm)
