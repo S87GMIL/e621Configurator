@@ -40,7 +40,7 @@ class SuggestionHelper {
                 id: setTags.id,
                 shortName: setTags.shortName,
                 name: setTags.name,
-                importantTagMatches: matches
+                importantTagMatches: importantTagMatches
             });
         });
 
