@@ -71,14 +71,15 @@ class PostsViewParser extends ViewConfigParser {
         let addToSetDialog = HTMLFunctions.getElement("add-to-set-dialog");
 
         let suggestionForm = document.querySelector("#setSuggestionForm");
-        if (suggestionForm) {
+        if (suggestionForm)
             suggestionForm.innerHTML = "";
-        }
 
         if (!suggestionForm) {
             suggestionForm = document.createElement("div");
             suggestionForm.id = "setSuggestionForm";
             suggestionForm.classList.add("simple_form");
+
+            addToSetDialog.appendChild(suggestionForm);
         }
 
         let loadingIndicator = document.createElement("label");
@@ -115,7 +116,5 @@ class PostsViewParser extends ViewConfigParser {
         });
 
         suggestionForm.appendChild(addToSuggstedButton);
-
-        addToSetDialog.appendChild(suggestionForm);
     }
 }
