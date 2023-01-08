@@ -92,20 +92,20 @@ class APIHelper {
 
         for (let tag in setTags.general) {
             let amount = setTags.general[tag];
-            if (amount / setPosts.posts.length < 0.7)
+            if (amount / setPosts.posts.length < 0.8)
                 delete setTags.general[tag];
         }
 
 
         for (let tag in setTags.species) {
             let amount = setTags.species[tag];
-            if (amount / setPosts.posts.length < 0.7)
+            if (amount / setPosts.posts.length < 0.8)
                 delete setTags.species[tag];
         }
 
         for (let tag in setTags.lore) {
             let amount = setTags.lore[tag];
-            if (amount / setPosts.posts.length < 0.7)
+            if (amount / setPosts.posts.length < 0.8)
                 delete setTags.lore[tag];
         }
 

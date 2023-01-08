@@ -12,11 +12,13 @@ class SuggestionHelper {
         await this.#getTagsForSets(userSets, 0, setTagResults);
 
         setTagResults.forEach(setTags => {
-            let importantTagMatches = post.tags.general.filter(tag => {
-                let tagTotalAmount = setTags.general[tag];
+            let matchedTags = [];
 
-                if (tagTotalAmount && tagTotalAmount / setTags.totalPosts > 0.8)
+            let importantTagMatches = post.tags.general.filter(tag => {
+                if (setTags.general[tag]){
+                    matchedTags.push(tag);
                     return true;
+                }
 
                 return false;
             }).length;
@@ -25,7 +27,8 @@ class SuggestionHelper {
                 id: setTags.id,
                 shortName: setTags.shortName,
                 name: setTags.name,
-                importantTagMatches: importantTagMatches
+                importantTagMatches: importantTagMatches,
+                matchedTags: []
             });
         });
 
