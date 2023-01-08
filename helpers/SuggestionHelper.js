@@ -13,7 +13,7 @@ class SuggestionHelper {
 
         setTagResults.forEach(setTags => {
             let importantTagMatches = post.tags.general.filter(tag => {
-                let tagTotalAmount = setTags.general.get(tag);
+                let tagTotalAmount = setTags.general[tag];
 
                 if (tagTotalAmount && tagTotalAmount / setTags.totalPosts > 0.8)
                     return true;

@@ -67,64 +67,47 @@ class APIHelper {
             id: setID,
             shortName: set.shortname,
             name: set.name,
-            general: new Map(),
-            generalTotal: 0,
-            species: new Map(),
-            speciesTotal: 0,
-            lore: new Map(),
-            loreTotal: 0,
+            general: {},
+            species: {},
+            lore: {},
             totalPosts: setPosts.posts.length
         };
 
         setPosts.posts.forEach(post => {
             post.tags.general.forEach(tag => {
                 let total = setTags.general.get(tag) || 0;
-                setTags.general.set(tag, total + 1);
+                setTags.general[tag] = total + 1;
             });
 
             post.tags.species.forEach(tag => {
                 let total = setTags.species.get(tag) || 0;
-                setTags.species.set(tag, total + 1);
+                setTags.species[tag] = total + 1;
             });
 
             post.tags.lore.forEach(tag => {
                 let total = setTags.lore.get(tag) || 0;
-                setTags.lore.set(tag, total + 1);
+                setTags.lore[tag] = total + 1;
             });
         });
 
-        setTags.general.forEach((amount, tag) => {
+        for (let tag in setTags.general) {
+            let amount = setTags.general[tag];
             if (amount / setPosts.posts.length < 0.7)
-                setTags.general.delete(tag);
-        });
+                delete setTags.general[tag];
+        }
 
-        setTags.species.forEach((amount, tag) => {
+
+        for (let tag in setTags.species) {
+            let amount = setTags.species[tag];
             if (amount / setPosts.posts.length < 0.7)
-                setTags.species.delete(tag);
-        });
+                delete setTags.species[tag];
+        }
 
-        setTags.lore.forEach((amount, tag) => {
+        for (let tag in setTags.lore) {
+            let amount = setTags.lore[tag];
             if (amount / setPosts.posts.length < 0.7)
-                setTags.lore.delete(tag);
-        });
-
-
-        setTags.generalTotal = 0;
-        setTags.speciesTotal = 0;
-        setTags.loreTotal = 0;
-
-
-        setTags.general.forEach((amount, tag) => {
-            setTags.generalTotal++;
-        });
-
-        setTags.species.forEach((amount, tag) => {
-            setTags.speciesTotal++;
-        });
-
-        setTags.lore.forEach((amount, tag) => {
-            setTags.loreTotal++;
-        });
+                delete setTags.lore[tag];
+        }
 
         DataBuffer.addDataToBuffer(`setTags${setID}`, setTags, 30);
 
