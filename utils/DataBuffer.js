@@ -1,7 +1,7 @@
 class DataBuffer {
     static addDataToBuffer(key, dataJson, expirationDays = 30) {
 
-        let expirationDate = new Date(this.valueOf());
+        let expirationDate = new Date();
         expirationDate.setDate(expirationDate.getDate() + expirationDays);
 
         dataJson.expiration = expirationDate.getTime();
