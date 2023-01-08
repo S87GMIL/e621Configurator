@@ -28,7 +28,7 @@ class SuggestionHelper {
                 shortName: setTags.shortName,
                 name: setTags.name,
                 importantTagMatches: importantTagMatches,
-                matchedTags: []
+                matchedTags: matchedTags
             });
         });
 
