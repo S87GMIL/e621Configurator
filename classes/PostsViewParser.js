@@ -79,17 +79,17 @@ class PostsViewParser extends ViewConfigParser {
         if (suggestedSets.length === 0)
             return;
 
-        suggestedSets.forEach(set => {
-            let suggestedSetLable = document.createElement("label");
-            suggestedSetLable.innerText = set.name;
+        let topSuggestion = suggestedSets[0];
 
-            suggestionForm.appendChild(suggestedSetLable);
-        });
+        let suggestedSetLable = document.createElement("label");
+        suggestedSetLable.innerText = topSuggestion.name;
+        suggestedSetLable.style.display = "block";
 
-        var addToSuggstedButton = HTMLFunctions.createButton("addToSuggestedButton", "Add to suggested sets", function () {
-            suggestedSets.forEach(set => {
-                APIHelper.getInstance().addPostToSet(set.id, currentPostId);
-            });
+        suggestionForm.appendChild(suggestedSetLable);
+
+        var addToSuggstedButton = HTMLFunctions.createButton("addToSuggestedButton", "Add to suggested set", function () {
+            APIHelper.getInstance().addPostToSet(topSuggestion.id, currentPostId);
+            this.addSetSuggestionSection();
         });
 
         suggestionForm.appendChild(addToSuggstedButton);
