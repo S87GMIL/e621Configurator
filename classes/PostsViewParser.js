@@ -1,8 +1,5 @@
 class PostsViewParser extends ViewConfigParser {
-    async performUiChanges(oViewConfig, oProfile) {
-        if (oProfile.getSuggestSets())
-            this.addSetSuggestionSection(oProfile.getUsername());
-
+    performUiChanges(oViewConfig, oProfile) {
         oViewConfig.executionOrder.forEach(sFunctionName => {
             var oConfig = oViewConfig[sFunctionName];
 

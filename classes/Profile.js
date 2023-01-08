@@ -1,7 +1,7 @@
 class Profile {
     rootViewId = "root";
 
-    constructor(sId, sName, sDescription, bIsActive, oViewConfigrations, bDeletable, bEditable, suggestSets, username) {
+    constructor(sId, sName, sDescription, bIsActive, oViewConfigrations, bDeletable, bEditable, suggestSets = false, username = "") {
         this.deletable = bDeletable === undefined ? true : bDeletable;
         this.editable = bEditable === undefined ? true : bEditable;
 
