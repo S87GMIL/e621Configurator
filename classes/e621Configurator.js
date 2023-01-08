@@ -96,6 +96,30 @@ class E621Configurator {
         return oBasicInfoContainer;
     }
 
+    createSetSuggestionSection(oProfile) {
+        var suggestSetContainer = HTMLFunctions.createElementFromHTML('<div class="box-section" style="display: flex"></div>');
+        var suggestSetForm = HTMLFunctions.createElementFromHTML('<form class="border-bottom"></form>');
+
+        var sLabelStyle = `float: left; width:60%; margin-bottom: 10px`;
+        var sInputStyle = `float: left; width:39%; margin-bottom: 10px`;
+
+        let label = HTMLFunctions.createElementFromHTML(`<label style="${sLabelStyle}" style="width: 120px !important;">Suggest Sets:</label><br><br>`);
+        let checkbox = HTMLFunctions.createElementFromHTML(`<input id="suggestSetsCheckbox" style="float: left; width: auto;" type="checkbox" checked="${oProfile.getSuggestSets()}"/><br><br>`);
+
+        HTMLFunctions.addElementToContainer(label, suggestSetForm);
+        HTMLFunctions.addElementToContainer(checkbox, suggestSetForm);
+
+        label = HTMLFunctions.createElementFromHTML(`<label style="${sLabelStyle}">Username:</label>`);
+        let usernameInput = HTMLFunctions.createElementFromHTML(`<input id="usernameInput" style="${sInputStyle}" type="text" value="${oProfile.getUsername()}" /><br><br>`);
+
+        HTMLFunctions.addElementToContainer(label, suggestSetForm);
+        HTMLFunctions.addElementToContainer(usernameInput, suggestSetForm);
+
+        HTMLFunctions.addElementToContainer(suggestSetForm, suggestSetContainer);
+
+        return suggestSetContainer;
+    }
+
     createViewConfigurationTable(bCreationMode, oProfile) {
         var oTableContainer = HTMLFunctions.createContainerWithTitle("viewConfig-container", "View Configurations", "h3", { "margin-top": "5px", "margin-bottom": "20px" });
         var oCreateSection = HTMLFunctions.createElementFromHTML(`<div style="padding-left: .25rem; margin-top: 10px; margin-bottom: 10px"></div>`);
@@ -1568,6 +1592,7 @@ class E621Configurator {
         HTMLFunctions.addElementToContainer(oProfileCreationContainer, oProfileSelectionContainer);
 
         HTMLFunctions.addElementToContainer(this.createBasicInfoForm(bCreationMode, oProfile), oProfileCreationContainer);
+        HTMLFunctions.addElementToContainer(this.createSetSuggestionSection(oProfile), oProfileCreationContainer);
         HTMLFunctions.addElementToContainer(this.createViewConfigurationTable(bCreationMode, oProfile), oProfileCreationContainer);
 
         var oFooter = HTMLFunctions.createElementFromHTML(`<div></div>`);
@@ -1596,6 +1621,8 @@ class E621Configurator {
         var sId;
         var oNameInput = HTMLFunctions.getElement("profileNameInput");
         var oDescriptionInput = HTMLFunctions.getElement("profileDescriptionInput");
+        let suggestSets = HTMLFunctions.getElement("suggestSetsCheckbox").checked;
+        let username = HTMLFunctions.getElement("usernameInput").value;
 
         if (bCreationMode) {
             var oIdInput = HTMLFunctions.getElement("profileIdInput");
@@ -1612,6 +1639,8 @@ class E621Configurator {
             oProfile.setId(sId);
             oProfile.setName(sName);
             oProfile.setDescription(sDescription);
+            oProfile.setSuggestSets(suggestSets);
+            oProfile.setUsername(username);
 
             ProfileStorage.saveProfile(oProfile, oProfile.getActive());
 
@@ -1884,15 +1913,15 @@ class E621Configurator {
                 switch (oViewConfiguration.view) {
                     case PostViewConfiguration.postViewId:
                         console.log("Using 'PostsViewParser' to parse view config for path: " + oViewConfiguration.path + sParametersLogMessage);
-                        new PostsViewParser().performUiChanges(oViewConfiguration);
+                        new PostsViewParser().performUiChanges(oViewConfiguration, oProfile);
                         break;
                     case SetsViewConfiguration.setViewId:
                         console.log("Using 'SetsViewParser' to parse view for path: " + oViewConfiguration.path + sParametersLogMessage);
-                        new SetsViewParser().performUiChanges(oViewConfiguration);
+                        new SetsViewParser().performUiChanges(oViewConfiguration, oProfile);
                         break;
                     default:
                         console.log("Using 'DefaultViewParser' to parse view for path: " + oViewConfiguration.path + sParametersLogMessage);
-                        new ViewConfigParser().performUiChanges(oViewConfiguration);
+                        new ViewConfigParser().performUiChanges(oViewConfiguration, oProfile);
                         break;
                 };
 

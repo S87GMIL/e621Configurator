@@ -1,5 +1,8 @@
 class PostsViewParser extends ViewConfigParser {
-    performUiChanges(oViewConfig) {
+    async performUiChanges(oViewConfig, oProfile) {
+        if (oProfile.getSuggestSets())
+            await this.addSetSuggestionSection(oProfile.getUsername());
+
         oViewConfig.executionOrder.forEach(sFunctionName => {
             var oConfig = oViewConfig[sFunctionName];
 
@@ -62,5 +65,65 @@ class PostsViewParser extends ViewConfigParser {
         };
         var oObserver = new MutationObserver(fObserverCallback);
         oObserver.observe(oTarget, { attributes: true, childList: true, subtree: true });
+    }
+
+    async addSetSuggestionSection(username, ignoredSets = []) {
+        let addToSetDialog = HTMLFunctions.getElement("add-to-set-dialog");
+        if (!addToSetDialog)
+            return;
+
+        let suggestionForm = document.querySelector("#setSuggestionForm");
+        if (suggestionForm)
+            suggestionForm.innerHTML = "";
+
+        if (!suggestionForm) {
+            suggestionForm = document.createElement("div");
+            suggestionForm.id = "setSuggestionForm";
+            suggestionForm.classList.add("simple_form");
+
+            addToSetDialog.appendChild(suggestionForm);
+        }
+
+        let loadingIndicator = document.createElement("label");
+        loadingIndicator.innerText = "Loading suggestions ...";
+
+        suggestionForm.appendChild(loadingIndicator);
+
+        let currentPostId = document.location.pathname.split("/").pop();
+        let suggestedSets = await SuggestionHelper.suggestSets(currentPostId);
+
+        suggestedSets = suggestedSets.filter(set => {
+            return !ignoredSets.includes(set.id);
+        });
+
+        if (suggestedSets.length === 0) {
+            loadingIndicator.innerText = "No suggestions available";
+            return;
+        }
+
+        loadingIndicator.style.display = "none";
+
+        let topSuggestion = suggestedSets[0];
+
+        let suggestedSetLable = document.createElement("label");
+        suggestedSetLable.innerText = topSuggestion.name;
+        suggestedSetLable.style.display = "block";
+
+        suggestionForm.appendChild(suggestedSetLable);
+
+        let nextSuggestionButton = HTMLFunctions.createButton("nextSuggestionButton", "Next Suggestion", () => {
+            ignoredSets.push(topSuggestion.id);
+            this.addSetSuggestionSection(username, ignoredSets);
+        });
+        nextSuggestionButton.style.marginTop = "15px";
+        suggestionForm.appendChild(nextSuggestionButton);
+
+        let addToSuggstedButton = HTMLFunctions.createButton("addToSuggestedButton", "Add to suggested set", () => {
+            APIHelper.getInstance().addPostToSet(topSuggestion.id, currentPostId);
+            ignoredSets.push(topSuggestion.id);
+            this.addSetSuggestionSection(username, ignoredSets);
+        });
+
+        suggestionForm.appendChild(addToSuggstedButton);
     }
 }
