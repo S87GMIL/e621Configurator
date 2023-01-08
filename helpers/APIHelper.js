@@ -75,17 +75,20 @@ class APIHelper {
         setPosts.posts.forEach(post => {
             post.tags.general.forEach(tag => {
                 setTags.generalTotal += 1;
-                setTags.general.set(tag, setTags.general.get(tag) + 1);
+                let total = setTags.general.get(tag) || 0;
+                setTags.general.set(tag, total + 1);
             });
 
             post.tags.species.forEach(tag => {
                 setTags.speciesTotal += 1;
-                setTags.species.set(tag, setTags.species.get(tag) + 1);
+                let total = setTags.species.get(tag) || 0;
+                setTags.species.set(tag, total + 1);
             });
 
             post.tags.lore.forEach(tag => {
                 setTags.loreTotal += 1;
-                setTags.lore.set(tag, setTags.lore.get(tag) + 1);
+                let total = setTags.lore.get(tag) || 0;
+                setTags.lore.set(tag, total + 1);
             });
         });
 
