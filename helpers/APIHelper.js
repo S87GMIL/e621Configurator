@@ -90,17 +90,17 @@ class APIHelper {
         });
 
         setTags.general.forEach((amount, tag) => {
-            if (amount / setPosts.posts.length < 0.1)
+            if (amount / setPosts.posts.length < 0.3)
                 setTags.general.delete(tag);
         });
 
         setTags.species.forEach((amount, tag) => {
-            if (amount / setPosts.posts.length < 0.1)
+            if (amount / setPosts.posts.length < 0.3)
                 setTags.species.delete(tag);
         });
 
         setTags.lore.forEach((amount, tag) => {
-            if (amount / setPosts.posts.length < 0.1)
+            if (amount / setPosts.posts.length < 0.3)
                 setTags.lore.delete(tag);
         });
 
@@ -114,11 +114,11 @@ class APIHelper {
             setTags.generalTotal++;
         });
 
-        setTags.general.forEach((amount, tag) => {
+        setTags.species.forEach((amount, tag) => {
             setTags.speciesTotal++;
         });
 
-        setTags.general.forEach((amount, tag) => {
+        setTags.lore.forEach((amount, tag) => {
             setTags.loreTotal++;
         });
 

@@ -13,27 +13,15 @@ class SuggestionHelper {
 
         setTagResults.forEach(setTags => {
             let importantTagMatches = post.tags.general.filter(tag => {
-                let setTagAmount = setTags.general.get(tag);
-                if (setTagAmount && setTagAmount / setTags.generalTotal > 0.3)
-                    return true;
-
-                return false;
+                return setTags.general.has(tag);
             }).length;
 
             importantTagMatches += post.tags.species.filter(tag => {
-                let setTagAmount = setTags.species.get(tag);
-                if (setTagAmount && setTagAmount / setTags.speciesTotal > 0.3)
-                    return true;
-
-                return false;
+                return setTags.species.has(tag);
             }).length;
 
             importantTagMatches += post.tags.lore.filter(tag => {
-                let setTagAmount = setTags.lore.get(tag);
-                if (setTagAmount && setTagAmount / setTags.loreTotal > 0.3)
-                    return true;
-
-                return false;
+                return setTags.lore.has(tag);
             }).length;
 
             setTagMatches.push({
