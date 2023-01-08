@@ -103,7 +103,7 @@ class E621Configurator {
         var sLabelStyle = `float: left; width:60%; margin-bottom: 10px`;
         var sInputStyle = `float: left; width:39%; margin-bottom: 10px`;
 
-        let label = HTMLFunctions.createElementFromHTML(`<label style="${sLabelStyle}">Suggest Sets:</label><br><br>`);
+        let label = HTMLFunctions.createElementFromHTML(`<label style="${sLabelStyle}" style="width: 120px;">Suggest Sets:</label><br><br>`);
         let checkbox = HTMLFunctions.createElementFromHTML(`<input id="suggestSetsCheckbox" style="${sInputStyle}" type="checkbox" /><br><br>`);
 
         HTMLFunctions.addElementToContainer(label, suggestSetForm);
