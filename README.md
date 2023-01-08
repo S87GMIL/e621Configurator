@@ -31,7 +31,16 @@ By pressing "Use", the selected profile will be loaded and set as default, so ev
 
 # Set Suggestion
 Since version 2 of the script, users can enable the set suggestion feature in the profile configuration dialog.<br>
-<image src="./images/viewConfigurationSetSuggestion.png" style="box-shadow: 0px 0px 10px black;">
+<image src="./images/viewConfigurationSetSuggestion.png" style="box-shadow: 0px 0px 10px black;"><br>
+If the checkbox is checked and the correct username has been entered, the script will automatically add a suggestion section to the "Add to set dialog":<br>
+<image src="./images/addToSetSetSuggestion.png" style="box-shadow: 0px 0px 10px black;"><br>
+The script will now attempt to load all of your sets and collect the posts and their tags, so it can be later matched with the currently opened post.<br>
+This loading process can sometimes take a while, and heavily depends on the amount of sets you have.<br>
+After the sets have been loaded, the suggestions will appear much fater, because the set data is cached for 30 days and doesn't have to be reloaded every time you open a post.<br><br>
+<b>Thus it is suggested to activate the feature, open a post and wait until the suggestions are loaded once.</b>
+<br><br>
+The suggestions are sorted according to their likelihood to fit the current post, if this isn't the case and the first suggested set doesn fit, you can simply display the next best suggestion by pressing "Next Suggestion".<br>
+If you want to directly add the post to the suggested set, you can press the "Add to suggested set" button, which will automatically add the current post to the suggested set. After the button press, the next suggestion will be laoded, in case you want to add the post to multiple likely sets.
 
 # View Configurations
 The view configuration page can be accessed by pressing "Edit" on a profile, the view configuration table is located below the "Edit Profile" section.<br>
