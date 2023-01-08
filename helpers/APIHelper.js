@@ -98,6 +98,39 @@ class APIHelper {
             });
         });
 
+        setTags.general.forEach((amount, tag) => {
+            if (amount / setTags.generalTotal < 0.1)
+                setTags.general.delete(tag);
+        });
+
+        setTags.species.forEach((amount, tag) => {
+            if (amount / setTags.speciesTotal < 0.1)
+                setTags.species.delete(tag);
+        });
+
+        setTags.lore.forEach((amount, tag) => {
+            if (amount / setTags.loreTotal < 0.1)
+                setTags.lore.delete(tag);
+        });
+
+
+        setTags.generalTotal = 0;
+        setTags.speciesTotal = 0;
+        setTags.loreTotal = 0;
+
+
+        setTags.general.forEach((amount, tag) => {
+            setTags.generalTotal += setTags.general.get(tag);
+        });
+
+        setTags.general.forEach((amount, tag) => {
+            setTags.speciesTotal += setTags.species.get(tag);
+        });
+
+        setTags.general.forEach((amount, tag) => {
+            setTags.loreTotal += setTags.lore.get(tag);
+        });
+
         return this.setTags[setID]
     }
 

@@ -14,7 +14,7 @@ class SuggestionHelper {
         setTagResults.forEach(setTags => {
             let importantTagMatches = post.tags.general.filter(tag => {
                 let setTagAmount = setTags.general.get(tag);
-                if (setTagAmount && setTagAmount / setTags.generalTotal > 0.7)
+                if (setTagAmount && setTagAmount / setTags.generalTotal > 0.3)
                     return true;
 
                 return false;
@@ -22,7 +22,7 @@ class SuggestionHelper {
 
             importantTagMatches += post.tags.species.filter(tag => {
                 let setTagAmount = setTags.species.get(tag);
-                if (setTagAmount && setTagAmount / setTags.speciesTotal > 0.7)
+                if (setTagAmount && setTagAmount / setTags.speciesTotal > 0.3)
                     return true;
 
                 return false;
@@ -30,7 +30,7 @@ class SuggestionHelper {
 
             importantTagMatches += post.tags.lore.filter(tag => {
                 let setTagAmount = setTags.lore.get(tag);
-                if (setTagAmount && setTagAmount / setTags.loreTotal > 0.7)
+                if (setTagAmount && setTagAmount / setTags.loreTotal > 0.3)
                     return true;
 
                 return false;
