@@ -5,7 +5,7 @@ class DataBuffer {
         expirationDate.setDate(expirationDate.getDate() + expirationDays);
 
         dataJson.expiration = expirationDate.getTime();
-        GM_setValue(key, dataJson);
+        GM_setValue(key, JSON.stringify(dataJson));
     }
 
     static getBufferData(key) {
@@ -13,12 +13,14 @@ class DataBuffer {
         if (!data)
             return null;
 
-        if (data.expiration <= Date.now()) {
+        let dataJson = JSON.parse(data);
+
+        if (dataJson.expiration <= Date.now()) {
             this.removeDataFromBuffer(key);
             return null;
         }
 
-        return data;
+        return dataJson;
     }
 
     static removeDataFromBuffer(key) {
