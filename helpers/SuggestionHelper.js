@@ -15,7 +15,25 @@ class SuggestionHelper {
             let matchedTags = [];
 
             let importantTagMatches = post.tags.general.filter(tag => {
-                if (setTags.general[tag]){
+                if (setTags.general[tag]) {
+                    matchedTags.push(tag);
+                    return true;
+                }
+
+                return false;
+            }).length;
+
+            let importantTagMatches = post.tags.species.filter(tag => {
+                if (setTags.species[tag]) {
+                    matchedTags.push(tag);
+                    return true;
+                }
+
+                return false;
+            }).length;
+
+            let importantTagMatches = post.tags.lore.filter(tag => {
+                if (setTags.lore[tag]) {
                     matchedTags.push(tag);
                     return true;
                 }
