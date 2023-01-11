@@ -18,10 +18,15 @@ class SuggestionHelper {
             for (let tagCategory in post.tags) {
 
                 post.tags[tagCategory].forEach(tag => {
-                    let tagAmount = setTags[tagCategory][tag];
-                    if (tagAmount && tagAmount > 5) {
-                        matchScore += 1 * tagAmount / setTags.totalPosts;
-                        matchedTags.push(tag);
+                    let setCategoryTags = setTags.tagCategories[tagCategory];
+
+                    if (setCategoryTags) {
+
+                        let tagAmount = setCategoryTags[tag];
+                        if (tagAmount && tagAmount > 5) {
+                            matchScore += 1 * tagAmount / setTags.totalPosts;
+                            matchedTags.push(tag);
+                        }
                     }
                 });
             }
