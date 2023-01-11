@@ -15,22 +15,21 @@ class SuggestionHelper {
             let matchedTags = [];
             let matchScore = 0;
 
-            let importantTagMatches = post.tags.general.filter(tag => {
-                let tagAmount = setTags.general[tag]
-                if (tagAmount) {
-                    matchScore += 1 * tagAmount / setTags.totalPosts;
-                    matchedTags.push(tag);
-                    return true;
-                }
+            for (let tagCategory in post.tags) {
 
-                return false;
-            }).length;
+                post.tags[tagCategory].forEach(tag => {
+                    let tagAmount = setTags[tagCategory][tag];
+                    if (tagAmount && tagAmount > 5) {
+                        matchScore += 1 * tagAmount / setTags.totalPosts;
+                        matchedTags.push(tag);
+                    }
+                });
+            }
 
             setTagMatches.push({
                 id: setTags.id,
                 shortName: setTags.shortName,
                 name: setTags.name,
-                matches: importantTagMatches,
                 matchScore: matchScore,
                 matchedTags: matchedTags
             });
@@ -39,10 +38,6 @@ class SuggestionHelper {
         let setSuggestions = setTagMatches.sort((a, b) => {
             return b.matchScore - a.matchScore;
         });
-
-        /*setSuggestions = setSuggestions.filter(tagMatches => {
-            return tagMatches.matches > 3;
-        });*/
 
         return setSuggestions;
     }
