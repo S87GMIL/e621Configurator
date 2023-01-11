@@ -72,14 +72,9 @@ class APIHelper {
         };
 
         setPosts.posts.forEach(post => {
-            post.tags.general.forEach(tag => {
-                let total = setTags.general[tag] || 0;
-                setTags.general[tag] = total + 1;
-            });
-
-
             for (let tagCategory in post.tags) {
-                setTags.tagCategories[tagCategory] = {};
+                if (!setTags.tagCategories[tagCategory])
+                    setTags.tagCategories[tagCategory] = {};
 
                 post.tags[tagCategory].forEach(tag => {
                     let setCategoryTags = setTags.tagCategories[tagCategory];
