@@ -9,7 +9,7 @@ class SuggestionHelper {
         this.suggestionBuffer = {};
     }
 
-    getInstance() {
+    static getInstance() {
         if (!instance)
             instance = new SuggestionHelper();
 
