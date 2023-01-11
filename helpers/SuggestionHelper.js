@@ -23,7 +23,7 @@ class SuggestionHelper {
                     if (setCategoryTags) {
 
                         let tagAmount = setCategoryTags[tag];
-                        if (tagAmount && tagAmount > 5) {
+                        if (tagAmount) {
                             matchScore += 1 * tagAmount / setTags.totalPosts;
                             matchedTags.push(tag);
                         }
