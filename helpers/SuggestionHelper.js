@@ -1,6 +1,27 @@
+var instance;
+
 class SuggestionHelper {
 
+    constructor() {
+        if (instance)
+            return instance;
+
+        this.suggestionBuffer = {};
+    }
+
+    getInstance() {
+        if (!instance)
+            instance = new SuggestionHelper();
+
+        return instance;
+    }
+
     static async suggestSets(postID) {
+
+        if (this.suggestionBuffer[postID])
+            return this.suggestionBuffer[postID];
+
+
         let apiHelper = APIHelper.getInstance();
 
         let post = await apiHelper.getPost(postID);
@@ -43,6 +64,8 @@ class SuggestionHelper {
         let setSuggestions = setTagMatches.sort((a, b) => {
             return b.matchScore - a.matchScore;
         });
+
+        this.suggestionBuffer[postID] = setSuggestions;
 
         return setSuggestions;
     }
