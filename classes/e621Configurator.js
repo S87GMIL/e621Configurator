@@ -1,4 +1,7 @@
 class E621Configurator {
+    
+    static var version = 2.2;
+
     constructor(oElementSelection) {
         this.ElementSelection = new ElementSelection();
     }
