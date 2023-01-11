@@ -1,10 +1,10 @@
-var instance = null;
-
 class APIHelper {
 
     constructor() {
-        if (instance)
-            return instance;
+        if (APIHelper._instance)
+            throw new Error("Singleton classes can't be instantiated more than once.")
+
+        APIHelper._instance = this;
 
         this.userSets;
         this.setTags = {};
@@ -12,11 +12,12 @@ class APIHelper {
         this.setPostTagCheckAmount = 10;
     }
 
-    static getInstance() {
-        if (!instance)
-            instance = new APIHelper();
 
-        return instance;
+    static getInstance() {
+        if (!APIHelper._instance)
+            APIHelper._instance = new APIHelper();
+
+        return APIHelper._instance;
     }
 
     async getPost(postID) {

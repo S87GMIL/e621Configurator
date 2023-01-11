@@ -1,19 +1,19 @@
-var instance;
-
 class SuggestionHelper {
 
     constructor() {
-        if (instance)
-            return instance;
+        if (SuggestionHelper._instance)
+            throw new Error("Singleton classes can't be instantiated more than once.")
+
+        SuggestionHelper._instance = this;
 
         this.suggestionBuffer = {};
     }
 
     static getInstance() {
-        if (!instance)
-            instance = new SuggestionHelper();
+        if (!SuggestionHelper._instance)
+            SuggestionHelper._instance = new SuggestionHelper();
 
-        return instance;
+        return SuggestionHelper._instance;
     }
 
     async suggestSets(postID) {
