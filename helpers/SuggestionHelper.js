@@ -1,6 +1,27 @@
 class SuggestionHelper {
 
-    static async suggestSets(postID) {
+    constructor() {
+        if (SuggestionHelper._instance)
+            throw new Error("Singleton classes can't be instantiated more than once.")
+
+        SuggestionHelper._instance = this;
+
+        this.suggestionBuffer = {};
+    }
+
+    static getInstance() {
+        if (!SuggestionHelper._instance)
+            SuggestionHelper._instance = new SuggestionHelper();
+
+        return SuggestionHelper._instance;
+    }
+
+    async suggestSets(postID) {
+
+        if (this.suggestionBuffer[postID])
+            return this.suggestionBuffer[postID];
+
+
         let apiHelper = APIHelper.getInstance();
 
         let post = await apiHelper.getPost(postID);
@@ -15,22 +36,26 @@ class SuggestionHelper {
             let matchedTags = [];
             let matchScore = 0;
 
-            let importantTagMatches = post.tags.general.filter(tag => {
-                let tagAmount = setTags.general[tag]
-                if (tagAmount) {
-                    matchScore += 1 * tagAmount / setTags.totalPosts;
-                    matchedTags.push(tag);
-                    return true;
-                }
+            for (let tagCategory in post.tags) {
 
-                return false;
-            }).length;
+                post.tags[tagCategory].forEach(tag => {
+                    let setCategoryTags = setTags.tagCategories[tagCategory];
+
+                    if (setCategoryTags) {
+
+                        let tagAmount = setCategoryTags[tag];
+                        if (tagAmount) {
+                            matchScore += 1 * tagAmount / setTags.totalPosts;
+                            matchedTags.push(tag);
+                        }
+                    }
+                });
+            }
 
             setTagMatches.push({
                 id: setTags.id,
                 shortName: setTags.shortName,
                 name: setTags.name,
-                matches: importantTagMatches,
                 matchScore: matchScore,
                 matchedTags: matchedTags
             });
@@ -40,14 +65,12 @@ class SuggestionHelper {
             return b.matchScore - a.matchScore;
         });
 
-        /*setSuggestions = setSuggestions.filter(tagMatches => {
-            return tagMatches.matches > 3;
-        });*/
+        this.suggestionBuffer[postID] = setSuggestions;
 
         return setSuggestions;
     }
 
-    static async #getTagsForSets(sets, index, setTags) {
+    async #getTagsForSets(sets, index, setTags) {
         let apiHelper = APIHelper.getInstance();
 
         if (!sets[index])

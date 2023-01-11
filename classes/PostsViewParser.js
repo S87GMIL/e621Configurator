@@ -87,7 +87,7 @@ class PostsViewParser extends ViewConfigParser {
         suggestionForm.appendChild(loadingIndicator);
 
         let currentPostId = document.location.pathname.split("/").pop();
-        let suggestedSets = await SuggestionHelper.suggestSets(currentPostId);
+        let suggestedSets = await SuggestionHelper.getInstance().suggestSets(currentPostId);
 
         suggestedSets = suggestedSets.filter(set => {
             return !ignoredSets.includes(set.id);

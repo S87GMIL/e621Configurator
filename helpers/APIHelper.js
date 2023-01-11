@@ -1,10 +1,10 @@
-var instance = null;
-
 class APIHelper {
 
     constructor() {
-        if (instance)
-            return instance;
+        if (APIHelper._instance)
+            throw new Error("Singleton classes can't be instantiated more than once.")
+
+        APIHelper._instance = this;
 
         this.userSets;
         this.setTags = {};
@@ -12,11 +12,12 @@ class APIHelper {
         this.setPostTagCheckAmount = 10;
     }
 
-    static getInstance() {
-        if (!instance)
-            instance = new APIHelper();
 
-        return instance;
+    static getInstance() {
+        if (!APIHelper._instance)
+            APIHelper._instance = new APIHelper();
+
+        return APIHelper._instance;
     }
 
     async getPost(postID) {
@@ -67,47 +68,23 @@ class APIHelper {
             id: setID,
             shortName: set.shortname,
             name: set.name,
-            general: {},
-            species: {},
-            lore: {},
+            tagCategories: {},
             totalPosts: setPosts.posts.length
         };
 
         setPosts.posts.forEach(post => {
-            post.tags.general.forEach(tag => {
-                let total = setTags.general[tag] || 0;
-                setTags.general[tag] = total + 1;
-            });
+            for (let tagCategory in post.tags) {
+                if (!setTags.tagCategories[tagCategory])
+                    setTags.tagCategories[tagCategory] = {};
 
-            post.tags.species.forEach(tag => {
-                let total = setTags.species[tag] || 0;
-                setTags.species[tag] = total + 1;
-            });
+                post.tags[tagCategory].forEach(tag => {
+                    let setCategoryTags = setTags.tagCategories[tagCategory];
+                    let tagTotal = setCategoryTags[tag] || 0;
 
-            post.tags.lore.forEach(tag => {
-                let total = setTags.lore[tag] || 0;
-                setTags.lore[tag] = total + 1;
-            });
+                    setCategoryTags[tag] = tagTotal + 1;
+                });
+            }
         });
-
-        /*for (let tag in setTags.general) {
-            let amount = setTags.general[tag];
-            if (amount / setPosts.posts.length < 0.45)
-                delete setTags.general[tag];
-        }
-
-
-        for (let tag in setTags.species) {
-            let amount = setTags.species[tag];
-            if (amount / setPosts.posts.length < 0.8)
-                delete setTags.species[tag];
-        }
-
-        for (let tag in setTags.lore) {
-            let amount = setTags.lore[tag];
-            if (amount / setPosts.posts.length < 0.7)
-                delete setTags.lore[tag];
-        }*/
 
         DataBuffer.addDataToBuffer(`setTags${setID}`, setTags, 30);
 
