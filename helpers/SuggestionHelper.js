@@ -16,7 +16,7 @@ class SuggestionHelper {
         return instance;
     }
 
-    static async suggestSets(postID) {
+    async suggestSets(postID) {
 
         if (this.suggestionBuffer[postID])
             return this.suggestionBuffer[postID];
@@ -70,7 +70,7 @@ class SuggestionHelper {
         return setSuggestions;
     }
 
-    static async #getTagsForSets(sets, index, setTags) {
+    async #getTagsForSets(sets, index, setTags) {
         let apiHelper = APIHelper.getInstance();
 
         if (!sets[index])
