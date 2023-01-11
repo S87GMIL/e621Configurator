@@ -15,7 +15,7 @@ class DataBuffer {
             return null;
 
 
-        if (data.expiration <= Date.now() || !dataJson.e621ConfiguratorVersion || dataJson.e621ConfiguratorVersion < E621Configurator.version) {
+        if (data.expiration <= Date.now() || !data.e621ConfiguratorVersion || data.e621ConfiguratorVersion < E621Configurator.version) {
             this.removeDataFromBuffer(key);
             return null;
         }
