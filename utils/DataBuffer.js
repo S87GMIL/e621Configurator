@@ -5,6 +5,7 @@ class DataBuffer {
         expirationDate.setDate(expirationDate.getDate() + expirationDays);
 
         dataJson.expiration = expirationDate.getTime();
+        dataJson.e621ConfiguratorVersion = E621Configurator.version;
         GM_setValue(key, dataJson);
     }
 
@@ -14,7 +15,7 @@ class DataBuffer {
             return null;
 
 
-        if (data.expiration <= Date.now()) {
+        if (data.expiration <= Date.now() || !dataJson.e621ConfiguratorVersion || dataJson.e621ConfiguratorVersion < E621Configurator.version) {
             this.removeDataFromBuffer(key);
             return null;
         }
