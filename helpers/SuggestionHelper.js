@@ -54,7 +54,7 @@ class SuggestionHelper {
 
             setTags.importantTags.forEach(importantTag => {
                 if (!matchedTags.includes(importantTag))
-                    matchScore -= 8;
+                    matchScore -= 5;
             });
 
             setTagMatches.push({
