@@ -119,10 +119,11 @@ class PostsViewParser extends ViewConfigParser {
             try {
                 addToSuggstedButton.innerText = "Adding to set ...";
                 await APIHelper.getInstance().addPostToSet(topSuggestion.id, currentPostId);
-                UIHelper.displaySuccessMessage(`Added Post ${currentPostId} to set ${topSuggestion.name}`);
+                UIHelper.displaySuccessMessage(`Added Post '${currentPostId}' to set '${topSuggestion.name}'`);
                 addToSuggstedButton.innerText = "Add to suggested set";
             } catch (error) {
                 UIHelper.displayErrorMessage(error.statusText);
+                return;
             }
 
             ignoredSets.push(topSuggestion.id);

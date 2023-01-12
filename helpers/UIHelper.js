@@ -9,7 +9,7 @@ class UIHelper {
     static #displayNotice(type, message, fadeAfter) {
         let noticeElement = this.#getNoticeElemente();
         noticeElement.classList.remove(type === UIHelper.SUCCESS_NOTICE_TYPE ? "ui-state-error" : "ui-state-highlight");
-        noticeElement.classList.remove(type === UIHelper.SUCCESS_NOTICE_TYPE ? "ui-state-highlight" : "ui-state-error");
+        noticeElement.classList.add(type === UIHelper.SUCCESS_NOTICE_TYPE ? "ui-state-highlight" : "ui-state-error");
 
         noticeElement.style.display = "block";
 
