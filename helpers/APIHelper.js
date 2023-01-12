@@ -89,7 +89,7 @@ class APIHelper {
 
 
         for (let category in setTags.tagCategories) {
-            let tagAmounts = setTags.tagCategorie[category];
+            let tagAmounts = setTags.tagCategories[category];
             for (let tag in tagAmounts) {
                 let amount = tagAmounts[tag];
 
