@@ -88,7 +88,7 @@ class APIHelper {
         });
 
 
-        for (let category in setTags.tagCategories) {
+        /*for (let category in setTags.tagCategories) {
             let tagAmounts = setTags.tagCategories[category];
             for (let tag in tagAmounts) {
                 let amount = tagAmounts[tag];
@@ -96,7 +96,7 @@ class APIHelper {
                 if (amount / setTags.totalPosts > 0.95)
                     setTags.importantTags.push(tag);
             }
-        };
+        };*/
 
 
         DataBuffer.addDataToBuffer(`setTags${setID}`, setTags, 30);
