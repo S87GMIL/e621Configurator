@@ -52,10 +52,10 @@ class SuggestionHelper {
                 });
             }
 
-            setTags.importantTags.forEach(importantTag => {
+            /*setTags.importantTags.forEach(importantTag => {
                 if (matchedTags.includes(importantTag))
                     matchScore += 2;
-            });
+            });*/
 
             setTagMatches.push({
                 id: setTags.id,
