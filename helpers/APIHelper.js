@@ -93,7 +93,7 @@ class APIHelper {
             for (let tag in tagAmounts) {
                 let amount = tagAmounts[tag];
 
-                if (amount / setTags.totalPosts > 0.9)
+                if (amount / setTags.totalPosts > 0.95)
                     setTags.importantTags.push(tag);
             }
         };
