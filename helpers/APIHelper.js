@@ -69,6 +69,7 @@ class APIHelper {
             shortName: set.shortname,
             name: set.name,
             tagCategories: {},
+            importantTags: [],
             totalPosts: setPosts.posts.length
         };
 
@@ -85,6 +86,18 @@ class APIHelper {
                 });
             }
         });
+
+
+        setTags.tagCategories.forEach(category => {
+            let tagAmounts = setTags.tagCategorie[category];
+            for (let tag in tagAmounts) {
+                let amount = tagAmounts[tag];
+
+                if (amount / setTags.totalPosts > 0.9)
+                    importantTags.push(tag);
+            }
+        });
+
 
         DataBuffer.addDataToBuffer(`setTags${setID}`, setTags, 30);
 

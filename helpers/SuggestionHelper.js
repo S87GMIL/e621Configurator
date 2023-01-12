@@ -52,6 +52,11 @@ class SuggestionHelper {
                 });
             }
 
+            setTags.importantTags.forEach(importantTag => {
+                if (!matchedTags.includes(importantTag))
+                    matchScore -= 0.5;
+            });
+
             setTagMatches.push({
                 id: setTags.id,
                 shortName: setTags.shortName,
