@@ -21,20 +21,20 @@ class APIHelper {
     }
 
     async getPost(postID) {
-        let postResposen = await this.#performRequest(`/posts/${postID}.json`);
-        if (!postResposen)
+        let postRespose = await this.#performRequest(`/posts/${postID}.json`);
+        if (!postRespose)
             throw Error(`No post with the ID '${postID}' could be found!`);
 
-        return postResposen.post;
+        return postRespose.post;
     }
 
     async getUserSets() {
-        let activeSet = ProfileStorage.getActiveProfile();
-        if (!activeSet || !activeSet.getUsername())
+        let activeProfile = ProfileStorage.getActiveProfile();
+        if (!activeProfile || !activeProfile.getUsername())
             throw Error("No username was set for the currently active profile!");
 
-        if (!this.userSets)
-            this.userSets = await this.#performRequest(`/post_sets.json?commit=Search&search[creator_name]=${activeSet.getUsername()}`);
+        if (!this.userSets || this.userSets.length === 0)
+            this.userSets = await this.#performRequest(`/post_sets.json?commit=Search&search[creator_name]=${activeProfile.getUsername()}`);
 
         return this.userSets;
     }
