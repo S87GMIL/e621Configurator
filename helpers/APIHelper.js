@@ -41,9 +41,10 @@ class APIHelper {
 
     async getSet(setID) {
         let set = this.userSets.filter(set => { return set.id === setID })[0];
+        if (set)
+            return set;
 
-        if (!set)
-            set = await this.#performRequest(`/post_sets.json?commit=Search&search[id]=${setID}`);
+        set = await this.#performRequest(`/post_sets.json?commit=Search&search[id]=${setID}`);
 
         if (!set)
             throw Error(`No set with the ID '${setID}' exists!'`);
