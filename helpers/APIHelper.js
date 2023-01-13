@@ -40,7 +40,7 @@ class APIHelper {
     }
 
     async getSet(setID) {
-        let set = this.userSets.filter(set => { return set.id === setID });
+        let set = this.userSets.filter(set => { return set.id === setID })[0];
 
         if (!set)
             set = await this.#performRequest(`/post_sets.json?commit=Search&search[id]=${setID}`);
