@@ -6,7 +6,7 @@ class APIHelper {
 
         APIHelper._instance = this;
 
-        this.userSets;
+        this.userSets = [];
         this.setTags = {};
 
         this.setPostTagCheckAmount = 10;
@@ -40,18 +40,15 @@ class APIHelper {
     }
 
     async getSet(setID) {
-        let bufferedSet = DataBuffer.getBufferData(`sets${setID}`);
-        if (bufferedSet)
-            return bufferedSet;
+        let set = this.userSets.filter(set => { return set.id === setID });
 
-        let sets = await this.getUserSets();
-
-        let set = sets.filter(set => {
-            return set.id === setID;
-        })[0];
+        if (!set)
+            set = await this.#performRequest(`/post_sets.json?commit=Search&search[id]=${setID}`);
 
         if (!set)
             throw Error(`No set with the ID '${setID}' exists!'`);
+
+        this.userSets.push(set);
 
         return set;
     }
@@ -62,7 +59,6 @@ class APIHelper {
             return bufferedSet;
 
         let set = await this.getSet(setID);
-        let setPosts = await this.#performRequest(`/posts.json?tags=set:${set.shortname}`);
 
         let setTags = {
             id: setID,
@@ -72,6 +68,12 @@ class APIHelper {
             importantTags: [],
             totalPosts: setPosts.posts.length
         };
+
+        //Only evaluate sets with more than 5 posts
+        if (set.post_count < 5)
+            return setTags;
+
+        let setPosts = await this.#performRequest(`/posts.json?tags=set:${set.shortname}`);
 
         setPosts.posts.forEach(post => {
             for (let tagCategory in post.tags) {
@@ -99,7 +101,8 @@ class APIHelper {
         };*/
 
 
-        DataBuffer.addDataToBuffer(`setTags${setID}`, setTags, 30);
+        if (setPosts.posts.length > 0)
+            DataBuffer.addDataToBuffer(`setTags${setID}`, setTags, set.post_count > 10 ? 30 : 5);
 
         return setTags;
     }
