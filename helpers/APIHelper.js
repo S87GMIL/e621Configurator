@@ -66,7 +66,7 @@ class APIHelper {
             name: set.name,
             tagCategories: {},
             importantTags: [],
-            totalPosts: setPosts.posts.length
+            totalPosts: set.post_count
         };
 
         //Only evaluate sets with more than 5 posts
@@ -74,6 +74,8 @@ class APIHelper {
             return setTags;
 
         let setPosts = await this.#performRequest(`/posts.json?tags=set:${set.shortname}`);
+
+        setTags.totalPosts = setPosts.posts.length;
 
         setPosts.posts.forEach(post => {
             for (let tagCategory in post.tags) {
