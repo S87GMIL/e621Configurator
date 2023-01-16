@@ -92,8 +92,8 @@ class SuggestionHelper {
         let tagCategories = await apiHelper.getSetTagsByName(setShortName);
         let importantTags = [];
 
-        for (let category in tagCategories) {
-            let category = tagCategories[category];
+        for (let categoryName in tagCategories) {
+            let category = tagCategories[categoryName];
             for (let tag in category) {
                 let tagCount = category[tag];
                 if (tagCount / tagCategories.postAmount > 0.75)
