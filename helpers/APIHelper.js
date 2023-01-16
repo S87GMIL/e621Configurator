@@ -122,10 +122,6 @@ class APIHelper {
         return tagCategories;
     }
 
-    async getPostTags(postID) {
-        return await this.#performRequest();
-    }
-
     addPostToSet(setId, postId) {
         return this.#performRequest(`/post_sets/${setId}/add_posts.json`, "POST", {
             post_ids: [postId]
