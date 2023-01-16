@@ -92,12 +92,14 @@ class SuggestionHelper {
         let tagCategories = await apiHelper.getSetTagsByName(setShortName);
         let importantTags = [];
 
-        for (let tag in tagCategories.general) {
-            let tagCount = tagCategories.general[tag];
-            if (tagCount / tagCategories.postAmount > 0.9)
-                importantTags.push(tag);
-        };
+        for (let category in tagCategories) {
+            for (let tag in tagCategories[category]) {
+                let tagCount = tagCategories.general[tag];
+                if (tagCount / tagCategories.postAmount > 0.75)
+                    importantTags.push(tag);
+            };
+        }
 
-        return importantTags;  
+        return importantTags;
     }
 }
