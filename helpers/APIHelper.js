@@ -63,8 +63,8 @@ class APIHelper {
     }
 
     async getSetTagsByName(setShortname) {
-        let posts = await this.getPostsBySetName(setShortname);
-        return this.getPostTags(posts);
+        let response = await this.getPostsBySetName(setShortname);
+        return this.getPostTags(response.posts);
     }
 
     async getSetTags(setID) {
