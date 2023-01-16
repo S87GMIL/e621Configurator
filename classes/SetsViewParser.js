@@ -38,6 +38,7 @@ class SetsViewParser extends ViewConfigParser {
         let link = document.createElement("a");
         listItem.appendChild(link);
 
+        link.style.cursor = "pointer";
         link.innerText = "Loading posts suggestions ...";
 
         let suggestionhelper = SuggestionHelper.getInstance();
