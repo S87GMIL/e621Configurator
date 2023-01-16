@@ -6,6 +6,8 @@ class SetsViewParser extends ViewConfigParser {
     }
 
     performUiChanges(oViewConfig) {
+        this.displaySimilarPostsLink();
+
         oViewConfig.executionOrder.forEach(sFunctionName => {
             var oConfig = oViewConfig[sFunctionName];
 
@@ -24,5 +26,46 @@ class SetsViewParser extends ViewConfigParser {
             }
             this.bTablesAdded = true;
         }
+    }
+
+    async displaySimilarPostsLink() {
+        let relatedLinksList = document.getElementById("related-list");
+        if (!relatedLinksList)
+            return;
+
+        let listItem = document.createElement("li");
+        relatedLinksList.appendChild(listItem);
+        let link = document.createElement("a");
+        listItem.appendChild(link);
+
+        link.innerText = "Loading posts suggestions ...";
+
+        let suggestionhelper = SuggestionHelper.getInstance();
+
+        let setShortName = window.location.search.split("%3A").pop();
+        if (!setShortName) {
+            listItem.display = "None";
+            return;
+        }
+
+        let importantTags = await suggestionhelper.getImportantSetTags(setShortName);
+
+        if (importantTags.length === 0) {
+            listItem.display = "None";
+            return;
+        }
+
+        link.innerText = "Suggested Posts";
+
+
+        let importantTagSearchString = "";
+
+        importantTags.forEach(tag => {
+            importantTagSearchString += tag + "+";
+        });
+
+        link.addEventListener("click", () => {
+            window.location = `https://e621.net/posts?tags=${importantTagSearchString}`;
+        });
     }
 }
