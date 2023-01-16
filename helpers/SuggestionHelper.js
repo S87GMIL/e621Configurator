@@ -93,8 +93,9 @@ class SuggestionHelper {
         let importantTags = [];
 
         for (let category in tagCategories) {
-            for (let tag in tagCategories[category]) {
-                let tagCount = tagCategories.general[tag];
+            let category = tagCategories[category];
+            for (let tag in category) {
+                let tagCount = category[tag];
                 if (tagCount / tagCategories.postAmount > 0.75)
                     importantTags.push(tag);
             };
