@@ -64,6 +64,6 @@ class SetsViewParser extends ViewConfigParser {
             importantTagSearchString += tag + "+";
         });
 
-        link.href = `https://e621.net/posts?tags=${importantTagSearchString}`:
+        link.href = `https://e621.net/posts?tags=${importantTagSearchString}`;
     }
 }
