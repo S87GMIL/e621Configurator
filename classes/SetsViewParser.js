@@ -38,7 +38,6 @@ class SetsViewParser extends ViewConfigParser {
         let link = document.createElement("a");
         listItem.appendChild(link);
 
-        link.style.cursor = "pointer";
         link.innerText = "Loading posts suggestions ...";
 
         let suggestionhelper = SuggestionHelper.getInstance();
@@ -65,8 +64,6 @@ class SetsViewParser extends ViewConfigParser {
             importantTagSearchString += tag + "+";
         });
 
-        link.addEventListener("click", () => {
-            window.location = `https://e621.net/posts?tags=${importantTagSearchString}`;
-        });
+        link.href = `https://e621.net/posts?tags=${importantTagSearchString}`:
     }
 }
