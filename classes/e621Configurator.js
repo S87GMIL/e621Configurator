@@ -1,5 +1,5 @@
 class E621Configurator {
-    
+
     static version = 2.4;
 
     constructor(oElementSelection) {
@@ -1934,6 +1934,9 @@ class E621Configurator {
 
         if (oProfile.getSuggestSets() && URLFunctions.doesCurrentUrlMatch("/posts/*"))
             new PostsViewParser().addSetSuggestionSection(oProfile.getUsername());
+
+        if (URLFunctions.doesCurrentUrlMatch("/posts", "?tags=set*"))
+            new SetsViewParser().displaySimilarPostsLink();
 
         aSortedConfigsNoParams.concat(aSortedConfigsWithParams).forEach(oViewConfig => {
             fGetViewConfigForPath(oViewConfig);

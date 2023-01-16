@@ -54,6 +54,19 @@ class APIHelper {
         return set;
     }
 
+    async getPostsBySetName(shortName) {
+        let set = this.userSets.filter(set => { return set.shortName === shortName })[0];
+        if (set)
+            return set.posts;
+
+        return await this.#performRequest(`/posts.json?tags=set:${shortName}`);
+    }
+
+    async getSetTagsByName(setShortname) {
+        let response = await this.getPostsBySetName(setShortname);
+        return this.getPostTags(response.posts);
+    }
+
     async getSetTags(setID) {
         let bufferedSet = DataBuffer.getBufferData(`setTags${setID}`);
         if (bufferedSet)
@@ -66,7 +79,6 @@ class APIHelper {
             shortName: set.shortname,
             name: set.name,
             tagCategories: {},
-            importantTags: [],
             totalPosts: set.post_count
         };
 
@@ -78,31 +90,10 @@ class APIHelper {
 
         setTags.totalPosts = setPosts.posts.length;
 
-        setPosts.posts.forEach(post => {
-            for (let tagCategory in post.tags) {
-                if (!setTags.tagCategories[tagCategory])
-                    setTags.tagCategories[tagCategory] = {};
+        let tagCategories = this.getPostTags(setPosts.posts);
+        delete tagCategories.postAmount;
 
-                post.tags[tagCategory].forEach(tag => {
-                    let setCategoryTags = setTags.tagCategories[tagCategory];
-                    let tagTotal = setCategoryTags[tag] || 0;
-
-                    setCategoryTags[tag] = tagTotal + 1;
-                });
-            }
-        });
-
-
-        /*for (let category in setTags.tagCategories) {
-            let tagAmounts = setTags.tagCategories[category];
-            for (let tag in tagAmounts) {
-                let amount = tagAmounts[tag];
-
-                if (amount / setTags.totalPosts > 0.95)
-                    setTags.importantTags.push(tag);
-            }
-        };*/
-
+        setTags.tagCategories = tagCategories;
 
         if (setPosts.posts.length > 0)
             DataBuffer.addDataToBuffer(`setTags${setID}`, setTags, set.post_count > 10 ? 30 : 5);
@@ -110,8 +101,25 @@ class APIHelper {
         return setTags;
     }
 
-    async getPostTags(postID) {
-        return await this.#performRequest();
+    getPostTags(posts) {
+        let tagCategories = {};
+
+        posts.forEach(post => {
+            for (let tagCategory in post.tags) {
+                if (!tagCategories[tagCategory])
+                    tagCategories[tagCategory] = {};
+
+                post.tags[tagCategory].forEach(tag => {
+                    let setCategoryTags = tagCategories[tagCategory];
+                    let tagTotal = setCategoryTags[tag] || 0;
+
+                    setCategoryTags[tag] = tagTotal + 1;
+                });
+            }
+        });
+
+        tagCategories.postAmount = posts.length;
+        return tagCategories;
     }
 
     addPostToSet(setId, postId) {

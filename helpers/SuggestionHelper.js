@@ -86,4 +86,21 @@ class SuggestionHelper {
 
         await this.#getTagsForSets(sets, index + 1, setTags);
     }
+
+    async getImportantSetTags(setShortName) {
+        let apiHelper = APIHelper.getInstance();
+        let tagCategories = await apiHelper.getSetTagsByName(setShortName);
+        let importantTags = [];
+
+        for (let categoryName in tagCategories) {
+            let category = tagCategories[categoryName];
+            for (let tag in category) {
+                let tagCount = category[tag];
+                if (tagCount / tagCategories.postAmount > 0.75)
+                    importantTags.push(tag);
+            };
+        }
+
+        return importantTags;
+    }
 }
