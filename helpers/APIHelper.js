@@ -36,7 +36,49 @@ class APIHelper {
         if (!this.userSets || this.userSets.length === 0)
             this.userSets = await this.#performRequest(`/post_sets.json?commit=Search&search[creator_name]=${activeProfile.getUsername()}`);
 
-        return this.userSets;
+        let setTagData = await this._getSetTagData(this.userSets);
+
+        return setTagData;
+    }
+
+    async _getSetTagData(sets, index = 0, postSetData = []) {
+        if (!sets[index])
+            return postSetData;
+
+        let setData = await this.getSetTagData(sets[index].id);
+        postSetData.push(setData);
+
+        return await this._getSetTagData(sets, index + 1, postSetData);
+    };
+
+    async getSetTagData(setID) {
+        let set = DataBuffer.getBufferData(`sets${setID}`);
+        if (set)
+            return set;
+
+        set = await this.getSet(setID);
+        if (!set)
+            throw Error(`No set with the ID '${setID}' could be found!`);
+
+        let setTags = {
+            id: setID,
+            shortName: set.shortname,
+            name: set.name,
+            postIds: set.post_ids,
+            tags: {},
+            totalPosts: set.post_count
+        };
+
+        let setPosts = await this.#performRequest(`/posts.json?tags=set:${set.shortname}`);
+
+        setTags.totalPosts = setPosts.posts.length;
+
+        let uniqueTags = this._getTagsFromPostArray(setPosts.posts);
+        setTags.tags = uniqueTags;
+
+        DataBuffer.addDataToBuffer(`sets${setID}`, setTags, setTags.totalPosts > 10 ? 30 : 5);
+
+        return setTags;
     }
 
     async getSet(setID) {
@@ -52,6 +94,25 @@ class APIHelper {
         this.userSets.push(set);
 
         return set;
+    }
+
+    _getTagsFromPostArray(posts) {
+        let postTags = {};
+
+        posts.forEach(post => {
+            for (let tagCategory in post.tags) {
+
+                post.tags[tagCategory].forEach(tag => {
+                    if (!postTags[tag])
+                        postTags[tag] = 0;
+
+                    postTags[tag] = postTags[tag] + 1;
+                });
+            }
+        });
+
+        postTags.postAmount = posts.length;
+        return postTags;
     }
 
     async getPostsBySetName(shortName) {
