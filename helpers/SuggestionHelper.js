@@ -55,7 +55,8 @@ class SuggestionHelper {
                 id: set.id,
                 shortName: set.shortName,
                 name: set.name,
-                score: similarity
+                score: similarity,
+                definingTags: set.definingTags
             };
         });
 
@@ -64,7 +65,7 @@ class SuggestionHelper {
         this.suggestionBuffer[postID] = similarityScores;
 
         for (let i = 0; i < 6; i++) {
-            console.log(`Set: ${similarityScores[i].shortName} Score: ${similarityScores[i].score}`)
+            console.log(`Set: ${similarityScores[i].shortName} Score: ${similarityScores[i].score}, Defining: ${similarityScores[i].definingTags.toString()}`)
         }
 
         return similarityScores;
@@ -131,6 +132,7 @@ class SuggestionHelper {
                 const idfScore = idf[tag];
                 tfidfScores[setName][tag] = tf * idfScore
 
+                //Defining tags should 
                 if (tf / set.totalPosts > 0.75)
                     set.definingTags.push(tag);
             };
@@ -141,6 +143,7 @@ class SuggestionHelper {
 
         postSets.forEach(postSet => {
             postSet.weightedTags = tfidfScores[postSet.shortName];
+            //console.log(`${postSet.shortName} - ${postSet.definingTags.toString()}`)
         });
 
         return postSets;
