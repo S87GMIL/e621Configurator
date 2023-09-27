@@ -29,8 +29,17 @@ class SuggestionHelper {
             postTags = postTags.concat(post.tags[tagCategory]);
         }
 
-        let userSets = await apiHelper.getUserSets();
-        let weightedSets = this.calculateTagWeighting(userSets);
+        let weightedSets = DataBuffer.getBufferData("weightedSets");
+        weightedSets = weightedSets ? weightedSets.weightedSets : null;
+
+        if (!weightedSets) {
+            let userSets = await apiHelper.getUserSets();
+            weightedSets = this.calculateTagWeighting(userSets);
+
+            DataBuffer.addDataToBuffer("weightedSets", {
+                weightedSets: weightedSets
+            });
+        }
 
         let similarityScores = weightedSets.map((set) => {
             const weightedTags = set.weightedTags;

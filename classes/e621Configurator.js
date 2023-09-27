@@ -1,6 +1,6 @@
 class E621Configurator {
 
-    static version = 2.7;
+    static version = 2.8;
 
     constructor(oElementSelection) {
         this.ElementSelection = new ElementSelection();
@@ -1932,8 +1932,11 @@ class E621Configurator {
             }
         }
 
-        if (oProfile.getSuggestSets() && URLFunctions.doesCurrentUrlMatch("/posts/*"))
-            new PostsViewParser().addSetSuggestionSection(oProfile.getUsername());
+        if (oProfile.getSuggestSets() && URLFunctions.doesCurrentUrlMatch("/posts/*")) {
+            document.getElementById("set").addEventListener("click", () => {
+                new PostsViewParser().addSetSuggestionSection(oProfile.getUsername())
+            });
+        }
 
         if (URLFunctions.doesCurrentUrlMatch("/posts", "?tags=set*"))
             new SetsViewParser().displaySimilarPostsLink();
