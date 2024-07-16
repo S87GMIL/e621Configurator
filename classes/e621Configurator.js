@@ -7,7 +7,7 @@ class E621Configurator {
     }
 
     createNewProfile(sId, sName, sDescription, oIsActive, oViewConfigs, bDeletable, bEditable) {
-        return new Profile(sId, sName, sDescription, oIsActive, oViewConfigs, bDeletable, bEditable);
+        return new Profile(sId, sName, sDescription, oIsActive, oViewConfigs, bDeletable, bEditable, false, UIHelper.getCurrentUserName());
     }
 
     reloadProfiles() {
@@ -103,20 +103,13 @@ class E621Configurator {
         var suggestSetContainer = HTMLFunctions.createElementFromHTML('<div class="box-section" style="display: flex"></div>');
         var suggestSetForm = HTMLFunctions.createElementFromHTML('<form class="border-bottom"></form>');
 
-        var sLabelStyle = `float: left; width:60%; margin-bottom: 10px`;
-        var sInputStyle = `float: left; width:39%; margin-bottom: 10px`;
+        var sLabelStyle = `width:60%; margin-bottom: 10px; margin-right: 7px;`;
 
         let label = HTMLFunctions.createElementFromHTML(`<label style="${sLabelStyle}" style="width: 120px !important;">Suggest Sets:</label><br><br>`);
-        let checkbox = HTMLFunctions.createElementFromHTML(`<input id="suggestSetsCheckbox" style="float: left; width: auto;" type="checkbox" checked="${oProfile.getSuggestSets()}"/><br><br>`);
+        let checkbox = HTMLFunctions.createElementFromHTML(`<input id="suggestSetsCheckbox" style="width: auto;" type="checkbox" checked="${oProfile.getSuggestSets()}"/><br><br>`);
 
         HTMLFunctions.addElementToContainer(label, suggestSetForm);
         HTMLFunctions.addElementToContainer(checkbox, suggestSetForm);
-
-        label = HTMLFunctions.createElementFromHTML(`<label style="${sLabelStyle}">Username:</label>`);
-        let usernameInput = HTMLFunctions.createElementFromHTML(`<input id="usernameInput" style="${sInputStyle}" type="text" value="${oProfile.getUsername()}" /><br><br>`);
-
-        HTMLFunctions.addElementToContainer(label, suggestSetForm);
-        HTMLFunctions.addElementToContainer(usernameInput, suggestSetForm);
 
         HTMLFunctions.addElementToContainer(suggestSetForm, suggestSetContainer);
 
@@ -1625,7 +1618,6 @@ class E621Configurator {
         var oNameInput = HTMLFunctions.getElement("profileNameInput");
         var oDescriptionInput = HTMLFunctions.getElement("profileDescriptionInput");
         let suggestSets = HTMLFunctions.getElement("suggestSetsCheckbox").checked;
-        let username = HTMLFunctions.getElement("usernameInput").value;
 
         if (bCreationMode) {
             var oIdInput = HTMLFunctions.getElement("profileIdInput");
@@ -1643,7 +1635,7 @@ class E621Configurator {
             oProfile.setName(sName);
             oProfile.setDescription(sDescription);
             oProfile.setSuggestSets(suggestSets);
-            oProfile.setUsername(username);
+            oProfile.setUsername(UIHelper.getCurrentUserName());
 
             ProfileStorage.saveProfile(oProfile, oProfile.getActive());
 

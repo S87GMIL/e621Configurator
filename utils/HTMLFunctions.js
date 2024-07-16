@@ -289,10 +289,8 @@ class HTMLFunctions {
 
     static moveOptionsByName(vSelect, oTargetGroup, sSetSelector, aNames) {
         var oSelect = this.getElement(vSelect);
-        var oSourceGroup;
         this.getOptionsByName(oSelect, sSetSelector, aNames).forEach(oOption => {
-            if (!oSourceGroup) oSourceGroup = oOption.parentElement;
-            this.moveOptionToGroup(oOption, oSourceGroup, oTargetGroup);
+            this.moveOptionToGroup(oOption, oOption.parentElement, oTargetGroup);
         });
     }
 

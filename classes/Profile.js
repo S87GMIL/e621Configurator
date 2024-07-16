@@ -205,15 +205,18 @@ class Profile {
         return this.suggestSets;
     }
 
-    setSuggestSets(suggestSets){
+    setSuggestSets(suggestSets) {
         this.suggestSets = suggestSets;
     }
 
     getUsername() {
+        if (!this.username)
+            this.username = UIHelper.getCurrentUserName();
+
         return this.username;
     }
 
-    setUsername(username){
+    setUsername(username) {
         this.username = username;
     }
 }

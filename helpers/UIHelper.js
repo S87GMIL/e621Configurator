@@ -2,6 +2,10 @@ class UIHelper {
     static SUCCESS_NOTICE_TYPE = "SUCCESS";
     static ERROR_NOTICE_TYPE = "ERROR";
 
+    static getCurrentUserName() {
+        return document.querySelector('meta[name="current-user-name"]').content;
+    }
+
     static #getNoticeElemente() {
         return document.getElementById("notice");
     }
