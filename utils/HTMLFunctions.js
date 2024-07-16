@@ -290,6 +290,9 @@ class HTMLFunctions {
     static moveOptionsByName(vSelect, oTargetGroup, sSetSelector, aNames) {
         var oSelect = this.getElement(vSelect);
         this.getOptionsByName(oSelect, sSetSelector, aNames).forEach(oOption => {
+            if (oOption.parentElement.label === "Maintained")
+                oOption.innerText += " [Maintained]";
+
             this.moveOptionToGroup(oOption, oOption.parentElement, oTargetGroup);
         });
     }
