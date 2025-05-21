@@ -1832,13 +1832,12 @@ class E621Configurator {
     }
 
     addButtonToMainToolbar() {
-        var oNavBar = document.getElementById("nav");
-        if (oNavBar) {
-            var oMainToolbar = HTMLFunctions.convertHtmlCollectionToArray(oNavBar.childNodes).filter(oElement => { return oElement.tagName === "MENU" })[0];
-            var oSettingsButton = HTMLFunctions.createElementFromHTML(`<li id="viewConfig" style="float: right;"><a id="viewConfigButton" style="cursor: pointer" >Configure View</a></li>`);
+        var navBar = document.querySelector("body > nav > menu.nav-help.desktop") || document.querySelector("body > nav > menu.nav-help.desktop");
+        if (navBar) {
+            const oSettingsButton = HTMLFunctions.createElementFromHTML(`<li id="viewConfig" style="float: right;"><a id="viewConfigButton" style="cursor: pointer" >Configure View</a></li>`);
 
-            HTMLFunctions.addElementToContainer(oSettingsButton, oMainToolbar);
-            HTMLFunctions.getElement("viewConfigButton").onclick = this.configButtonPressed.bind(this);
+            HTMLFunctions.addElementToContainer(oSettingsButton, navBar);
+            oSettingsButton.onclick = this.configButtonPressed.bind(this);
         }
     }
 
@@ -1935,7 +1934,7 @@ class E621Configurator {
         });
     }
 
-    initializeE621Configurator(oElementSelection) {
+    initializeE621Configurator() {
         var oActiveProfile;
         var oCreatedConfigs = ProfileStorage.loadCreatedProfiles();
 
