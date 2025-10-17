@@ -181,7 +181,12 @@ class HTMLFunctions {
     }
 
     static addStyleClassToElement(oElement, aStyleClasses) {
-        if (oElement) oElement.classList.add(aStyleClasses);
+        if (!oElement)
+            return;
+
+        aStyleClasses.forEach(className => {
+            oElement.classList.add(className);
+        });
     }
 
     static addElementStyles(oElement, oStyleProperties) {
@@ -345,9 +350,7 @@ class HTMLFunctions {
         var sClasses = `ui-dialog ui-corner-all ui-widget ui-widget-content ui-front ui-front`;
 
         var sCloseButton = bHasCloseButton ?
-            `<button id="${sNamespace}-closeButton" type="button" class="ui-button ui-corner-all ui-widget ui-button-icon-only ui-dialog-titlebar-close" title="Close">
-             <span class="ui-button-icon ui-icon ui-icon-closethick"></span>
-             <span class="ui-button-icon-space"></span>Close</button>` : "";
+            `<button id="${sNamespace}-closeButton" type="button" class="st-button" style="float:right" title="Close" aria-label="Close">X</button>` : "";
 
         var oDialog = this.getElement(`${sNamespace}-dialog`);
         if (oDialog) oDialog.parentNode.removeChild(oDialog);

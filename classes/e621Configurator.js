@@ -1853,12 +1853,12 @@ class E621Configurator {
         oPostViewSettings.hideElement("post-related-images");
         oPostViewSettings.hideElement("post-information");
         oPostViewSettings.hideElement("image-resize-selector");
-        oPostViewSettings.hideElement("/html/body/div[1]/div[3]/div[1]/section/section[1]/div[4]");
 
-        oPostViewSettings.moveElement("set", "image-extra-controls", 4);
-        oPostViewSettings.modifyElementStyle("set", undefined, { "background": "#453269", "margin-right": "10px" });
+        oPostViewSettings.modifyElementClass("add-to-set-list", undefined, ["st-button", "kinetic"]);
+        //oPostViewSettings.modifyElementStyle("add-to-set-list", undefined, { "background": "#453269", "margin-right": "10px" });
         oPostViewSettings.modifyElementStyle("c-posts", undefined, { "height": "100%" });
-        oPostViewSettings.modifyElementClass("set", undefined, ["button"]);
+
+        oPostViewSettings.moveElement("add-to-set-list", "ptbr-wrapper", 4);
 
         oPostViewSettings.modifyElementStyle(undefined, "artist-tag-list", { "font-size": "18px", "padding-top": "15px", "padding-bottom": "15px" });
 
@@ -1868,7 +1868,7 @@ class E621Configurator {
         oPostViewSettings.modifyElementStyle("createNewSet", undefined, { "margin-top": "20px", "width": "100%", "text-align": "center" });
         oPostViewSettings.addElementToSetSelectionDialog("createNewSet");
 
-        oPostViewSettings.modifyElementStyle("add-to-set-id", undefined, { "width": "256px", "font-size": "17px" });
+        oPostViewSettings.modifyElementStyle("add-to-set-id", undefined, { "font-size": "17px" });
         oPostViewSettings.modifyElementStyle("add-to-set-submit", undefined, { "margin-top": "20px", "width": "100%", "height": "30px" });
 
         ProfileStorage.saveProfile(oS87Profile, true);
