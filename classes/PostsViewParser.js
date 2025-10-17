@@ -29,7 +29,7 @@ class PostsViewParser extends ViewConfigParser {
                 }
             }
 
-            var oAddToSetButton = HTMLFunctions.getElement("set");
+            var oAddToSetButton = document.querySelector("#add-to-set-list > a");
             if (oAddToSetButton) oAddToSetButton.onclick = function () {
                 this.waitUntilSetsAreLoaded("add-to-set-id", fSetsLoadedCallback);
             }.bind(this)
