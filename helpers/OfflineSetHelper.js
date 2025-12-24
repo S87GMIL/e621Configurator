@@ -54,8 +54,8 @@ class OfflineSetHelper {
         set.tagCategories.postAmount = posts.length;
         set.totalPosts = posts.length;
         set.id = set.setId;
-        set.name = set.setId;
-        set.shortName = set.label;
+        set.name = set.label;
+        set.shortName = set.setId;
 
         return set;
     }
