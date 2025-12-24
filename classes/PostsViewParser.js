@@ -115,21 +115,27 @@ class PostsViewParser extends ViewConfigParser {
         nextSuggestionButton.style.marginTop = "15px";
         suggestionForm.appendChild(nextSuggestionButton);
 
-        let addToSuggstedButton = HTMLFunctions.createButton("addToSuggestedButton", "Add to suggested set", async () => {
+        let addToSuggestedButton = HTMLFunctions.createButton("addToSuggestedButton", "Add to suggested set", async () => {
             try {
-                addToSuggstedButton.innerText = "Adding to set ...";
-                await APIHelper.getInstance().addPostToSet(topSuggestion.id, currentPostId);
+                addToSuggestedButton.innerText = "Adding to set ...";
+                
+                if (topSuggestion.isOfflineSet) {
+                    await Window.S87OfflineSetAPI?.addPostToSet(topSuggestion.id, currentPostId)
+                } else {
+                    await APIHelper.getInstance().addPostToSet(topSuggestion.id, currentPostId);
+                }
+
                 UIHelper.displaySuccessMessage(`Added Post '${currentPostId}' to set '${topSuggestion.name}'`);
-                addToSuggstedButton.innerText = "Add to suggested set";
+
+                ignoredSets.push(topSuggestion.id);
+                this.addSetSuggestionSection(username, ignoredSets);
             } catch (error) {
-                UIHelper.displayErrorMessage(error.statusText);
-                return;
+                UIHelper.displayErrorMessage(error.statusText || error.message);
             }
 
-            ignoredSets.push(topSuggestion.id);
-            this.addSetSuggestionSection(username, ignoredSets);
+            addToSuggestedButton.innerText = "Add to suggested set";
         });
 
-        suggestionForm.appendChild(addToSuggstedButton);
+        suggestionForm.appendChild(addToSuggestedButton);
     }
 }

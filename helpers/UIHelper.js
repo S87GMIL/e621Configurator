@@ -6,6 +6,10 @@ class UIHelper {
         return document.querySelector('meta[name="current-user-name"]').content;
     }
 
+    static getCurrentUserID() {
+        return document.querySelector('meta[name="current-user-id"]').content;
+    }
+
     static #getNoticeElemente() {
         return document.getElementById("notice");
     }

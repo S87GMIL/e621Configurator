@@ -12,13 +12,13 @@ class SuggestionHelper {
 
         SuggestionHelper._instance = this;
 
-        this.idfCache = null;                 
-        this.setVectors = {};                
-        this.setMagnitudes = {};             
-        this.importantTags = {};              
-        this.tagToSets = {};                 
-        this.setMeta = {};                   
-        this.suggestionBuffer = {};          
+        this.idfCache = null;
+        this.setVectors = {};
+        this.setMagnitudes = {};
+        this.importantTags = {};
+        this.tagToSets = {};
+        this.setMeta = {};
+        this.suggestionBuffer = {};
     }
 
     static getInstance() {
@@ -90,19 +90,22 @@ class SuggestionHelper {
             return;
 
         const apiHelper = APIHelper.getInstance();
-        const userSets = await apiHelper.getUserSets();
+        const offlineSetHelper = OfflineSetHelper.getInstance();
+        const offlineSets = offlineSetHelper.getOfflineSets();
+        const userSets = offlineSets.concat(await apiHelper.getUserSets());
 
         const allSetTags = [];
         const tagDocumentCount = {};
         const globallyImportantTags = new Set();
 
         for (const set of userSets) {
-            const tags = await apiHelper.getSetTags(set.id);
+            const tags = set.isOfflineSet ? offlineSetHelper.getSetTags(set.setId) : await apiHelper.getSetTags(set.id);
             allSetTags.push(tags);
 
             this.setMeta[set.id] = {
                 name: tags.name,
-                shortName: tags.shortName
+                shortName: tags.shortName,
+                isOfflineSet: !!set.isOfflineSet
             };
 
             const counts = [];
