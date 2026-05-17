@@ -10,22 +10,30 @@ class UIHelper {
         return document.querySelector('meta[name="current-user-id"]').content;
     }
 
-    static #getNoticeElemente() {
-        return document.getElementById("notice");
+    static #getToastContainer() {
+        return document.getElementById("toast-container");
     }
 
     static #displayNotice(type, message, fadeAfter) {
-        let noticeElement = this.#getNoticeElemente();
-        noticeElement.classList.remove(type === UIHelper.SUCCESS_NOTICE_TYPE ? "ui-state-error" : "ui-state-highlight");
-        noticeElement.classList.add(type === UIHelper.SUCCESS_NOTICE_TYPE ? "ui-state-highlight" : "ui-state-error");
+        const toastContainer = this.#getToastContainer();
+        if (!toastContainer) {
+            console.error("Couldn't find the toast container element!");
+            return;
+        }
 
-        noticeElement.style.display = "block";
+        const messageDiv = document.createElement("div");
+        const toastType = type === UIHelper.SUCCESS_NOTICE_TYPE ? "toast-success" : "toast-alert";
+        messageDiv.classList.add("toast", toastType);
 
-        noticeElement.querySelector("span").innerText = message;
+        const messageSpan = document.createElement("span");
+        messageSpan.innerText = message;
+
+        toastContainer.appendChild(messageDiv);
+        messageDiv.appendChild(messageSpan);
 
         if (fadeAfter !== -1)
             setTimeout(() => {
-                noticeElement.style.display = "none";
+                toastContainer.remove();
             }, fadeAfter * 1000);
     }
 
