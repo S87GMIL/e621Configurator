@@ -6,8 +6,8 @@ class UIHelper {
         return document.querySelector('meta[name="current-user-name"]').content;
     }
 
-    static getCurrentUserID() {
-        return document.querySelector('meta[name="current-user-id"]').content;
+    static getCurrentUserName() {
+        return document.body.getAttribute("data-user-name");
     }
 
     static #getToastContainer() {
