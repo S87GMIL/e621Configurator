@@ -21,11 +21,13 @@ class APIHelper {
     }
 
     async getPost(postID) {
-        let postResponse = await this.#performRequest(`/posts/${postID}.json`);
+        let postResponse = await this.#performRequest(`/posts/${postID}.json?mode=extended`);
         if (!postResponse)
             throw Error(`No post with the ID '${postID}' could be found!`);
 
-        return postResponse.post;
+        // The current API returns the post directly. Keep support for legacy v1
+        // responses in case another page or cache requests them.
+        return postResponse.post || postResponse;
     }
 
     async getUserSets() {
@@ -33,18 +35,20 @@ class APIHelper {
         if (!activeProfile || !activeProfile.getUsername())
             throw Error("No username was set for the currently active profile!");
 
-        if (!this.userSets || this.userSets.length === 0)
-            this.userSets = await this.#performRequest(`/post_sets.json?commit=Search&search[creator_name]=${activeProfile.getUsername()}`);
+        if (!this.userSets || this.userSets.length === 0) {
+            const username = encodeURIComponent(activeProfile.getUsername());
+            this.userSets = await this.#performRequest(`/post_sets.json?search[creator_name]=${username}`);
+        }
 
         return this.userSets;
     }
 
     async getSet(setID) {
-        let set = this.userSets.filter(set => { return set.id === setID })[0];
+        let set = this.userSets.filter(set => { return set.id === Number(setID) || set.id === setID })[0];
         if (set)
             return set;
 
-        set = await this.#performRequest(`/post_sets.json?commit=Search&search[id]=${setID}`);
+        set = await this.#performRequest(`/post_sets/${setID}.json`);
 
         if (!set)
             throw Error(`No set with the ID '${setID}' exists!'`);
@@ -55,16 +59,17 @@ class APIHelper {
     }
 
     async getPostsBySetName(shortName) {
-        let set = this.userSets.filter(set => { return set.shortName === shortName })[0];
-        if (set)
+        let set = this.userSets.filter(set => { return set.shortname === shortName || set.shortName === shortName })[0];
+        if (set && Array.isArray(set.posts))
             return set.posts;
 
-        return await this.#performRequest(`/posts.json?tags=set:${shortName}`);
+        const response = await this.#performRequest(`/posts.json?mode=extended&tags=set:${encodeURIComponent(shortName)}`);
+        return Array.isArray(response) ? response : (response.posts || []);
     }
 
     async getSetTagsByName(setShortname) {
         let response = await this.getPostsBySetName(setShortname);
-        return this.getPostTags(response.posts);
+        return this.getPostTags(response);
     }
 
     async getSetTags(setID) {
@@ -73,10 +78,11 @@ class APIHelper {
             return bufferedSet;
 
         let set = await this.getSet(setID);
+        const shortname = set.shortname || set.shortName;
 
         let setTags = {
             id: setID,
-            shortName: set.shortname,
+            shortName: shortname,
             name: set.name,
             tagCategories: {},
             totalPosts: set.post_count
@@ -86,16 +92,17 @@ class APIHelper {
         if (set.post_count < 5)
             return setTags;
 
-        let setPosts = await this.#performRequest(`/posts.json?tags=set:${set.shortname}`);
+        const setPosts = await this.#performRequest(`/posts.json?mode=extended&tags=set:${encodeURIComponent(shortname)}`);
+        const posts = Array.isArray(setPosts) ? setPosts : (setPosts.posts || []);
 
-        setTags.totalPosts = setPosts.posts.length;
+        setTags.totalPosts = posts.length;
 
-        let tagCategories = this.getPostTags(setPosts.posts);
+        let tagCategories = this.getPostTags(posts);
         delete tagCategories.postAmount;
 
         setTags.tagCategories = tagCategories;
 
-        if (setPosts.posts.length > 0)
+        if (posts.length > 0)
             DataBuffer.addDataToBuffer(`setTags${setID}`, setTags, set.post_count > 10 ? 30 : 5);
 
         return setTags;
@@ -105,6 +112,17 @@ class APIHelper {
         let tagCategories = {};
 
         posts.forEach(post => {
+            if (Array.isArray(post.tags)) {
+                if (!tagCategories.general)
+                    tagCategories.general = {};
+
+                post.tags.forEach(tag => {
+                    const categoryTags = tagCategories.general;
+                    categoryTags[tag] = (categoryTags[tag] || 0) + 1;
+                });
+                return;
+            }
+
             for (let tagCategory in post.tags) {
                 if (!tagCategories[tagCategory])
                     tagCategories[tagCategory] = {};
